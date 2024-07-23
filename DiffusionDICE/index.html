@@ -1,542 +1,383 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--  <link rel="icon" href="assets/xhr.ico" type="image/x-icon">-->
-  <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_package/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_package/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_package/favicon-16x16.png">
-  <link rel="manifest" href="assets/favicon_package/site.webmanifest">
-  <link rel="mask-icon" href="assets/favicon_package/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="theme-color" content="#ffffff">
-  
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preload" href="assets/fonts/xxx.woff" as="font" type="font/woff" crossorigin>
 
-  <title>Haoran (Ryan) Xu</title>
-  <meta name="description" content="">
-
-  <link rel="stylesheet" href="main.css">
-  <link rel="canonical" href="ryanxhr.github.io/DiffusionDICE">
-  <link rel="preload" href="assets/font/Mukta-Light.ttf" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="assets/font/Mukta-Medium.ttf" as="font" type="font/woff" crossorigin>
-
-  <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400&display=swap" rel="stylesheet"> -->
-  <!-- <style>
-    a { color: #FF0000; } /* CSS link color */
-  </style> -->
+<head>
+	<title>TD-MPC2</title>
+	<meta property="og:title" content="TD-MPC2">
+	<meta property="og:description" content="TD-MPC2: Scalable, Robust World Models for Continuous Control">
+	<link rel="stylesheet" href="DiffusionDICE/main.css">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script type="text/javascript">
+		function toggle(id) {
+			var e = document.getElementById(id);
+			if(e.style.display == 'block')
+				e.style.display = 'none';
+			else
+				e.style.display = 'block';
+		}
+	</script>
 </head>
-
-<body data-new-gr-c-s-check-loaded="14.1029.0" data-gr-ext-installed="">
-
-  <main class="page-content" aria-label="Content">
-    <div class="wrapper">
-
-      <article class="post">
-        <div class="post-content">
-          <img src="assets/xhr.jpg" class="profile-picture">
-
-          <p>
-              Hello! I am Haoran Xu (徐浩然 in Chinese). I am a first-year Ph.D. student at UT Austin, advised by <a href="https://amyzhang.github.io/">Prof. Amy Zhang</a>. I used to be in <a href="https://air.tsinghua.edu.cn/en/">AIR, Tsinghua University</a> and <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/">MSRA</a>, working with <a href="http://zhanxianyuan.xyz/">Xianyuan Zhan</a> and <a href="http://urban-computing.com/yuzheng">Zheng Yu</a>.
-<!--              I also work closely with <a href="https://www.princeton.edu/~zy6/">Zhuoran Yang</a> and <a href="https://zhaoranwang.github.io/">Zhaoran Wang</a>.-->
-          </p>
-
-          <p>
-              My ultimate research dream is to maximally leveraging prior information to facilitate the development of machine autonomy. Towards this goal, my work primarily focused on <strong>offline RL</strong>, <strong>imitation learning</strong>, and more recently, <strong>RL with GenAI</strong> and <strong>RLHF</strong>. I am open to collaboration, feel free to reach me out!
-<!--              and aims to answer the central question: <strong>How can we maximally leverage existing knowledge and computational work, such as collected data, human priors, and learned policies, to accelerate training and drive towards a safe, reliable and generalizable autonomous agent?</strong> -->
-          </p>
-
-          <p>
-            Some links:
-            <a href="https://github.com/ryanxhr">Github</i></span></a> /
-            <a href="https://twitter.com/ryanxhr">Twitter</a> /
-            <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ"><span>Google Scholar</span></a> /
-            <a href="mailto:haoran.xu@utexas.edu">haoran.xu@utexas.edu</a>
-          </p>
-
-          <!-- <strong>I am actively looking for postdoc and full research positions. Weclome to drop me an email if interested.</strong> -->
-
-        </div>
-      </article>
-    </div>
-
-    <div class="wrapper">
-      <!-- <article class="post"> -->
-        <header class="post-header">
-          <h1 class="post-title">News </h1>
-        </header>
-        <article class="post">
-          <ul>
-            <li>I will start my summer internship at <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-new-york/">MSR (New York)</a>, working with Alex Lamb and John Langford. </li>
-            <li>🇦🇹 I am attending ICLR 2024 in-person at Vienna. </li>
-            <li>One paper on offline RL is accepted to <strong>ICLR 2024</strong> as spotlight. </li>
-            <li>🇺🇸 I am attending NeurIPS 2023 in-person at New Orleans. </li>
-            <li>One paper on offline multi-agent RL is accepted to <strong>NeurIPS 2023</strong>. </li>
-            <li>🎓 Starting my PhD at UT Austin. </li>
-            <li>🇷🇼 I am attending ICLR 2023 in-person at Kigali. </li>
-            <li>🌟 Three papers I like very much on offline RL and reward learning are accepted to <strong>ICLR 2023</strong>, including one oral. </li>
-            <li>Honored to be selected as <a href="https://neurips.cc/Conferences/2022/ProgramCommittee">Top Reviewers in NeurIPS 2022</a>. </li>
-            <li>One paper on offline RL is accepted to <strong>NeurIPS 2022</strong>. </li>
-            <li>One paper on offline IL is accepted to <strong>ICML 2022</strong>. </li>
-          </ul>
-        </article>
-    </div>
-
-    <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-          <h1 class="post-title" id="Publications">Publications <span style="font-size:small;letter-spacing:0.00px;">(* marks equal contribution)</a></span> </h1>
-          <!-- <span class="footnote">* marks equal contribution</span> -->
-        </header> 
-      </article>
-    <!-- Tab links -->
-    <div class="tab">
-      <button class="tablinks" onclick="openCity(event, 'Selected')" id="defaultOpen">🌟 Selected</button>
-      <button class="tablinks" onclick="openCity(event, 'All')">📚 All</button>
-<!--      <button class="tablinks" onclick="openCity(event, 'Unsupervised')">🎂 Unsupervised Learning</button>-->
-<!--      <button class="tablinks" onclick="openCity(event, 'Adversarial')">🔨 Robust Learning</button>-->
-<!--      <button class="tablinks" onclick="openCity(event, 'Graph')">🌐 Graph Learning</button>-->
-    </div>
-
-    <!-- Tab content -->
-    <div id="Selected" class="tabcontent">
-      <!-- <h3>Selected</h3> -->
-      <ul class="publications">
-
-          <li class="article">
-          <span class="title">
-            ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update
-          </span>
-              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2024</span>
-              <span class="oral">(Spotlight, Top 5%)</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2402.00348">Paper</a> |
-            <a href="https://github.com/maoliyuan/ODICE-Pytorch">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1786486793606496766">Thread</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="oral">(Oral, Top 5%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2303.15810">Paper</a> |
-            <a href="https://github.com/ryanxhr/IVR">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1Apo0L0sNMi9gNjRx3nizRzwbJ5sD9oEW7XOeZP_k_d0/edit?usp=sharing">Slide</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            A Policy-Guided Imitation Approach for Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Li Jiang*, Jianxiong Li, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2022</span>
-              <span class="oral">(Oral, Top 2%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2210.08323">Paper</a> |
-            <a href="https://github.com/ryanxhr/POR">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1584855088480538626?s=20">Thread</a> |
-            <a href="https://mp.weixin.qq.com/s/a6u2Wwfus6PtBziKfMB1zg">Media </a>
-          </span>
-          </li>
-        
-        <li class="article">
-          <span class="title">
-          Discriminator-Weighted Offline Imitation Learning from Suboptimal Demonstrations
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Honglei Yin, Huiling Qin</span>
-              <span class="journal-info">ICML 2022  </span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2207.10050">Paper</a> |
-            <a href="https://github.com/ryanxhr/DWBC">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1550059932212375552?s=20">Thread</a>
-          </span>
-        </li>
-
-        <li class="article">
-          <span class="title">
-          Constraints Penalized Q-Learning for Safe Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Xiangyu Zhu</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2107.09003">Paper</a> |
-            <a href="https://github.com/liuzuxin/OSRL">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1i9mgy_YZabzwk7zHzJ9FL72HBW2cZkSiGdGBIO5roAU/edit?usp=sharing">Slides</a>
-          </span>
-        </li>
-
-      <li class="article">
-        <span class="title">
-        DeepThermal: Combustion Optimization for Thermal Power Generating Units Using Offline Reinforcement Learning
-        </span>
-            <span class="authors">Xianyuan Zhan*, <strong>Haoran Xu*</strong>, Yue Zhang, Yusen Huo, Xiangyu Zhu, Honglei Yin, Yu Zheng</span>
-            <span class="journal-info">AAAI 2022</span>
-            <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-            <span class="year">2022</span>
-            <span class="links">
-          <a href="https://arxiv.org/abs/2102.11492">Paper</a> |
-          <a href="https://github.com/ryanxhr/DeepThermal">Code</a>
-        </span>
-      </li>
-    </ul>
-
-    </div>
-
-
-    <div id="All" class="tabcontent">
-      <ul class="publications">
-          <li class="article">
-          <span class="title">
-            PROTO: Iterative Policy Regularized Offline-to-Online Reinforcement Learning
-          </span>
-              <span class="authors">Jianxiong Li, Xiao Hu, <strong>Haoran Xu</strong>, Jingjing Liu, Xianyuan Zhan, Ya-Qin Zhang </span>
-              <span class="journal-info">Preprint</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2305.15669">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/PROTO">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update
-          </span>
-              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2024</span>
-              <span class="oral">(Spotlight, Top 5%)</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://ryanxhr.github.io">Paper</a> |
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline Multi-Agent Reinforcement Learning with Implicit Global-to-Local Value Regularization
-          </span>
-              <span class="authors">Xiangsen Wang, <strong>Haoran Xu</strong>, Yinan Zheng, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2307.11620">Paper</a> |
-            <a href="https://github.com/ZhengYinan-AIR/OMIGA">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            SaFormer: A Conditional Sequence Modeling Approach to Offline Safe Reinforcement Learning
-          </span>
-          <span class="authors">Qin Zhang*, Linrui Zhang*, <strong>Haoran Xu</strong>, Li Shen, Bowen Wang, Xueqian Wang, Bo Yuan, Yongzhe Chang, Dacheng Tao </span>
-          <span class="journal-info">ICLR 2023 SR4AD Workshop</span>
-          <span class="year">2023</span>
-          <span class="links">
-            <a href="https://arxiv.org/abs/2301.12203">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="oral">(Notable Top 5%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2303.15810">Paper</a> |
-            <a href="https://github.com/ryanxhr/IVR">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Mind the Gap: Offline Policy Optimizaiton for Imperfect Rewards
-          </span>
-              <span class="authors">Jianxiong Li, Xiao Hu, <strong>Haoran Xu</strong>, Jingjing Liu, Xianyuan Zhan, Qing-Shan Jia, Ya-Qin Zhang </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2302.01667">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/RGM">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            When data geometry meets deep function: Generalizing offline reinforcement learning
-          </span>
-              <span class="authors">Jianxiong Li, Xianyuan Zhan, <strong>Haoran Xu</strong>, Xiangyu Zhu, Jingjing Liu, Ya-Qin Zhang </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2205.11027">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/DOGE">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            A Policy-Guided Imitation Approach for Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Li Jiang*, Jianxiong Li, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2022</span>
-              <span class="oral">(Oral, Top 2%)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2210.08323">Paper</a> |
-            <a href="https://github.com/ryanxhr/POR">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1swZTLDSvZLGCrXs46tzSHLWZC6VfO9qYChegjjadCpc/edit?usp=sharing">Slides</a> |
-            <a href="https://mp.weixin.qq.com/s/a6u2Wwfus6PtBziKfMB1zg">Media </a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Discriminator-Weighted Offline Imitation Learning from Suboptimal Demonstrations
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Honglei Yin, Huiling Qin</span>
-              <span class="journal-info">ICML 2022  </span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2207.10050">Paper</a> |
-            <a href="https://github.com/ryanxhr/DWBC">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1WS8farSLxi1MDrG5C5FUfF9iarMgwZ1MAbfAuOeUyQw/edit?usp=sharing">Slides</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Constraints Penalized Q-Learning for Safe Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Xiangyu Zhu</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2107.09003">Paper</a> |
-            <a href="https://github.com/ryanxhr/CPQ">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1i9mgy_YZabzwk7zHzJ9FL72HBW2cZkSiGdGBIO5roAU/edit?usp=sharing">Slides</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          DeepThermal: Combustion Optimization for Thermal Power Generating Units Using Offline Reinforcement Learning
-          </span>
-              <span class="authors">Xianyuan Zhan*, <strong>Haoran Xu*</strong>, Yue Zhang, Yusen Huo, Xiangyu Zhu, Honglei Yin, Yu Zheng</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-          <a href="https://arxiv.org/abs/2102.11492">Paper</a> |
-          <a href="https://github.com/ryanxhr/DeepThermal">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Discriminator-Guided Model-Based Offline Imitation Learning
-          </span>
-              <span class="authors">Wenjia Zhang, <strong>Haoran Xu</strong>, Haoyi Niu, Peng Cheng, Ming Li, Heming Zhang, Guyue Zhou, Xianyuan Zhan</span>
-              <span class="journal-info">CoRL 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2207.00244">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Model-Based Offline Planning with Trajectory Pruning
-          </span>
-              <span class="authors">Xianyuan Zhan, Xiangyu Zhu, <strong>Haoran Xu</strong></span>
-              <span class="journal-info">IJCAI 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2105.07351">Paper</a> |
-            <a href="https://github.com/zhanzxy5/MOPP">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          ECoalVis: Visual Analysis of Control Strategies in Coal-fired Power Plants
-          </span>
-              <span class="authors">Shuhan Liu, Di Weng, Yuan Tian, Zikun Deng, <strong>Haoran Xu</strong>, Xiangyu Zhu, Honglei Yin, Xianyuan Zhan, Yingcai Wu</span>
-              <span class="journal-info">IEEE VIS 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://ieeexplore.ieee.org/abstract/document/9908527">Paper</a> |
-            <a href="https://github.com/ECoalVis/ECoalVis">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Multi-Memory enhanced Separation Network for Indoor Temperature Prediction
-          </span>
-              <span class="authors">Zhewen Duan, Xiuwen Yi, Peng Li, Dekang Qi, Yexin Li, <strong>Haoran Xu</strong>, Yanyong Huang, Junbo Zhang, Yu Zheng</span>
-              <span class="journal-info">DASFAA 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://link.springer.com/chapter/10.1007/978-3-031-00126-0_49?noAccess=true">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Offline Reinforcement Learning with Soft Behavioral Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Jianxiong Li, Honglei Yin</span>
-              <span class="journal-info">NeurIPS 2021 Offline RL Workshop</span>
-              <span class="year">2021</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2110.07395">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/SBAC">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Robust Spatio-Temporal Purchase Prediction via Deep Meta Learning
-          </span>
-              <span class="authors">Huiling Qin, Songyu Ke, Xiaodu Yang, <strong>Haoran Xu</strong>, Xianyuan Zhan, Yu Zheng</span>
-              <span class="journal-info">AAAI 2021</span>
-              <span class="year">2021</span>
-              <span class="links">
-            <a href="https://ojs.aaai.org/index.php/AAAI/article/view/16556">Paper</a>
-          </span>
-          </li>
-
-      </ul>
-    </div>
-
-  </div>
-
-      <!--    <div class="wrapper">-->
-<!--      <article class="post">-->
-<!--        <header class="post-header">-->
-<!--        <h1 class="post-title">Awards</h1>-->
-<!--        </header>-->
-<!--        <div class="post-content">-->
-<!--          <strong><a href="https://2021.ecmlpkdd.org/index.html@p=2148.html">Best ML Paper Award</a></strong> (1/685), ECML-PKDD, 2021 <br>-->
-<!--          &lt;!&ndash; <a href="https://advml-workshop.github.io/icml2021/" style="color:#000000;"> &ndash;&gt;-->
-<!--            <strong><a href="https://advml-workshop.github.io/icml2021/">Silver Best Paper Award</a></strong>, ICML AML workshop, 2021<br>-->
-<!--          <strong>National Scholarship</strong>, Ministry of Education of China, 2021, 2022 <br>-->
-<!--          <strong>Principal Scholarship</strong>, Peking University, 2022 <br>-->
-<!--          <strong>Baidu Scholarship Nomination Award</strong> (20 worldwide), Baidu Inc, 2022 <br>-->
-<!--      </div>-->
-<!--    </div>-->
-
-    <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-        <h1 class="post-title">Professional Services</h1>
-        </header>
-        <div class="post-content">
-        Reviewer for ICLR, ICML, NeurIPS
-        </div>
-      </article>
-    </div>
-
-<!--  <div class="wrapper">-->
-<!--    <article class="post">-->
-<!--      <header class="post-header">-->
-<!--      <h1 class="post-title">Teaching</h1>-->
-<!--      </header>-->
-<!--      <div class="post-content">-->
-<!--      2022 Spring, TA in <strong>Advances in Machine Learning</strong>, instructed by Prof. Yisen Wang. <br>-->
-<!--      2021 Spring, TA in <strong>Trustworthy Machine Learning</strong>, instructed by Prof. Yisen Wang. <br>-->
-<!--      2018 Spring, TA in <strong>Optimization in Machine Learning</strong>, instructed by Prof. Zhouchen Lin. <br>-->
-<!--      2017 Fall, TA in <strong>Machine Learning</strong>, instructed by Prof. Tong Lin. <br>-->
-<!--      </div>-->
-<!--    </article>-->
-<!--  </div>-->
-
-<!--    <div class="wrapper">-->
-<!--      <article class="post">-->
-<!--        <header class="post-header">-->
-<!--        <h1 class="post-title">Students Advised</h1>-->
-<!--        </header>-->
-<!--        <div class="post-content">-->
-<!--            I have been lucky to co-advise a number of talented undergraduate and master’s students at Stanford, who have written some very insightful papers:-->
-
-<!--            I have also mentored (and often proposed research directions) for a number of fantastic PhD students who have taught me a lot:-->
-
-<!--        </div>-->
-<!--      </article>-->
-<!--    </div>-->
-
-<!--      <div class="wrapper">-->
-<!--          <article class="post">-->
-<!--              <header class="post-header">-->
-<!--                  <h1 class="post-title">Collaborators and Advisors</h1>-->
-<!--              </header>-->
-<!--              <div class="post-content">-->
-<!--                  I spent a wonderful summer working with Suriya Gunasekar and Sebastien Bubeck in the Microsoft Research Foundations Group. During my PhD I’ve also been lucky to collaborate with Aditi Raghunathan, Sang Michael Xie, Chelsea Finn, and Zico Kolter, and learn a lot from John Duchi. Before my PhD, I spent a fun year working at DeepMind, and before that did undergraduate research work with Avrim Blum, Guy Blelloch, and Bob Harper.-->
-<!--              </div>-->
-<!--          </article>-->
-<!--      </div>-->
-
-
-
-
-
-      <!--<script-->
-<!--        type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=300&t=tt&d=LISh56gffeAxOYBOk45sr6LRD7c60rWH1uPJOca6hLs&co=2d78ad&ct=ffffff&cmo=3acc3a&cmn=ff5353'>-->
-<!--</script>-->
-
-
-<script>
-  // Check if API exists
-  if (document && document.fonts) {    
-    // Do not block page loading
-    setTimeout(function () {           
-      document.fonts.load('16px "Mukta"').then(() => {
-        // Make font using elements visible
-        document.documentElement.classList.add('font-loaded') 
-      })
-    }, 0)
-  } else {
-    // Fallback if API does not exist 
-    document.documentElement.classList.add('font-loaded') 
-  }
-</script>
-
-<script>
-  function openCity(evt, cityName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
-  }
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
-  </script>
-
-  </footer>
+<div class="header" id="top">
+	<div style="padding-bottom: 32px; text-align: center;">
+		<a href="https://nicklashansen.github.io"><i class="fa fa-home"></i>&ensp;More research</a>
+	</div>
+	<h1><span class="bold">TD-MPC<span class="bold red">2</span>:</span><br/>Scalable, Robust World Models for Continuous Control</h1>
+	<h3><a href="https://openreview.net/forum?id=Oxh5CstDJU" class="bold default-color">ICLR 2024 <span class="spotlight">Spotlight</span></span><br/></h3>
+	<table class="authors">
+		<tbody>
+			<tr>
+				<td>
+					<h4>
+						<a href="https://nicklashansen.github.io" class="nobreak">Nicklas Hansen</a>,&ensp;
+						<a href="https://cseweb.ucsd.edu/~haosu" class="nobreak">Hao Su</a>&ast;,&ensp;
+						<a href="https://xiaolonw.github.io" class="nobreak">Xiaolong Wang</a>&ast;<br/>
+						<span class="authors-affiliation">UC San Diego</span><br/>
+						<span class="authors-affiliation" style="font-size: 0.85em;">&ast;Equal advising</span>
+					</h4>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div class="links">
+		<a href="https://arxiv.org/abs/2310.16828" class="btn"><i class="fa">&#xf1c1;</i>&ensp;Paper</a><a href="https://openreview.net/forum?id=Oxh5CstDJU" class="btn"><i class="fa fa-link"></i>&ensp;OpenReview</a><a href="https://github.com/nicklashansen/tdmpc2" class="btn"><i class="fa fa-github"></i>&ensp;Code</a><a href="https://www.tdmpc2.com/models" class="btn"><i class="fa fa-cogs"></i>&ensp;Models</a><a href="https://www.tdmpc2.com/dataset" class="btn"><i class="fa fa-database"></i>&ensp;Dataset</a>
+	</div>
+</div>
+<div class="content">
+	<div class="hr"></div>
+	<div class="figure" style="height: 320px; background-image: url(images/0.png);"></div>
+	<div style="margin: auto; margin-top: -24px;">
+		<p>
+			<span class="bold red">Overview.</span> TD-MPC<span class="bold">2</span> compares favorably to existing model-free and model-based methods across <span class="bold">104</span> continuous control tasks spanning multiple domains, with a <span class="italic">single</span> set of hyperparameters (<span class="italic">right</span>). We further demonstrate the scalability of TD-MPC<span class="bold">2</span> by training a single 317M parameter agent to perform <span class="bold">80</span> tasks across multiple domains, embodiments, and action spaces (<span class="italic">left</span>).
+		</p>
+	</div>
+	<div class="hr"></div>
+	<div>
+		<h2>Abstract</h2>
+		<p class="abstract">
+			<a href="https://nicklashansen.github.io/td-mpc">TD-MPC</a> is a model-based reinforcement learning (MBRL) algorithm that performs local trajectory optimization in the latent space of a learned implicit (decoder-free) world model. In this work, we present TD-MPC<span class="bold">2</span>: a series of improvements upon the TD-MPC algorithm. We demonstrate that TD-MPC<span class="bold">2</span> improves significantly over baselines across <span class="bold">104</span> online RL tasks spanning 4 diverse task domains, achieving consistently strong results without any hyperparameter tuning. We further show that agent capabilities increase with model and data size, and successfully train a single agent to perform <span class="bold">80</span> tasks across multiple task domains, embodiments, and action spaces. We conclude with an account of lessons, opportunities, and risks associated with large TD-MPC<span class="bold">2</span> agents.
+		</p>
+	</div>
+	<div class="hr"></div>
+	<div>
+		<h2>TD-MPC2 Learns Diverse Tasks</h2>
+		<div class="figure-caption">
+			<p>
+				We evaluate TD-MPC<span class="bold">2</span> on <span class="bold">104</span> control tasks across 4 task domains: <a href="https://arxiv.org/abs/1801.00690">DMControl</a>, <a href="https://meta-world.github.io">Meta-World</a>, <a href="https://maniskill2.github.io">ManiSkill2</a>, and <a href="https://sites.google.com/view/myosuite">MyoSuite</a>.
+			</p>
+		</div>
+		<div class="content-video" style="margin-bottom: 32px">
+			<div class="content-video-container">
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-assembly.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-dog-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-turn-faucet-1.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cheetah-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-1.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-dog-trot.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-humanoid-spin.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-coffee-pull.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-obj-hold.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-5.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-walker-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-place-wall.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-stick-pull.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cartpole-swingup.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pendulum-swingup.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-6.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-0.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-walker-run-backwards.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-sweep-into.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cup-spin.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-reacher-three-hard.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-peg-unplug-side.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-humanoid-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-key-turn.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-dog-walk.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-fish-swim.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-quadruped-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-walker-run.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-lever-pull.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-hopper-hop.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-stack-cube.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-finger-turn-hard.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pen-twirl.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pendulum-spin.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cup-catch.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-door-open.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-cube.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cheetah-run-front.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-2.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-acrobot-swingup.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-finger-spin.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-turn-faucet-0.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-stick-push.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-bin-picking.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-push-wall.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-plate-slide-back-side.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-hopper-hop-backwards.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cheetah-jump.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-out-of-hole.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-humanoid-stand.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-turn-faucet-2.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-reacher-hard.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-3.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-pick-ycb-4.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-cheetah-run-backwards.mp4" type="video/mp4"/>
+				</video>
+				<video playsinline="" autoplay="" loop="" preload="" muted="" width="12%">
+					<source src="videos/tdmpc2-plate-slide-back-side.mp4" type="video/mp4"/>
+				</video>
+			</div>
+		</div>
+	</div>
+	<div class="hr"></div>
+	<div>
+		<h2>Benchmarking</h2>
+		<div class="figure-caption">
+			TD-MPC<span class="bold">2</span> compares favorably to existing model-free (<a href="https://arxiv.org/abs/1812.05905">SAC</a>) and model-based (<a href="https://arxiv.org/abs/2301.04104">DreamerV3</a> and <a href="https://arxiv.org/abs/2203.04955">TD-MPC</a>) online RL methods on a diverse set of 104 continuous control tasks. By design, TD-MPC2 achieves consistently strong results without <span class="italic">any</span> hyperparameter tuning, which has been instrumental for scaling to large massively multi-task world models.
+		</div>
+		<div class="figure" style="height: 208px; background-image: url(images/1.png);"></div>
+	</div>
+	<div class="hr"></div>
+	<div>
+		<h2>Massively Multitask World Models</h2>
+		<div class="figure-caption">
+			We evaluate the performance of 5 multitask models ranging from 1M to 317M parameters on a collection of 80 diverse tasks that span multiple task domains and vary greatly in objective, embodiment, and action space. The task set consists of all 50 Meta-World tasks, as well as 30 DMControl tasks. We also report scaling results on the DMControl subset. We observe that agent capabilities consistently increase with model size on both task sets.
+		</div>
+		<div class="figure" style="height: 288px; background-image: url(images/2.png);"></div>
+	</div>
+	<div class="hr"></div>
+	<div>
+		<h2>Supporting Open-Source Science</h2>
+		<div class="figure-caption">
+			<p>
+				We open-source a total of <span class="bold">324</span> TD-MPC<span class="bold">2</span> model checkpoints, including <span class="bold">12</span> multi-task models (ranging from 1M to 317M parameters) trained on 80, 70, and 30 tasks, respectively.
+			</p>
+			<div class="links" style="margin-bottom: 28px;">
+				<a href="https://www.tdmpc2.com/models" class="btn"><i class="fa fa-cogs"></i>&ensp;Models</a><a href="https://www.tdmpc2.com/dataset" class="btn"><i class="fa fa-database"></i>&ensp;Dataset</a>
+			</div>
+			<p>
+				Additionally, we also release the two 545M and 345M transition datasets that we used to train our multi-task models. The datasets are sourced from the replay buffers of 240 single-task agents and thus contain a wide range of behaviors.<br/><br/>
+			</p>
+			<table class="models">
+				<tbody>
+					<tr>
+						<th>Domains</th>
+						<th>Tasks</th>
+						<th>Embodiments</th>
+						<th>Episodes</th>
+						<th>Transitions</th>
+						<th>Size</th>
+						<th>Link</th>
+					</tr>
+					<tr class="models">
+						<td>
+							<video playsinline="" autoplay="" loop="" preload="" muted="" height="40px">
+								<source src="videos/tdmpc2-walker-run.mp4" type="video/mp4"/>
+							</video>
+							<video playsinline="" autoplay="" loop="" preload="" muted="" height="40px">
+								<source src="videos/tdmpc2-assembly.mp4" type="video/mp4"/>
+							</video>
+							<br/>
+							DMControl + Meta-World
+						</td>
+						<td>
+							80
+						</td>
+						<td>
+							12
+						</td>
+						<td>
+							2.69M
+						</td>
+						<td>
+							545M
+						</td>
+						<td>
+							34GB
+						</td>
+						<td>
+							<a href="https://www.tdmpc2.com/dataset">Download</a>
+						</td>
+					</tr>
+					<tr class="models">
+						<td>
+							<video playsinline="" autoplay="" loop="" preload="" muted="" height="40px">
+								<source src="videos/tdmpc2-walker-run.mp4" type="video/mp4"/>
+							</video>
+							<br/>
+							DMControl
+						</td>
+						<td>
+							30
+						</td>
+						<td>
+							11
+						</td>
+						<td>
+							690k
+						</td>
+						<td>
+							345M
+						</td>
+						<td>
+							20GB
+						</td>
+						<td>
+							<a href="https://www.tdmpc2.com/dataset">Download</a>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<p>
+				We are excited to see what the community will do with these models and datasets, and hope that our release will encourage other research labs to open-source their checkpoints as well.
+			</p>
+		</div>
+	</div>
+	<div class="hr"></div>
+	<div style="margin: auto; margin-bottom: 64px; text-align: center;">
+		<h2>Paper</h2>
+		<span class="bold">TD-MPC<span class="vbold red">2</span>: Scalable, Robust World Models for Continuous Control</span><br/>
+		<span class="italic">Nicklas Hansen, Hao Su, Xiaolong Wang</span><br/><br/>
+		<a href="https://arxiv.org/abs/2310.16828">arXiv preprint</a><br/><br/>
+		<div class="page" style="background-image: url(thumbnails/0.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/1.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/2.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/3.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/4.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/5.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/6.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/7.png);"></div>
+		<div class="page" style="background-image: url(thumbnails/8.png);"></div>
+		<div style="margin: auto; margin-top: 32px;">
+			<a href="https://arxiv.org/abs/2310.16828">View on arXiv</a>
+		</div>
+	</div>
+	<div class="hr"></div>
+	<div style="padding-bottom: 64px; text-align: center;">
+		<h2>Citation</h2>
+		<p>
+			If you find our work useful, please consider citing the paper as follows:
+		</p>
+		<div id="bibtex-text" class="bibtexsection" onClick="window.getSelection().selectAllChildren(document.getElementById('bibtex-text'));">
+@misc{hansen2024tdmpc2,
+	title={TD-MPC2: Scalable, Robust World Models for Continuous Control},
+	author={Nicklas Hansen and Hao Su and Xiaolong Wang},
+	booktitle={International Conference on Learning Representations (ICLR)},
+	year={2024}
+}</div>
+	</div>
+</div>
+<footer>
+<a href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>
+<div style="padding-top: 48px;">
+	<span>Website based on <a href="https://nicklashansen.github.io/td-mpc">TD-MPC</a> and <a href="https://nerfies.github.io">Nerfies</a>.</span>
+</div>
+</footer>
