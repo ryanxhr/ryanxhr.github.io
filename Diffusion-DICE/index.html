@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="description"
-        content="A Generalizable Policy Network Generator with Behavior-Prompted Diffusion">
-  <meta name="keywords" content="Make-An-Agent, diffusion, policy network">
+        content="In-Sample Diffusion Guidance for Offline Reinforcement Learning">
+  <meta name="keywords" content="diffusion, offline RL">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion</title>
+  <title>Diffusion-DICE:  In-Sample Diffusion Guidance for Offline Reinforcement Learning</title>
 
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
@@ -55,26 +55,27 @@
   <div class="navbar-menu">
     <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
       <a class="navbar-item" href="https://cheryyunl.github.io/">
-      <span class="icon">
-          <i class="fas fa-home"></i>
-      </span>
+          More Research
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
       </a>
 
-      <div class="navbar-item has-dropdown is-hoverable">
-        <a class="navbar-link">
-          More Research
-        </a>
-        <div class="navbar-dropdown">
-          <a class="navbar-item" href="https://ace-rl.github.io/">
-            ACE (ICML 2024 Oral)
-          </a>
-          <a class="navbar-item" href="https://drm-rl.github.io/">
-            DrM (ICLR 2024 Spotlight)
-          </a>
-          <a class="navbar-item" href="https://premiertaco.github.io/">
-            Premier-TACO (ICML 2024)
-          </a>
-        </div>
+<!--      <div class="navbar-item has-dropdown is-hoverable">-->
+<!--        <a class="navbar-link">-->
+<!--          More Research-->
+<!--        </a>-->
+<!--        <div class="navbar-dropdown">-->
+<!--          <a class="navbar-item" href="https://ace-rl.github.io/">-->
+<!--            ACE (ICML 2024 Oral)-->
+<!--          </a>-->
+<!--          <a class="navbar-item" href="https://drm-rl.github.io/">-->
+<!--            DrM (ICLR 2024 Spotlight)-->
+<!--          </a>-->
+<!--          <a class="navbar-item" href="https://premiertaco.github.io/">-->
+<!--            Premier-TACO (ICML 2024)-->
+<!--          </a>-->
+<!--        </div>-->
       </div>
     </div>
 
@@ -87,38 +88,35 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column has-text-centered">
-          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Make-An-Agent</h1>
-          <h2 class="title is-2 publication-title">A Generalizable Policy Network Generator with Behavior-Prompted Diffusion</h2>
+          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>
+          <h2 class="title is-2 publication-title">In-Sample Diffusion Guidance for Offline Reinforcement Learning</h2>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
-              <a href="https://cheryyunl.github.io/">Yongyuan Liang</a><sup>1</sup>,</span>
+              <a href="https://cheryyunl.github.io/">Liyuan Mao*</a><sup>2</sup>,</span>
             <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=HGTHVUgAAAAJ&hl">Tingqiang Xu</a><sup>2</sup>,</span>
+              <a href="https://scholar.google.com/citations?user=HGTHVUgAAAAJ&hl">Haoran Xu*</a><sup>1</sup>,</span>
             <span class="author-block">
-              <a href="https://hukz18.github.io/">Kaizhe Hu</a><sup>2</sup>,
+              <a href="https://hukz18.github.io/">Weinan Zhang</a><sup>2</sup>,
             </span>
             <span class="author-block">
-              <a href="https://luccachiang.github.io/">Guangqi Jiang</a><sup>3</sup>,
+              <a href="https://luccachiang.github.io/">Xianyuan Zhan</a><sup>3</sup>,
             </span>
             <span class="author-block">
-              <a href="https://furong-huang.com/">Furong Huang</a><sup>1</sup>,
-            </span>
-            <span class="author-block">
-              <a href="http://hxu.rocks/">Huazhe Xu</a><sup>2</sup>
+              <a href="https://furong-huang.com/">Amy Zhang</a><sup>1</sup>,
             </span>
           </div>
 
           <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>University of Maryland, College Park</span>
-            <span class="author-block"><sup>2</sup>Tsinghua University, IIIS</span>
-            <span class="author-block"><sup>3</sup>UC San Diego</span>
+            <span class="author-block"><sup>1</sup>UT Austin</span>
+            <span class="author-block"><sup>2</sup>Shanghai Jiao Tong University</span>
+            <span class="author-block"><sup>3</sup>Tsinghua University</span>
           </div>
 
           <div class="column has-text-centered">
             <div class="publication-links">
               <!-- PDF Link. -->
               <span class="link-block">
-                <a href="https://arxiv.org/pdf/2407.10973"
+                <a href="https://arxiv.org/pdf/"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf"></i>
@@ -128,7 +126,7 @@
               </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href="https://github.com/cheryyunl/Make-An-Agent"
+                <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fab fa-github"></i>
@@ -137,24 +135,24 @@
                   </a>
               </span>
               <!-- Dataset Link. -->
-              <span class="link-block">
-                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <img src="static/images/hf_icon.svg" />
-                  </span>
-                  <span>Models & Dataset</span>
-                  </a>
-                </span>
-              <span class="link-block">
-                <a href="https://x.com/cheryyun_l/status/1813226234979184687"
-                    class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-twitter"></i>
-                  </span>
-                  <span>Twitter</span>
-                  </a>
-                </span>
+<!--              <span class="link-block">-->
+<!--                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <img src="static/images/hf_icon.svg" />-->
+<!--                  </span>-->
+<!--                  <span>Models & Dataset</span>-->
+<!--                  </a>-->
+<!--                </span>-->
+<!--              <span class="link-block">-->
+<!--                <a href="https://x.com/cheryyun_l/status/1813226234979184687"-->
+<!--                    class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="fab fa-twitter"></i>-->
+<!--                  </span>-->
+<!--                  <span>Twitter</span>-->
+<!--                  </a>-->
+<!--                </span>-->
             </div>
 
           </div>
@@ -168,7 +166,7 @@
   <div class="container is-max-desktop">
     <div class="hero-body">
       <h2 class="subtitle has-text-centered">
-        <strong>Make-An-Agent</strong> synthesizes policy network parameters using agents' trajectories as prompts. <br>
+        <strong>DiffusionDICE</strong> A new diffusion-based offline RL algorithm that uses a guide-then-select paradigm to achieves state-of-the-art empirical results.. <br>
         <b style="color:#C73659">Train once, use everywhere.</b>
       </h2>
       <video id="teaser" autoplay muted loop playsinline height="85%">
@@ -314,17 +312,17 @@
   </div>
 </section>
   
-<section class="section" id="BibTeX">
-  <div class="container is-max-desktop content">
-    <h2 class="title">BibTeX</h2>
-    <pre><code>@article{liang2024make,
-      title={Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion},
-      author={Liang, Yongyuan and Xu, Tingqiang and Hu, Kaizhe and Jiang, Guangqi and Huang, Furong and Xu, Huazhe},
-      journal={arXiv preprint arXiv:2407.10973},
-      year={2024}
-      }</code></pre>
-  </div>
-</section>
+<!--<section class="section" id="BibTeX">-->
+<!--  <div class="container is-max-desktop content">-->
+<!--    <h2 class="title">BibTeX</h2>-->
+<!--    <pre><code>@article{liang2024make,-->
+<!--      title={Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion},-->
+<!--      author={Liang, Yongyuan and Xu, Tingqiang and Hu, Kaizhe and Jiang, Guangqi and Huang, Furong and Xu, Huazhe},-->
+<!--      journal={arXiv preprint arXiv:2407.10973},-->
+<!--      year={2024}-->
+<!--      }</code></pre>-->
+<!--  </div>-->
+<!--</section>-->
 
 <footer class="footer">
   <div class="container">
