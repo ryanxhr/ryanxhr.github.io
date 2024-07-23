@@ -42,6 +42,7 @@
   <script src="./static/js/bulma-slider.min.js"></script>
   <script src="./static/js/index.js"></script>
 </head>
+
 <body>
 
 <nav class="navbar" role="navigation" aria-label="main navigation">
@@ -231,54 +232,54 @@
 <!--    </div>-->
 <!--</section>-->
 
-<section class="section">
-  <div class="container is-max-desktop">
-    <hr style="margin-top: 1em;">
-    <div class="columns is-centered">
-      <div class="column is-full-width">
-        <br>
-        <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Effectiveness, Versatility, Generalizability</b></h3>
-          Test trajectories are from the same RL training buffer and evaluations are under environmental randomness (4 seeds).
-          <p>
-            <strong>Make-An-Agent</strong> can generate optimal policies for a wide variety of tasks with few-shot trajectories as conditional inputs.
-          </p>
-          <img src="static/images/seen.gif" />
-      </div>
-    </div>
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--    <hr style="margin-top: 1em;">-->
+<!--    <div class="columns is-centered">-->
+<!--      <div class="column is-full-width">-->
+<!--        <br>-->
+<!--        <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Effectiveness, Versatility, Generalizability</b></h3>-->
+<!--          Test trajectories are from the same RL training buffer and evaluations are under environmental randomness (4 seeds).-->
+<!--          <p>-->
+<!--            <strong>Make-An-Agent</strong> can generate optimal policies for a wide variety of tasks with few-shot trajectories as conditional inputs.-->
+<!--          </p>-->
+<!--          <img src="static/images/seen.gif" />-->
+<!--      </div>-->
+<!--    </div>-->
 
-          <p>
-            <strong>Make-An-Agent</strong> demonstrates strong generalizability, synthesizing well-performed policies for unfamiliar tasks and robots.
-          </p>
-          <div class="content has-text-justified">
-          <img src="static/images/unseen.gif" />
-          <img src="static/images/legend.png"  style="margin-top: -1em"/>
-          </div>
+<!--          <p>-->
+<!--            <strong>Make-An-Agent</strong> demonstrates strong generalizability, synthesizing well-performed policies for unfamiliar tasks and robots.-->
+<!--          </p>-->
+<!--          <div class="content has-text-justified">-->
+<!--          <img src="static/images/unseen.gif" />-->
+<!--          <img src="static/images/legend.png"  style="margin-top: -1em"/>-->
+<!--          </div>-->
 
-          <br>
-          <hr style="margin-top: 1em;">
-          <h4 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How </b></h4>
-          <div class="content has-text-justified">
-          (a) A contrastive behavior embedding to process trajectory data. (b) An autoencoder to encode and decode policy network parameters. 
-          (c) A policy network generator using a conditional latent diffusion model as the backbone.
-          </div>
-          <video id="method" autoplay muted loop playsinline height="60%">
-            <source src="./static/videos/method.mp4"
-                    type="video/mp4">
-          </video>
-          <hr style="margin-top: 1em;">
-          <h4 class="title is-4"><b style="color:rgba(74, 77, 163, 0.797)">Policy synthesis, not memorizing</b></h4>
-          <div class="content has-text-justified">
-          Trajectories as conditional inputs v.s. Trajectories deployed by synthesized policies from <strong>Make-An-Agent</strong>.<br>
-          <strong>Make-An-Agent</strong> generates diverse and more efficient policies.
-          </div>
-          <div class="content-video-container">
-            <img src="static/images/traj/door-lock.gif" width="23%">
-            <img src="static/images/traj/faucet-open.gif" width="23%">
-            <img src="static/images/traj/handle-press-side.gif" width="23%">
-            <img src="static/images/traj/window-close.gif" width="23%">
-          </div>
-  </div>
-</section>
+<!--          <br>-->
+<!--          <hr style="margin-top: 1em;">-->
+<!--          <h4 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How </b></h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--          (a) A contrastive behavior embedding to process trajectory data. (b) An autoencoder to encode and decode policy network parameters. -->
+<!--          (c) A policy network generator using a conditional latent diffusion model as the backbone.-->
+<!--          </div>-->
+<!--          <video id="method" autoplay muted loop playsinline height="60%">-->
+<!--            <source src="./static/videos/method.mp4"-->
+<!--                    type="video/mp4">-->
+<!--          </video>-->
+<!--          <hr style="margin-top: 1em;">-->
+<!--          <h4 class="title is-4"><b style="color:rgba(74, 77, 163, 0.797)">Policy synthesis, not memorizing</b></h4>-->
+<!--          <div class="content has-text-justified">-->
+<!--          Trajectories as conditional inputs v.s. Trajectories deployed by synthesized policies from <strong>Make-An-Agent</strong>.<br>-->
+<!--          <strong>Make-An-Agent</strong> generates diverse and more efficient policies.-->
+<!--          </div>-->
+<!--          <div class="content-video-container">-->
+<!--            <img src="static/images/traj/door-lock.gif" width="23%">-->
+<!--            <img src="static/images/traj/faucet-open.gif" width="23%">-->
+<!--            <img src="static/images/traj/handle-press-side.gif" width="23%">-->
+<!--            <img src="static/images/traj/window-close.gif" width="23%">-->
+<!--          </div>-->
+<!--  </div>-->
+<!--</section>-->
   
 <!--<section class="section" id="BibTeX">-->
 <!--  <div class="container is-max-desktop content">-->
