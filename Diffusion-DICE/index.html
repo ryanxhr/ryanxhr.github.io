@@ -92,7 +92,7 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
 <!--          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>-->
-          <h1 class="title is-3 publication-title"><b style="color:#C73659">Diffusion-DICE:</b> In-Sample Diffusion Guidance for Offline Reinforcement Learning</h1>
+          <h1 class="title is-3 publication-title"><b style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE:</b> In-Sample Diffusion Guidance for Offline Reinforcement Learning</h1>
           <div class="is-size-5 publication-authors">
             <span class="author-block">
               <a href="https://scholar.google.com/citations?user=Xa2pDisAAAAJ&hl=en">Liyuan Mao</a>&ast;<sup>2</sup>,</span>
@@ -171,64 +171,39 @@
   </div>
 </section>
 
-<!--<section class="hero teaser">-->
-<!--  <div class="container is-max-desktop">-->
-<!--    <div class="hero-body">-->
-<!--      <h2 class="subtitle has-text-centered">-->
-<!--        <strong>Diffusion-DICE</strong> rethinks diffusion-based offline RL algorithm by using a <b style="color:#C73659">guide-then-select</b> paradigm to bring minimal out-of-distribution value errors and achieves state-of-the-art empirical results. <br>-->
-<!--      </h2>-->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="subtitle has-text-centered">
+        <strong>Diffusion-DICE</strong> rethinks diffusion-based offline RL algorithm by using a <b style="color:#C73659">guide-then-select</b> paradigm to bring minimal out-of-distribution value errors and achieves state-of-the-art empirical results. <br>
+      </h2>
 <!--      <video id="teaser" autoplay muted loop playsinline height="85%">-->
 <!--        <source src="./static/videos/teaser.mp4"-->
 <!--                type="video/mp4">-->
 <!--      </video>-->
-<!--    </div>-->
-<!--  </div>-->
+    </div>
+  </div>
 
-<!--  <div class="row">-->
-<!--    <div class="col-md-12">-->
-<!--        <h2>Question</h2>-->
-<!--    </div>-->
-<!--    <div class="col-md-12">-->
-<!--        <br>-->
-<!--        <div class="col-md-8 col-md-offset-2">-->
-<!--            <p>-->
-<!--                <img src="img/question.png" style="width: 100%;">-->
-<!--            </p>-->
-<!--        </div>-->
-<!--    </div>-->
-<!--    <div class="col-md-12">-->
-<!--        <ul>-->
-<!--            <li>Imagine we have a bunch of unlabeled trajectories, such as human demonstrations, task-agnostic robotic datasets, or records from previously deployed agents.</li>-->
-<!--            <li><b>How should we pre-train a generalist policy ("foundation policy") from such an unlabeled dataset? Which <i>objective</i> should we use?</b></li>-->
-<!--            <li>-->
-<!--                Perhaps we can use behavioral cloning (BC) or offline goal-conditioned reinforcement learning (GCRL) to pre-train policies.-->
-<!--                However, BC requires expert demonstrations and GCRL can only learn goal-conditioned policies.-->
-<!--                Is there a better way than these two?-->
-<!--            </li>-->
-<!--        </ul>-->
-<!--    </div>-->
-<!--  </div>-->
-
-
-<!--  <div class="container is-max-desktop">-->
-<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
-<!--    <div class="columns is-centered has-text-centered">-->
-<!--      <div class="column is-four-fifths">-->
-<!--        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>-->
-<!--        <div class="content has-text-justified">-->
-<!--          <p>-->
-<!--          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.-->
-<!--          </p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--</section>-->
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>
+        <div class="content has-text-justified">
+          <p>
+          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.
+          </p>
+          <p>
+          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.
+          </p>
+          <p>
+          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!--<section class="section">-->
 <!--  <div class="container is-max-desktop">-->
@@ -294,11 +269,11 @@
 <footer class="footer">
   <div class="container">
     <div class="columns is-centered has-text-centered">
-      <div class="column is-8">
+      <div class="column is-4">
         <div class="content">
 <!--          <a style="color:hsla(247, 58%, 62%, 0.862)" href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>-->
           <p>
-            Website is modified from <a style="color:hsla(247, 58%, 62%, 0.862)" href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
+            Website is modified from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
           </p>
         </div>
       </div>
