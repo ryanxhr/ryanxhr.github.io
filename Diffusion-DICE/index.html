@@ -184,6 +184,33 @@
       </video>
     </div>
   </div>
+
+  <div class="row">
+    <div class="col-md-12">
+        <h2>Question</h2>
+    </div>
+    <div class="col-md-12">
+        <br>
+        <div class="col-md-8 col-md-offset-2">
+            <p>
+                <img src="img/question.png" style="width: 100%;">
+            </p>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <ul>
+            <li>Imagine we have a bunch of unlabeled trajectories, such as human demonstrations, task-agnostic robotic datasets, or records from previously deployed agents.</li>
+            <li><b>How should we pre-train a generalist policy ("foundation policy") from such an unlabeled dataset? Which <i>objective</i> should we use?</b></li>
+            <li>
+                Perhaps we can use behavioral cloning (BC) or offline goal-conditioned reinforcement learning (GCRL) to pre-train policies.
+                However, BC requires expert demonstrations and GCRL can only learn goal-conditioned policies.
+                Is there a better way than these two?
+            </li>
+        </ul>
+    </div>
+  </div>
+
+
   <div class="container is-max-desktop">
     <!-- Abstract. -->
     <div class="columns is-centered has-text-centered">
@@ -202,7 +229,6 @@
         </div>
       </div>
     </div>
-    <!--/ Abstract. -->
 </section>
 
 <section class="section">
@@ -295,7 +321,7 @@
           </div>
           <br>
           <hr style="margin-top: 1em;">
-          <h4 class="title is-4"><b style="color:rgba(74, 77, 163, 0.797)">Methodology</b></h4>
+          <h4 class="title is-4"><b style="color:rgba(74, 77, 163, 0.797)">How </b></h4>
           <div class="content has-text-justified">
           (a) A contrastive behavior embedding to process trajectory data. (b) An autoencoder to encode and decode policy network parameters. 
           (c) A policy network generator using a conditional latent diffusion model as the backbone. </div>
