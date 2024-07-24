@@ -207,21 +207,44 @@
 
 <section class="section">
   <div class="container is-max-desktop">
-    <hr style="margin-top: 1em;">
-
       <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How </b></h3>
-      <div class="content has-text-justified">
-      (a) A contrastive behavior embedding to process trajectory data. (b) An autoencoder to encode and decode policy network parameters.
-      (c) A policy network generator using a conditional latent diffusion model as the backbone.
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion in RL?</b></h3>
+      <div class="content-picture-">
+        <img src="static/images/motivation.png" width="50%">
+        <img src="static/images/guide-then-select.png" width="50%">
       </div>
-      <video id="method" autoplay muted loop playsinline height="60%">
-        <source src="./static/videos/method.mp4"
-                type="video/mp4">
-      </video>
+      <div class="content has-text-justified">
+          <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
+          <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>
+          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>. </li>
+      </div>
 
       <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Policy synthesis, not memorizing</b></h3>
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology</b></h3>
+      <div class="content has-text-justified">
+      We compare the
+      </div>
+      <div class="content-video-container">
+        <img src="static/images/traj/door-lock.gif" width="23%">
+        <img src="static/images/traj/faucet-open.gif" width="23%">
+        <img src="static/images/traj/handle-press-side.gif" width="23%">
+        <img src="static/images/traj/window-close.gif" width="23%">
+      </div>
+
+      <hr style="margin-top: 1em;">
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
+      <div class="content has-text-justified">
+      We compare the
+      </div>
+      <div class="content-video-container">
+        <img src="static/images/traj/door-lock.gif" width="23%">
+        <img src="static/images/traj/faucet-open.gif" width="23%">
+        <img src="static/images/traj/handle-press-side.gif" width="23%">
+        <img src="static/images/traj/window-close.gif" width="23%">
+      </div>
+
+      <hr style="margin-top: 1em;">
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
       <div class="content has-text-justified">
       Trajectories as conditional inputs v.s. Trajectories deployed by synthesized policies from <strong>Make-An-Agent</strong>.<br>
       <strong>Make-An-Agent</strong> generates diverse and more efficient policies.
