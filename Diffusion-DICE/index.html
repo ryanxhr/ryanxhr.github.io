@@ -184,30 +184,33 @@
     </div>
   </div>
 
-  <div class="container is-max-desktop">
-    <!-- Abstract. -->
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-four-fifths">
-        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>
-        <div class="content has-text-justified">
-          <p>
-          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.
-          </p>
-          <p>
-          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.
-          </p>
-          <p>
-          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
+<!--  <div class="container is-max-desktop">-->
+<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
+<!--    <div class="columns is-centered has-text-centered">-->
+<!--      <div class="column is-four-fifths">-->
+<!--        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>-->
+<!--        <div class="content has-text-justified">-->
+<!--          <p>-->
+<!--          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.-->
+<!--          </p>-->
+<!--          <p>-->
+<!--          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.-->
+<!--          </p>-->
+<!--          <p>-->
+<!--          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.-->
+<!--          </p>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
+<!--  </div>-->
+
 </section>
 
 <section class="section">
   <div class="container is-max-desktop">
       <hr style="margin-top: 1em;">
+      <div class="columns is-centered">
+      <div class="column is-full-width">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
       <div class="content-picture-">
         <img src="static/images/motivation.png" width="70%">
@@ -280,6 +283,8 @@
       </div>
       <div class="content has-text-justified">
       <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
+      </div>
+      </div>
       </div>
   </div>
 </section>
