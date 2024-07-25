@@ -208,52 +208,78 @@
 <section class="section">
   <div class="container is-max-desktop">
       <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion in RL?</b></h3>
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
       <div class="content-picture-">
-        <img src="static/images/motivation.png" width="50%">
-        <img src="static/images/guide-then-select.png" width="50%">
+        <img src="static/images/motivation.png" width="70%">
       </div>
       <div class="content has-text-justified">
           <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
           <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>
-          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>. </li>
+          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>, to effectively fit in the optimal mode in the dataset.  </li>
       </div>
 
       <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology</b></h3>
-      <div class="content has-text-justified">
-      We compare the
+      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>
+      <div class="content-picture-">
+        <img src="static/images/guide-then-select.png" width="70%">
       </div>
-      <div class="content-video-container">
-        <img src="static/images/traj/door-lock.gif" width="23%">
-        <img src="static/images/traj/faucet-open.gif" width="23%">
-        <img src="static/images/traj/handle-press-side.gif" width="23%">
-        <img src="static/images/traj/window-close.gif" width="23%">
+      <div class="content has-text-justified">
+          <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>
+      </div>
+
+      <div class="content-picture-">
+        <img src="static/images/dice.png" width="30%">
+      </div>
+      <div class="content has-text-justified">
+      <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>
+      </div>
+
+      <div class="content-picture-">
+        <img src="static/images/guide.png" width="30%">
+      </div>
+      <div class="content has-text-justified">
+      <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>
+      </div>
+
+      <div class="content-picture-">
+        <img src="static/images/IGL.png" width="30%">
+      </div>
+      <div class="content has-text-justified">
+      <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>
       </div>
 
       <hr style="margin-top: 1em;">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
+      <div class="content-picture-">
+        <img src="static/images/toycase.png" width="40%">
+      </div>
+
       <div class="content has-text-justified">
-      We compare the
+      <li>Toycase of a 2-D bandit problem. The action in the offline dataset follows a bivariate standard normal distribution constrained within an annular region. The ground truth reward has two peaks extending from the center outward.   </li>
+      <li>We use a diffusion model to fit the behavior policy and a reward model to fit the ground truth reward R. Both models fit in-distribution data well while making error in out-of-distribution regions.  </li>
+      </div>
+
+      <div class="content-video-container">
+        <img src="static/images/animated_idql_candidate_distribution_s_0.0_frame_24.gif" width="33%">
+        <img src="static/images/animated_cep_candidate_distribution_s_4.0_frame_24.gif" width="33%">
+        <img src="static/images/animated_diffusion-DICE_candidate_distribution_s_1.0_frame_24.gif" width="33%">
       </div>
       <div class="content-video-container">
-        <img src="static/images/traj/door-lock.gif" width="23%">
-        <img src="static/images/traj/faucet-open.gif" width="23%">
-        <img src="static/images/traj/handle-press-side.gif" width="23%">
-        <img src="static/images/traj/window-close.gif" width="23%">
+        <img src="static/images/animated_idql_sample_distribution_s_0.0_frame_24.gif" width="33%">
+        <img src="static/images/animated_cep_sample_distribution_s_1.0_frame_24.gif" width="33%">
+        <img src="static/images/animated_diffusion-DICE_sample_distribution_s_1.0_frame_24.gif" width="33%">
+      </div>
+      <div class="content has-text-justified">
+      <li>From left to right: IDQL (<strong>select-only</strong>), QGPO (<strong>guide-only</strong>) and Diffusion-DICE (<strong>guide-then-select</strong>). Comparing to other guide-only or select-only methods, only Diffusion-DICE could generate correct optimal actions in the outer circle. Other methods tend to expolit error information from the reward model and only generate overestimated, sub-optimal actions. </li>
       </div>
 
       <hr style="margin-top: 1em;">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
-      <div class="content has-text-justified">
-      Trajectories as conditional inputs v.s. Trajectories deployed by synthesized policies from <strong>Make-An-Agent</strong>.<br>
-      <strong>Make-An-Agent</strong> generates diverse and more efficient policies.
+      <div class="content-picture-">
+        <img src="static/images/d4rl.png" width="50%">
       </div>
-      <div class="content-video-container">
-        <img src="static/images/traj/door-lock.gif" width="23%">
-        <img src="static/images/traj/faucet-open.gif" width="23%">
-        <img src="static/images/traj/handle-press-side.gif" width="23%">
-        <img src="static/images/traj/window-close.gif" width="23%">
+      <div class="content has-text-justified">
+      <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
       </div>
   </div>
 </section>
