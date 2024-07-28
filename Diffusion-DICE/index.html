@@ -176,7 +176,7 @@
       display: block;
       margin-left: auto;
       margin-right: auto;
-      width: 20%;
+      width: 75%;
     }
 </style>
 
@@ -222,12 +222,8 @@
 <!--      <div class="column is-full-width">-->
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
       <div class="content has-text-justified">
-        <img src="static/images/diffusion.png" width="70%" class="center">
+        <img src="static/images/diffusion.png" class="center">
       </div>
-<!--      <figure>-->
-<!--        <img src="static/images/diffusion.png" width="70%" class="center">-->
-<!--&lt;!&ndash;      <figcaption>This is a caption for the figure.</figcaption>&ndash;&gt;-->
-<!--      </figure>-->
 
       <div class="content has-text-justified">
           <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
@@ -238,28 +234,28 @@
       <hr style="margin-top: 1em;">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>
       <div class="content has-text-justified">
-        <img src="static/images/guide-then-select.png" width="70%" >
+        <img src="static/images/guide-then-select.png" class="center">
       </div>
       <div class="content has-text-justified">
           <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>
       </div>
 
       <div class="content has-text-justified">
-        <img src="static/images/dice.png" width="60%">
+        <img src="static/images/dice.png" class="center">
       </div>
       <div class="content has-text-justified">
       <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>
       </div>
 
       <div class="content has-text-justified">
-        <img src="static/images/guide.png" width="60%">
+        <img src="static/images/guide.png" class="center">
       </div>
       <div class="content has-text-justified">
       <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>
       </div>
 
       <div class="content has-text-justified">
-        <img src="static/images/IGL.png" width="60%">
+        <img src="static/images/IGL.png" class="center">
       </div>
       <div class="content has-text-justified">
       <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>
@@ -268,7 +264,7 @@
       <hr style="margin-top: 1em;">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
       <div class="content-picture-">
-        <img src="static/images/toycase.png" width="60%">
+        <img src="static/images/toycase.png" class="center">
       </div>
 
       <div class="content has-text-justified">
@@ -293,7 +289,7 @@
       <hr style="margin-top: 1em;">
       <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
       <div class="content has-text-justified">
-        <img src="static/images/d4rl.png" width="80%">
+        <img src="static/images/d4rl.png" class="center">
       </div>
       <div class="content has-text-justified">
       <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
