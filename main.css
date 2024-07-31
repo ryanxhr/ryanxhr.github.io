@@ -492,8 +492,8 @@ pre>code {
   float: left;
   margin-top: 25px;
   margin-right: 25px;
-  margin-bottom: 0px;
-  max-width: 10%;
+  margin-bottom: 10px;
+  max-width: 15%;
   /* border: 6px solid #ddd; */
   border-radius: 10%;
   /* box-shadow: 5px 10px #888888; */
