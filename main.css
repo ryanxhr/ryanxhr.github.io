@@ -502,7 +502,7 @@ pre>code {
 
 @media screen and (max-width: 600px) {
   .profile-picture {
-    max-width: 40%;
+    max-width: 30%;
     display: block;
     float: none;
     /*max-width: 100%;*/
