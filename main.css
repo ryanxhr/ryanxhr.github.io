@@ -1,3 +1,4 @@
+
 /**
  * Reset some basic elements
  */
@@ -11,7 +12,7 @@ a:link { color: #4285F4; }
 /* a:link { color: black;   text-decoration: underline;} */
 
 .no-italics {
-  font-style: normal;   
+  font-style: normal;
 }
 
 @font-face { font-family: Mukta; src: url('assets/font/Mukta-Light.ttf'); }
@@ -839,7 +840,7 @@ ul.publications .oral {
   color: #099;
 }
 
-/* 
+/*
 /* Style all font awesome icons */
 .fa {
   padding: 3px;
