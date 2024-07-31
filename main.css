@@ -493,9 +493,9 @@ pre>code {
   margin-top: 25px;
   margin-right: 25px;
   margin-bottom: 0px;
-  max-width: 15%;
+  max-width: 10%;
   /* border: 6px solid #ddd; */
-  border-radius: 30%;
+  border-radius: 10%;
   /* box-shadow: 5px 10px #888888; */
   box-sizing: border-box;
 }
