@@ -489,7 +489,7 @@ pre>code {
 }
 
 .profile-picture {
-  float: right;
+  float: left;
   margin-top: 25px;
   margin-right: 25px;
   margin-bottom: 10px;
