@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="In-Sample Diffusion Guidance for Offline Reinforcement Learning">
+  <meta name="keywords" content="diffusion, offline RL">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Iterative-DualRL: An Optimal Discriminator Weighted Imitation Perspective for Reinforcement Learning</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="../assets/favicon_package/favicon.ico">
+<!--  <link rel="stylesheet" href="main.css">-->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+
+
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://ryanxhr.github.io/">
+          <span class="icon">
+            <i class="fas fa-home"></i>
+          </span>
+          &ensp; More Research
+      </a>
+
+<!--    <div style="padding-bottom: 32px; text-align: center;">-->
+<!--		<a href="https://nicklashansen.github.io"><i class="fa fa-home"></i>&ensp;More research</a>-->
+<!--	</div>-->
+
+<!--      <div class="navbar-item has-dropdown is-hoverable">-->
+<!--        <a class="navbar-link">-->
+<!--          More Research-->
+<!--        </a>-->
+<!--        <div class="navbar-dropdown">-->
+<!--          <a class="navbar-item" href="https://ace-rl.github.io/">-->
+<!--            ACE (ICML 2024 Oral)-->
+<!--          </a>-->
+<!--          <a class="navbar-item" href="https://drm-rl.github.io/">-->
+<!--            DrM (ICLR 2024 Spotlight)-->
+<!--          </a>-->
+<!--          <a class="navbar-item" href="https://premiertaco.github.io/">-->
+<!--            Premier-TACO (ICML 2024)-->
+<!--          </a>-->
+<!--        </div>-->
+    </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+<!--          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>-->
+          <h1 class="title is-3 publication-title"><b style="color:rgba(74, 77, 163, 0.797)">Iterative-DualRL:</b> An Optimal Discriminator Weighted Imitation Perspective for Reinforcement Learning</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ&hl=en">Haoran Xu</a>&ast;<sup>1</sup>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=EAth38AAAAAJ&hl=en">Shuozhe Li</a>*<sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=jFOPZE0AAAAJ&hl=en">Harshit Sikchi</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?hl=en&user=4wXYfSUAAAAJ">Scott Niekum</a><sup>2</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1,3</sup>
+            </span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>UT Austin</span>
+            <span class="author-block"><sup>2</sup>UMass Amherst</span>
+            <span class="author-block"><sup>2</sup>Meta AI</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block" style="font-size: 0.85em;">
+                &ast; Equal contribution
+            </span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2407.20109"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link. -->
+<!--              <span class="link-block">-->
+<!--                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"-->
+<!--                   class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <img src="static/images/hf_icon.svg" />-->
+<!--                  </span>-->
+<!--                  <span>Models & Dataset</span>-->
+<!--                  </a>-->
+<!--                </span>-->
+<!--              <span class="link-block">-->
+<!--                <a href="https://x.com/cheryyun_l/status/1813226234979184687"-->
+<!--                    class="external-link button is-normal is-rounded is-dark">-->
+<!--                  <span class="icon">-->
+<!--                      <i class="fab fa-twitter"></i>-->
+<!--                  </span>-->
+<!--                  <span>Twitter</span>-->
+<!--                  </a>-->
+<!--                </span>-->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--<style>-->
+<!--    .center {-->
+<!--      display: block;-->
+<!--      margin-left: auto;-->
+<!--      margin-right: auto;-->
+<!--      width: 75%;-->
+<!--    }-->
+<!--</style>-->
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <h2 class="subtitle has-text-centered">
+        Under construction. <br>
+      </h2>
+    </div>
+  </div>
+
+
+<!--</section>-->
+
+<!--<section class="section">-->
+<!--  <div class="container is-max-desktop">-->
+<!--      <hr style="margin-top: 1em;">-->
+<!--&lt;!&ndash;      <div class="columns is-centered">&ndash;&gt;-->
+<!--&lt;!&ndash;      <div class="column is-full-width">&ndash;&gt;-->
+<!--      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>-->
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/diffusion.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--          <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>-->
+<!--          <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>-->
+<!--          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>, to effectively fit in the optimal mode in the dataset.  </li>-->
+<!--      </div>-->
+
+<!--      <hr style="margin-top: 1em;">-->
+<!--      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>-->
+<!--&lt;!&ndash;      <div class="content has-text-justified">&ndash;&gt;-->
+<!--&lt;!&ndash;        <img src="static/images/guide-then-select.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--      <div class="content-video-container">-->
+<!--        <img src="static/images/guide-then-select.gif" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--          <li> Our framework is fundamentally different from previous methods that rely on <strong> actions generated from the diffusion behavior policy </strong>, which may induce out-of-distribution errors. </li>-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--          <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/dice.png" style="width: 65%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--      <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/guide.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--      <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/IGL.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--      <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/select.png" style="width: 55%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+
+<!--      <hr style="margin-top: 1em;">-->
+<!--      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>-->
+<!--      <div class="content-picture-">-->
+<!--        <img src="static/images/toycase.png" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+
+<!--      <div class="content has-text-justified">-->
+<!--      <li>Toycase of a 2-D bandit problem. The action in the offline dataset follows a bivariate standard normal distribution constrained within an annular region. The ground truth reward has two peaks extending from the center outward.   </li>-->
+<!--      <li>We use a diffusion model to fit the behavior policy and a reward model to fit the ground truth reward R. Both models fit in-distribution data well while making error in out-of-distribution regions.  </li>-->
+<!--      </div>-->
+
+<!--      <div class="content-video-container">-->
+<!--        <img src="static/images/animated_idql_candidate_distribution_s_0.0_frame_24.gif" width="32%">-->
+<!--        <img src="static/images/animated_cep_candidate_distribution_s_4.0_frame_24.gif" width="32%">-->
+<!--        <img src="static/images/animated_diffusion-DICE_candidate_distribution_s_1.0_frame_24.gif" width="32%">-->
+<!--      </div>-->
+<!--      <div class="content-video-container">-->
+<!--        <img src="static/images/animated_idql_sample_distribution_s_0.0_frame_24.gif" width="32%">-->
+<!--        <img src="static/images/animated_cep_sample_distribution_s_1.0_frame_24.gif" width="32%">-->
+<!--        <img src="static/images/animated_diffusion-DICE_sample_distribution_s_1.0_frame_24.gif" width="32%">-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--      <li>From left to right: <a href="https://arxiv.org/abs/2304.10573">IDQL</a> (<strong>select-only</strong>), <a href="https://arxiv.org/abs/2304.12824">QGPO</a> (<strong>guide-only</strong>) and Diffusion-DICE (<strong>guide-then-select</strong>). From top to down: guide and select step (if one has). Comparing to other guide-only or select-only methods, only Diffusion-DICE could generate correct optimal actions in the outer circle. Other methods tend to expolit error information from the reward model and only generate overestimated, sub-optimal actions. </li>-->
+<!--      </div>-->
+
+<!--      <hr style="margin-top: 1em;">-->
+<!--      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>-->
+<!--      <div class="content has-text-justified">-->
+<!--        <img src="static/images/experiments.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
+<!--      </div>-->
+<!--      <div class="content has-text-justified">-->
+<!--      <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>-->
+<!--      </div>-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--&lt;!&ndash;      </div>&ndash;&gt;-->
+<!--  </div>-->
+<!--</section>-->
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-15">
+        <div class="content">
+<!--          <a style="color:hsla(247, 58%, 62%, 0.862)" href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>-->
+          <p>
+            Website is modified from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
