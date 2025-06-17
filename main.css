@@ -11,7 +11,6 @@ dl, dd, ol, ul, figure {
 a:link { color: #4285F4; }
 /* a:link { color: black;   text-decoration: underline;} */
 
-a:visited { color: #4285F4; }
 
 .no-italics {
   font-style: normal;
@@ -195,7 +194,8 @@ a {
 }
 
 a:visited {
-  color: #1756a9;
+  /*color: #1756a9;*/
+  color: #4285F4;
 }
 
 a:hover {
