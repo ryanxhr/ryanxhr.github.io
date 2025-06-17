@@ -80,6 +80,14 @@ body {
 }
 
 
+#news-list li {
+  display: none; /* 默认全部隐藏 */
+}
+
+#news-list li.visible {
+  display: list-item; /* 显示前五项 */
+}
+
 .upper {
   text-transform: uppercase;
 }
