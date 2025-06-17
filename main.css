@@ -66,6 +66,20 @@ body {
   background: #f0f0f0;
 }
 
+.expandable-box {
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.collapsed {
+  max-height: 120px; /* 只显示前几条内容的高度 */
+}
+
+.expanded {
+  max-height: 1000px; /* 足够高，展示全部内容 */
+}
+
+
 .upper {
   text-transform: uppercase;
 }
