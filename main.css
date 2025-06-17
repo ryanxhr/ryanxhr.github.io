@@ -50,6 +50,13 @@ body {
   font-kerning: normal;
 }
 
+.scroll-box {
+  max-height: 300px;       /* 可自定义容器高度 */
+  overflow-y: auto;        /* 垂直滚动条 */
+  padding-right: 10px;     /* 防止滚动条遮挡文字 */
+  border: 1px solid #ccc;  /* 可选：加边框好看 */
+}
+
 .upper {
   text-transform: uppercase;
 }
