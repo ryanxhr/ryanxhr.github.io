@@ -11,6 +11,8 @@ dl, dd, ol, ul, figure {
 a:link { color: #4285F4; }
 /* a:link { color: black;   text-decoration: underline;} */
 
+a:visited { color: #4285F4; }
+
 .no-italics {
   font-style: normal;
 }
