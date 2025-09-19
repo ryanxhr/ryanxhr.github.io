@@ -568,7 +568,8 @@ ul.publications li {
 
 ul.publications .title {
   display: block;
-  color: #94070a;
+  /* color: #94070a; */
+  color: 	#4A4DA3;
   /* color: 	#DB4437; */
   /* font-style: italic; */
   /* font-weight: bold; */
@@ -606,7 +607,8 @@ ul.publications .intro {
 
 
 ul.publications .oral {
-  color: 	#0F9D58;
+  color: #94070a;
+  /* color: 	#0F9D58; */
   /* color: #94070a; */
   font-style: normal;
   font-weight: bold;
