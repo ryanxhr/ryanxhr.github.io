@@ -8,7 +8,7 @@ dl, dd, ol, ul, figure {
   margin: 0;
   padding: 0;
 }
-a:link { color: #4285F4; }
+a:link { color: #2A60B7; }
 /* a:link { color: black;   text-decoration: underline;} */
 
 
@@ -570,7 +570,8 @@ ul.publications .title {
   display: block;
   /* color: #94070a; */
   /* color: 	#4A4DA3; */
-  color: 	#6C5CE7;
+  /* color: 	#6C5CE7; */
+  color: 	#5A50C2;
   /* color: 	#DB4437; */
   /* font-style: italic; */
   /* font-weight: bold; */
@@ -609,7 +610,7 @@ ul.publications .intro {
 
 ul.publications .oral {
   /* color: #94070a; */
-  color: #FF8C42; 
+  color: #E67E22; 
   /* color: 	#0F9D58; */
   /* color: #94070a; */
   font-style: normal;
