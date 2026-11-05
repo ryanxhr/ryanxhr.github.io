@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Horizon-Scalable Q-Learning</title>
+<meta name="description" content="HQL extends a TD target through a logged action only if it beats the best of N policy samples: long-horizon value learning without off-policy bias or action densities.">
+<!-- TODO(Haoran): replace the absolute URLs once the page location is final -->
+<meta property="og:title" content="Horizon-Scalable Q-Learning">
+<meta property="og:description" content="Extend a TD target through a logged action only if it beats the best of N policy samples.">
+<meta property="og:image" content="https://ryanxhr.github.io/hql/static/og.png">
+<meta property="og:url" content="https://ryanxhr.github.io/hql/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ryanxhr.github.io/hql/static/og.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
+<link rel="preload" href="static/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="static/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+<style>
+  /* Typography and palette follow ryanxhr.github.io/main.css: warm off-white page, Source Sans 3
+     at Regular weight, left-aligned sections with a thin rule, and one purple accent that is used
+     for text only (links, our method, best numbers). Figures use the soft purple for marks. */
+  @font-face { font-family: "Source Sans 3"; font-weight: 300; font-style: normal; font-display: swap;
+               src: url("static/font/SourceSans3-Light.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: normal; font-display: swap;
+               src: url("static/font/SourceSans3-Regular.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: italic; font-display: swap;
+               src: url("static/font/SourceSans3-It.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 600; font-style: normal; font-display: swap;
+               src: url("static/font/SourceSans3-Semibold.woff") format("woff"); }
+
+  :root {
+    --bg: #FBFAF7;
+    --ink: #2F2F2F;
+    --black: #141414;
+    --dim: #686868;
+    --muted: #8E8E8E;
+    --rule: #E6E2DC;
+    --hair: #EEEAE5;
+    --dot: #CCC6C0;
+    --accent: #5B2C8A;
+    --accent-soft: #8C6BB8;
+    --accent-line: rgba(91, 44, 138, 0.28);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400; font-size: 17.5px; line-height: 1.6; font-kerning: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, p, ul, ol { margin: 0; padding: 0; }
+  b, strong { font-weight: 600; color: var(--black); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+  .ours { color: var(--accent); font-weight: 600; }
+  code { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.84em; color: var(--dim); }
+
+  .page { max-width: 800px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------------------------------------------------------------- hero */
+  .hero { padding-top: 72px; }
+  .crumb { font-size: 15px; color: var(--muted); margin-bottom: 30px; }
+  .crumb a { color: var(--muted); }
+  .crumb a:hover { color: var(--accent); }
+  .hero h1 { font-weight: 300; font-size: 42px; line-height: 1.1; letter-spacing: -0.4px; color: var(--black); }
+  .hero .authors { margin-top: 16px; font-size: 17px; color: var(--ink); }
+  .hero .authors a { color: var(--ink); }
+  .hero .authors a:hover { color: var(--accent); }
+  .hero .affil { margin-top: 4px; font-size: 16px; color: var(--dim); }
+  .hero .affil .sep { color: var(--dot); margin: 0 8px; }
+  .hero .affil .review { font-style: italic; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 16.5px; }
+  .links a { font-weight: 600; }
+  .tldr { margin-top: 28px; font-size: 18.5px; line-height: 1.55; }
+
+  /* ------------------------------------------------------------ sections */
+  section { margin-top: 76px; }
+  .section-head { padding-bottom: 10px; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  h2 { font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: -0.1px; color: var(--black); }
+  h3 { font-weight: 600; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase;
+       color: var(--muted); margin: 38px 0 10px; }
+  .note { margin: -10px 0 18px; font-size: 15px; font-style: italic; color: var(--muted); }
+  section p + p, section p + .katex-p, section .katex-p + p { margin-top: 14px; }
+  .key { margin-top: 18px; padding-left: 16px; border-left: 2px solid var(--accent-soft); }
+
+  figure { margin: 28px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; }
+  figure video { display: block; width: 100%; height: auto; }
+  figure.wide img { width: 100%; }
+  figure.mid img { width: 80%; }
+  figure.small img { width: 56%; }
+  figure.tiny img { width: 40%; }
+  figcaption { margin-top: 8px; font-size: 15px; font-style: italic; color: var(--muted); text-align: left; }
+  .katex-display { margin: 16px 0; overflow-x: auto; overflow-y: hidden; }
+  .katex { font-size: 1.08em; }
+
+  /* dotted lists, as in the homepage's news */
+  .dots { list-style: none; margin-top: 18px; }
+  .dots li { position: relative; padding-left: 20px; margin-top: 10px; }
+  .dots li::before { content: ""; position: absolute; left: 3px; top: 0.72em; width: 6px; height: 6px;
+                     border-radius: 50%; background: var(--dot); }
+  .dots li .sub { display: block; font-size: 15.5px; color: var(--dim); }
+
+  .card { margin: 28px 0 0; padding: 16px 22px 18px; background: #fff; border: 1px solid var(--rule);
+          border-radius: 10px; font-size: 16.5px; }
+  .card .head { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+                color: var(--muted); margin-bottom: 6px; }
+  .card ol { padding-left: 1.3em; }
+  .card li { margin-top: 4px; }
+
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; font-variant-numeric: lining-nums tabular-nums; }
+  th { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+       text-align: center; padding: 0 8px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  td { padding: 8px; text-align: center; white-space: nowrap; border-top: 1px solid var(--hair); }
+  tr:nth-child(2) td { border-top: none; }
+  th:first-child, td:first-child { text-align: left; padding-left: 0; }
+  tr.mean td { border-top: 1px solid var(--rule); font-weight: 600; color: var(--black); }
+  td .best { color: var(--accent); font-weight: 600; }
+  td .pm { color: var(--muted); font-size: 13px; }
+  .tablenote { margin-top: 10px; font-size: 15px; font-style: italic; color: var(--muted); }
+
+  ol.take { padding-left: 1.3em; }
+  ol.take li { margin-top: 8px; }
+  ol.take li::marker { color: var(--muted); }
+
+  pre { margin: 0; padding: 16px 20px; background: #fff; border: 1px solid var(--rule); border-radius: 10px;
+        font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+        color: var(--ink); overflow-x: auto; }
+  .refs { margin-top: 18px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+  footer { margin: 96px 0 44px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+
+  /* task carousels: tabs as on the homepage's Selected / All switch */
+  .carousel { margin: 26px 0 30px; outline: none; }
+  .car-bar { margin-bottom: 10px; }
+  .carousel .tabs { display: grid; gap: 2px; padding: 2px; border: 1px solid var(--rule);
+                    border-radius: 8px; background: #fff; }
+  .carousel .tabs button { font: inherit; font-size: 14px; line-height: 1; padding: 8px 6px; border: none;
+                           border-radius: 6px; background: none; color: var(--dim); cursor: pointer;
+                           white-space: nowrap; }
+  .carousel .tabs button:hover { color: var(--ink); }
+  .carousel .tabs button[aria-selected="true"] { background: #F3EEF8; color: var(--accent); font-weight: 600; }
+  .car-hor { display: block; margin-top: 10px; font-size: 15px; color: var(--muted); white-space: nowrap; }
+  .car-hor b { color: var(--ink); font-weight: 600; }
+  .car-stage { position: relative; }
+  .car-stage video, .car-stage img { display: block; width: 100%; height: auto; }
+  .car-stage img[hidden], .car-stage video[hidden] { display: none; }
+  .car-stage img.car-all { padding: 6px 0; }
+  .car-btn { position: absolute; top: 50%; transform: translateY(-50%); width: 34px; height: 34px;
+             border-radius: 50%; border: 1px solid var(--rule); background: rgba(255, 255, 255, 0.85);
+             color: var(--dim); font-size: 22px; line-height: 30px; cursor: pointer; opacity: 0;
+             transition: opacity 0.2s; }
+  .car-btn.prev { left: -14px; }
+  .car-btn.next { right: -14px; }
+  .car-stage:hover .car-btn, .car-btn:focus-visible { opacity: 1; }
+  @media (hover: none) { .car-btn { opacity: 1; } }
+
+  @media (max-width: 680px) {
+    body { font-size: 17px; }
+    .page { padding: 0 20px; }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 34px; }
+    section { margin-top: 60px; }
+    figure.mid img, figure.small img { width: 100%; }
+    figure.tiny img { width: 70%; }
+    table { font-size: 14px; }
+    td, th { padding-left: 5px; padding-right: 5px; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+<header class="hero">
+  <p class="crumb"><a href="https://ryanxhr.github.io/">← Haoran Xu</a></p>
+  <h1>Horizon-Scalable Q-Learning</h1>
+  <p class="authors">
+    <a href="https://ryanxhr.github.io/">Haoran Xu</a>,
+    <a href="https://pragyasrivastava0805.github.io/">Pragya Srivastava</a>,
+    <a href="https://xinjie-liu.github.io/">Xinjie Liu</a>,
+    <a href="https://agarwalsiddhant10.github.io/">Siddhant Agarwal</a>,
+    <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a>
+  </p>
+  <!-- TODO(Haoran): confirm affiliation and status -->
+  <p class="affil">The University of Texas at Austin<span class="sep">/</span><span class="review">preprint</span></p>
+  <p class="links">
+    <a href="paper.pdf">Paper</a>
+    <a href="#">Code</a>
+    <a href="#">Thread</a>
+    <a href="#bibtex">BibTeX</a>
+  </p>
+  <p class="tldr">HQL extends a TD target through a logged action <b>only if it beats the best of N policy samples</b>.
+    Value travels far back along the trajectory without the bias of sub-optimal actions, and no action density is ever evaluated.</p>
+</header>
+
+<figure class="wide">
+  <img src="static/rows.png" alt="Three chains of states. One-step TD: each target reaches back one state. Multi-step TD: one long target that spans a sub-optimal action. HQL: the target continues through actions that pass the gate and is cut at the sub-optimal action, while the suffix still learns.">
+</figure>
+
+<!-- ================================================================ problem -->
+<section>
+  <div class="section-head"><h2>Errors add up along the horizon</h2></div>
+  <p>Most off-policy actor-critic methods learn the critic with one-step TD backups. A one-step target bootstraps after a single logged transition: it is robust to off-policy data, but it moves value back by only one transition per update. Writing \(e_t = Q_t - r_t - Q_{t+1}\) for the one-step Bellman residual and \(\epsilon_t = Q_t - Q^\pi_t\) for the value error, the recursion telescopes along the trajectory:</p>
+  $$\epsilon_t \;=\; \sum_{\tau=t}^{H-1} e_\tau .$$
+  <p>In other words, the value error at a state is <b>exactly the sum</b> of the residuals downstream, for any critic at any point in training.</p>
+  <figure class="wide">
+    <img src="static/problem.png" alt="A chain of states with small gray residual bars below each transition and purple value-error bars above each state that grow toward the start state.">
+  </figure>
+  <p>If the residuals behave like weakly correlated noise, the start-state error grows as \(\sqrt{H}\):</p>
+  $$\mathrm{RMSE}(\epsilon_0) \;=\; \sqrt{H\cdot L_{\mathrm{TD}}} .$$
+  <p class="key">A small TD loss does <b>not</b> mean a small value error on long horizons.</p>
+</section>
+
+<!-- ================================================================= n-step -->
+<section>
+  <div class="section-head"><h2>Multi-step TD trades one error for another</h2></div>
+  <p>Multi-step returns and action chunking shorten the chain by following the dataset trajectory for \(n\) steps before bootstrapping. However, every spanned logged action that the target policy would not take adds a systematic bias. One error law covers both one-step and \(n\)-step backups:</p>
+  $$\mathrm{RMSE}(\epsilon_0)^2 \;\approx\; \underbrace{\frac{H}{n}\,L^{(n)}_{\mathrm{TD}}}_{\text{residual accumulation}} \;+\; \underbrace{\color{#5B2C8A}{\big(1-\tfrac1n\big)^{2} H^2\,\bar A_\mu^2}}_{\text{behavior-action bias}} ,$$
+  <p>where \(\bar A_\mu \le 0\) is the average advantage of the logged actions that the targets span. The first term decreases with \(n\) while the second increases with \(n\).</p>
+  <figure class="small">
+    <img src="static/law.png" alt="Illustrative plot of the two error terms versus n: the residual term decreases, the bias term increases, and their sum has a minimum at a small n.">
+  </figure>
+  <p class="key">Because the bias sums over the <i>specific</i> actions a target spans, <b>no fixed \(n\)</b> suits every decision.</p>
+</section>
+
+<!-- ================================================================= method -->
+<section>
+  <div class="section-head"><h2>HQL: gate every logged action</h2></div>
+  <figure class="wide video">
+    <video autoplay muted loop playsinline preload="auto" poster="static/anim/chain_poster.png" aria-label="Animation: three chains of states updated over time. One-step TD values creep back slowly, multi-step TD values rise fast but stay below the true values before the sub-optimal action, HQL values reach the true values fast.">
+      <source src="static/anim/chain.mp4" type="video/mp4">
+    </video>
+  </figure>
+  <p>Our key idea is to continue a backup through a logged action only when it is at least as good as what the policy would take. HQL attaches a gate \(c_i \in \{0,1\}\) to every transition and defines the target backward along a logged segment:</p>
+  $$Y_t^{\mathrm{HQL}} \;=\; \underbrace{r_t+\gamma\,\bar V^\pi(s_{t+1})}_{\text{one-step target}} \;+\; \gamma\,{\color{#5B2C8A}c_{t+1}}\,\underbrace{\big(Y_{t+1}^{\mathrm{HQL}}-\bar Q(s_{t+1},a_{t+1})\big)}_{\text{downstream correction}} .$$
+  <p>When the gate accepts \(a_{t+1}\), the downstream correction flows back and the target extends one more step; when it rejects \(a_{t+1}\), the target is a plain one-step target, and the states after the cut still start their own targets. The gate compares the logged action with the best of \(N\) samples from the behavior policy:</p>
+  $${\color{#5B2C8A}c_i} \;=\; \mathbb{I}\Big[\,\bar Q(s_i,a_i)\;\ge\;\max_{1\le m\le N}\bar Q\big(s_i,a_i^{(m)}\big)\Big],\qquad a_i^{(m)}\sim\mu(\cdot\,|\,s_i).$$
+  <figure class="mid">
+    <img src="static/gate.png" alt="Two bar charts. Left: the logged action's value is above the maximum of four policy samples, so the gate is 1. Right: it is below the maximum, so the gate is 0.">
+  </figure>
+  <ul class="dots">
+    <li><b>Density-free.</b> The gate only orders critic values, so it works with flow, diffusion, and best-of-N policies.<span class="sub">The behavior model is used only to sample candidates.</span></li>
+    <li><b>Scale-free, one hyperparameter.</b> The gate is invariant to the reward scale, and \(N\) is its only knob.<span class="sub">It costs the same \(N\) samples as the best-of-N bootstrap already needs.</span></li>
+    <li><b>Contains the usual backups.</b> \(c\equiv 0\) is one-step TD and \(c\equiv 1\) is the uncorrected multi-step return.<span class="sub">With chunked decisions, a window of one chunk is Q-chunking, and a gated window is Chunked-HQL.</span></li>
+  </ul>
+  <div class="card">
+    <div class="head">HQL critic update</div>
+    <ol>
+      <li>Sample \(B/H\) windows \((s_t, a_t, r_t, \dots, s_{t+H})\) of \(H\) consecutive transitions.</li>
+      <li>At every position \(i\), draw \(a_i^{(1:N)} \sim \mu(\cdot\,|\,s_i)\) and compute the gate \(c_i\).</li>
+      <li>For \(j = H-1, \dots, 0\), compute \(Y^{\mathrm{HQL}}_{t+j}\) backward, with no correction at the window end.</li>
+      <li>Regress all \(B\) pairs \((s_{t+j}, a_{t+j})\) onto \(\mathrm{sg}(Y^{\mathrm{HQL}}_{t+j})\): the same target budget as one-step TD.</li>
+    </ol>
+  </div>
+</section>
+
+<!-- =============================================================== validity -->
+<section>
+  <div class="section-head"><h2>Why is the gate valid?</h2></div>
+  <p>Per-decision importance sampling tells us which cuts are safe: in the tabular setting, any gate with \(c_i \le \pi(a_i|s_i)/\mu(a_i|s_i)\) keeps \(Q^\pi\) as the fixed point of the backup. Evaluating this bound needs the density ratio, which expressive policies do not expose. Fortunately, the ratio has a closed form for the policy that behavior-regularized methods approximate, the exponential tilt of the behavior policy:</p>
+  $$\pi(a|s) = \frac{\mu(a|s)\,e^{\tau Q(s,a)}}{Z(s)} \quad\Longrightarrow\quad \log\frac{\pi}{\mu}(a_i|s_i) = \tau Q(s_i,a_i) - \log Z(s_i).$$
+  <p>The behavior density <b>cancels</b>. Estimating \(\log Z\) from the same \(N\) samples and clipping the ratio at one gives the largest valid gate, which becomes HQL's gate as \(\tau\to\infty\):</p>
+  $$c_i = \exp\Big(\min\big\{0,\ \tau\bar Q(s_i,a_i) - \widehat{\log Z}(s_i)\big\}\Big)$$
+  $$\xrightarrow{\ \tau\to\infty\ }\ \ {\color{#5B2C8A}\mathbb{I}\Big[\bar Q(s_i,a_i)\ge\max_m\bar Q\big(s_i,a_i^{(m)}\big)\Big]} .$$
+  <figure class="small">
+    <img src="static/softgate.png" alt="Soft gate value versus the logged action's critic value for temperatures 1, 4 and 16, approaching a step function at the maximum candidate value, which is HQL's hard gate.">
+  </figure>
+  <p class="key">HQL's gate is read from the <b>critic alone</b>, needs no temperature, and outperforms the soft gate at every \(\tau\) we tried.</p>
+</section>
+
+<!-- ================================================================ results -->
+<section>
+  <div class="section-head"><h2>Sanity check: a lock with known Q-values</h2></div>
+  <p>A combination lock chains \(H\) states; the correct action advances and the other resets to the first state, so the true \(Q\) is known in closed form. We corrupt a growing share of the dataset windows with the resetting action and report the error of \(Q_\theta\) (top) and the steps to first success (bottom).</p>
+  <figure class="wide">
+    <img src="static/lock.png" alt="Grid of plots over corruption levels 0 to 75 percent. Top row: RMSE between learned and true Q versus horizon, log scale. 64-step TD blows up as soon as data is corrupted, 1-step TD grows with the horizon, and HQL stays lowest. Bottom row: steps to first success.">
+  </figure>
+  <p>1-step TD accumulates error with the horizon, 64-step TD fails on corrupted data, and <span class="ours">HQL</span> stays below both at every horizon.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Long-horizon OGBench</h2></div>
+  <p class="note">Six configurations with task horizons of 500 to 4000 steps; 1M offline + 1M online steps; 512 critic targets per update for every method; 5 seeds.</p>
+  <div class="carousel" id="car-ogb" tabindex="0" aria-label="OGBench tasks">
+    <div class="car-bar"><div class="tabs" role="tablist"></div><span class="car-hor"></span></div>
+    <div class="car-stage">
+      <video muted loop playsinline autoplay preload="auto"></video>
+      <img class="car-all" alt="" hidden>
+      <button class="car-btn prev" aria-label="previous task">&#8249;</button>
+      <button class="car-btn next" aria-label="next task">&#8250;</button>
+    </div>
+  </div>
+  <p>HQL reaches a mean success rate of <b>0.74</b> against 0.49 for the best TD baseline. On <code>cube-triple</code>, HQL reaches 0.54 while both multi-step baselines score 0. 16-window TD matches HQL in everything except the gate, yet it is the weakest method on average.</p>
+
+  <h3>Against prior methods</h3>
+  <div class="tablewrap"><table>
+    <tr><th></th><th>HQL</th><th>Chunked-HQL</th><th>LQL</th><th>QC</th></tr>
+    <tr><td>antmaze-giant</td><td><span class="best">1</span> → <span class="best">87</span><span class="pm"> ±2</span></td><td>0 → 86<span class="pm"> ±1</span></td><td>0 → 44<span class="pm"> ±4</span></td><td>0 → 46<span class="pm"> ±1</span></td></tr>
+    <tr><td>cube-double</td><td>67 → 87<span class="pm"> ±1</span></td><td><span class="best">73</span> → <span class="best">100</span><span class="pm"> ±0</span></td><td>45 → 83<span class="pm"> ±2</span></td><td>28 → <span class="best">100</span><span class="pm"> ±0</span></td></tr>
+    <tr><td>cube-triple</td><td><span class="best">12</span> → 54<span class="pm"> ±1</span></td><td>7 → <span class="best">84</span><span class="pm"> ±1</span></td><td>5 → 35<span class="pm"> ±3</span></td><td>1 → 26<span class="pm"> ±3</span></td></tr>
+    <tr><td>humanoidmaze-giant</td><td>10 → 28<span class="pm"> ±1</span></td><td>0 → <span class="best">29</span><span class="pm"> ±2</span></td><td><span class="best">12</span> → 26<span class="pm"> ±1</span></td><td>0 → 0<span class="pm"> ±0</span></td></tr>
+    <tr><td>humanoidmaze-medium</td><td>56 → 86<span class="pm"> ±1</span></td><td><span class="best">68</span> → <span class="best">88</span><span class="pm"> ±2</span></td><td>48 → 86<span class="pm"> ±1</span></td><td>0 → 0<span class="pm"> ±0</span></td></tr>
+    <tr><td>scene</td><td>93 → 99<span class="pm"> ±0</span></td><td><span class="best">98</span> → <span class="best">100</span><span class="pm"> ±0</span></td><td>96 → 97<span class="pm"> ±1</span></td><td>97 → <span class="best">100</span><span class="pm"> ±0</span></td></tr>
+    <tr class="mean"><td>mean</td><td>40 → 74<span class="pm"> ±1</span></td><td><span class="best">41</span> → <span class="best">81</span><span class="pm"> ±1</span></td><td>34 → 62<span class="pm"> ±1</span></td><td>21 → 45<span class="pm"> ±1</span></td></tr>
+  </table></div>
+  <p class="tablenote">Success rate (%), offline → online.</p>
+  <p>The gate is complementary to chunking: adding it on top of chunked actions (Chunked-HQL) raises QC's mean success rate from 45% to <b>81%</b>.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Even longer horizons: OCBench</h2></div>
+  <p class="note">Eight 50 Hz manipulation tasks whose episodes last 1000 to 5000 steps; 25-step action chunks for every method.</p>
+  <div class="carousel" id="car-ocb" tabindex="0" aria-label="OCBench tasks">
+    <div class="car-bar"><div class="tabs" role="tablist"></div><span class="car-hor"></span></div>
+    <div class="car-stage">
+      <video muted loop playsinline autoplay preload="auto"></video>
+      <img class="car-all" alt="" hidden>
+      <button class="car-btn prev" aria-label="previous task">&#8249;</button>
+      <button class="car-btn next" aria-label="next task">&#8250;</button>
+    </div>
+  </div>
+  <p>Chunked-HQL reaches a mean success rate of <b>0.82</b> against 0.53 for 100-step TD and 0.46 for 200-step TD. Note that 200-step TD is worse than 100-step TD on seven of the eight tasks, as the error law predicts: a longer uncorrected return sums the negative advantages of more logged actions.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>Why does HQL help?</h2></div>
+  <p>Perhaps surprisingly, most of HQL's targets are <b>one- or few-step</b> targets.</p>
+  <figure class="tiny">
+    <img src="static/hist.png" alt="Bar chart: 77 percent of targets are one step, 17 percent two steps, 6 percent three or more steps.">
+  </figure>
+  <p>None exceeds 6 of the 16 available steps. 1-step TD extends no target, \(n\)-step TD extends all of them and inherits the bias of every action spanned, and HQL extends a target only when its logged action passes the gate.</p>
+  <p class="key">HQL wins by choosing <b>which</b> targets to extend, not by extending them far.</p>
+</section>
+
+<section>
+  <div class="section-head"><h2>A drop-in critic for other policies</h2></div>
+  <p>HQL only changes the critic's target, so any policy-extraction method can use it.</p>
+  <figure class="wide">
+    <img src="static/dropin.png" alt="Grouped bars for four tasks. QAM versus QAM plus HQL: 50 to 99, 1 to 80, 83 to 98, 0 to 63. VGF versus VGF plus HQL: 74 to 89, 25 to 37, 28 to 90, 0 to 4.">
+  </figure>
+  <p>With HQL as its critic (task 2, end of online training), QAM improves on all four tasks, especially on <code>cube-triple</code> (1% → <b>80%</b>) and <code>humanoidmaze-giant</code> (0% → <b>63%</b>); VGF improves most on <code>antmaze-giant</code> (28% → <b>90%</b>).</p>
+</section>
+
+<!-- ================================================================ wrap-up -->
+<section>
+  <div class="section-head"><h2>Takeaways</h2></div>
+  <ol class="take">
+    <li>One-step TD accumulates residuals as \(\sqrt{H}\); \(n\)-step TD trades them for the bias of spanned sub-optimal actions.</li>
+    <li><b>Gate</b> each logged action against the best of \(N\) policy samples, and fall back to one-step TD where it fails.</li>
+    <li>The gate is valid <b>without densities</b>, so it serves flow, diffusion, and best-of-N policies alike.</li>
+  </ol>
+</section>
+
+<section id="bibtex">
+  <div class="section-head"><h2>BibTeX</h2></div>
+  <!-- TODO(Haoran): fill in the arXiv id once posted -->
+  <pre>@article{xu2026hql,
+  title   = {Horizon-Scalable Q-Learning},
+  author  = {Xu, Haoran and Srivastava, Pragya and Liu, Xinjie and
+             Agarwal, Siddhant and Zhang, Amy},
+  journal = {arXiv preprint arXiv:XXXX.XXXXX},
+  year    = {2026}
+}</pre>
+  <p class="refs">
+    OGBench: Park et al., ICLR 2025 · OCBench: Park &amp; Levine, arXiv 2026 · Combination lock: Park et al., NeurIPS 2025 ·
+    QC: Li et al., NeurIPS 2025 · LQL: Abraham et al., arXiv 2026 · QAM: Li &amp; Levine, arXiv 2026 ·
+    VGF: Xu et al., ICLR 2026 · Per-decision IS: Precup et al., ICML 2000 · Retrace: Munos et al., NeurIPS 2016
+  </p>
+</section>
+
+<footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
+</div>
+<script>
+(() => {
+  const SETS = {
+    ogb: [['all', 'All tasks', '500 to 4000', 'static/ogb_curves.png',
+           'All six OGBench configurations: success over training, mean of 5 tasks and 5 seeds; HQL ends above every TD baseline.'],
+          ['og_cube_double', 'cube-double', 500], ['og_scene', 'scene', 750], ['og_cube_triple', 'cube-triple', 1000],
+          ['og_antmaze_giant', 'antmaze-giant', 1000], ['og_hmaze_medium', 'humanoidmaze-medium', 2000],
+          ['og_hmaze_giant', 'humanoidmaze-giant', 4000]],
+    ocb: [['all', 'All tasks', '1000 to 5000', 'static/ocb_curves.png',
+           'All eight OCBench tasks: success over training; Chunked-HQL ends above 100-step and 200-step TD on every task.'],
+          ['oc_block_single', 'block-single', 1250], ['oc_block_double', 'block-double', 2500],
+          ['oc_chamber_easy', 'chamber-easy', 4000], ['oc_chamber_medium', 'chamber-medium', 5000],
+          ['oc_switch_3x3', 'switch-3x3', 1500], ['oc_switch_4x4', 'switch-4x4', 1500],
+          ['oc_hanoi_single', 'hanoi-single', 1000], ['oc_hanoi_double', 'hanoi-double', 3000]],
+  };
+  for (const [key, items] of Object.entries(SETS)) {
+    const root = document.getElementById('car-' + key);
+    if (!root) continue;
+    const tabs = root.querySelector('.tabs'), hor = root.querySelector('.car-hor'), vid = root.querySelector('video');
+    const img = root.querySelector('.car-all');
+    tabs.style.gridTemplateColumns = 'repeat(' + (items.length > 8 ? 5 : 4) + ', 1fr)';
+    let cur = 0;
+    const btns = items.map(([id, name], i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.role = 'tab'; b.textContent = name;
+      b.addEventListener('click', () => show(i));
+      tabs.appendChild(b);
+      return b;
+    });
+    function show(i) {
+      cur = (i + items.length) % items.length;
+      const [id, , steps, src, alt] = items[cur];
+      btns.forEach((b, k) => b.setAttribute('aria-selected', k === cur ? 'true' : 'false'));
+      hor.innerHTML = '<b>' + steps + '</b>-step horizon' + (id === 'all' ? 's' : '');
+      if (id === 'all') {
+        vid.pause(); vid.hidden = true;
+        img.src = src; img.alt = alt; img.hidden = false;
+        return;
+      }
+      img.hidden = true; vid.hidden = false;
+      vid.poster = 'static/anim/task_' + id + '_poster.png';
+      vid.src = 'static/anim/task_' + id + '.mp4';
+      vid.play().catch(() => {});
+    }
+    root.querySelector('.prev').addEventListener('click', () => show(cur - 1));
+    root.querySelector('.next').addEventListener('click', () => show(cur + 1));
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') show(cur - 1);
+      if (e.key === 'ArrowRight') show(cur + 1);
+    });
+    let x0 = null;
+    vid.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, {passive: true});
+    vid.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) > 40) show(cur + (dx < 0 ? 1 : -1));
+    });
+    show(0);
+  }
+})();
+</script>
+</body>
+</html>
