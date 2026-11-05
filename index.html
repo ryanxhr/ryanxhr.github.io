@@ -1,763 +1,184 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<!--  <link rel="icon" href="assets/xhr.ico" type="image/x-icon">-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haoran (Ryan) Xu</title>
+  <meta name="description" content="Haoran (Ryan) Xu, Ph.D. student at UT Austin, working on reinforcement learning for pretraining foundation models.">
+  <link rel="canonical" href="https://ryanxhr.github.io/">
+
   <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon_package/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_package/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon_package/favicon-16x16.png">
   <link rel="manifest" href="assets/favicon_package/site.webmanifest">
-  <link rel="mask-icon" href="assets/favicon_package/safari-pinned-tab.svg" color="#5bbad5">
-  <meta name="msapplication-TileColor" content="#da532c">
-  <meta name="theme-color" content="#ffffff">
-  
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preload" href="assets/fonts/xxx.woff" as="font" type="font/woff" crossorigin>
+  <link rel="mask-icon" href="assets/favicon_package/safari-pinned-tab.svg" color="#5B2C8A">
+  <meta name="theme-color" content="#FBFAF7">
 
-  <title>Haoran (Ryan) Xu</title>
-  <meta name="description" content="">
-
+  <link rel="preload" href="assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
+  <link rel="preload" href="assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
   <link rel="stylesheet" href="main.css">
-  <link rel="canonical" href="ryanxhr.github.io">
-  <link rel="preload" href="assets/font/Mukta-Light.ttf" as="font" type="font/woff" crossorigin>
-  <link rel="preload" href="assets/font/Mukta-Medium.ttf" as="font" type="font/woff" crossorigin>
-
-  <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Mukta:wght@300;400&display=swap" rel="stylesheet"> -->
-  <!-- <style>
-    a { color: #FF0000; } /* CSS link color */
-  </style> -->
 </head>
 
-<body data-new-gr-c-s-check-loaded="14.1029.0" data-gr-ext-installed="">
+<body>
+<main class="page">
 
-  <header class="site-header" role="banner">
-    <div class="wrapper navigation-wrapper ">
-      <div class="navigation-links">
-        <span class="site-title">Haoran Xu (<span style="font-family:'Kaiti SC'">徐浩然</span>)</span>
-      </div>
+  <!-- ============================================================ hero -->
+  <header class="hero">
+    <div class="intro">
+      <h1>Haoran (Ryan) Xu <span class="zh" lang="zh">徐浩然</span></h1>
+      <p class="affil">Ph.D. student<span class="sep">/</span>The University of Texas at Austin</p>
+
+      <p>
+        I am a 4th&#8209;year Ph.D. student at UT Austin, advised by <a class="inline" href="https://amyzhang.github.io/">Prof.&nbsp;Amy&nbsp;Zhang</a>,
+        and supported by the <a class="inline" href="https://www.amazon.science/news/amazon-launches-68-million-ai-phd-fellowship-program">Amazon AI PhD Fellowship</a>.
+      </p>
+      <p>
+        My research asks how to <b>pretrain foundation models with reinforcement learning</b>,
+        and explores the <b>new post-training paradigm</b> that RL pretraining brings.
+        The aim is to keep pretraining stable and scalable to large models,
+        while learning from more diverse data, including sub&#8209;optimal data,
+        to unlock capabilities beyond imitation.
+      </p>
+      <p>I am open to collaboration; feel free to reach out.</p>
+
+      <nav class="links" aria-label="profiles">
+        <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ">Google Scholar</a>
+        <a href="https://twitter.com/ryanxhr">Twitter</a>
+        <a href="https://github.com/ryanxhr">GitHub</a>
+        <a href="mailto:haoran.xu@utexas.edu">haoran.xu@utexas.edu</a>
+      </nav>
     </div>
+    <img class="portrait" src="assets/xhr_web.jpg" alt="Portrait of Haoran Xu" width="200" height="250">
   </header>
 
-  <main class="page-content" aria-label="Content">
-    <div class="wrapper">
+  <!-- ============================================================ news -->
+  <section id="news-section">
+    <div class="section-head"><h2>News</h2></div>
+    <ul class="news" id="news">
+      <li>Attending CoRL 2026 in person in Austin.</li>
+      <li>Presented my thesis proposal, <i>Towards Scalable RL Pretraining</i>.</li>
+      <li><a href="vgf/">Value Gradient Flow</a> is accepted to <b>ICLR 2026</b>.</li>
+      <li>Two papers are accepted to <b>NeurIPS 2025</b>.</li>
+      <li>Honored to be selected as an <a href="https://www.amazon.science/news/amazon-launches-68-million-ai-phd-fellowship-program">Amazon AI Ph.D. Fellow</a>, with two years of funding.</li>
+      <li>Attending RLC 2025 in person in Edmonton.</li>
+      <li class="more"><a href="https://arxiv.org/abs/2504.13368">Iterative Dual-RL</a> is accepted to <b>ICLR 2025</b>.</li>
+      <li class="more"><a href="https://arxiv.org/abs/2407.20109">Diffusion-DICE</a> is accepted to <b>NeurIPS 2024</b>.</li>
+      <li class="more">Starting my summer internship at <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-new-york/">MSR New York</a>, working with Alex Lamb and John Langford.</li>
+      <li class="more">Attending ICLR 2024 in person in Vienna.</li>
+      <li class="more"><a href="https://arxiv.org/abs/2402.00348">ODICE</a> is accepted to <b>ICLR 2024</b> as a spotlight.</li>
+      <li class="more">Attending NeurIPS 2023 in person in New Orleans.</li>
+      <li class="more">Starting my Ph.D. at UT Austin.</li>
+    </ul>
+    <button class="more-btn" type="button" aria-controls="news">Show earlier news</button>
+  </section>
 
-      <article class="post">
-        <div class="post-content">
-          <img src="assets/xhr.jpg" class="profile-picture" >
-          <div style="height: 15px;"></div>
+  <!-- ==================================================== publications -->
+  <section id="publications">
+    <div class="section-head"><h2>Selected Publications</h2></div>
+    <p class="note">For a complete list of publications, see <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ">Google Scholar</a>.</p>
 
-          <p>
-              Hello! I am Haoran Xu. I am a 3rd-year Ph.D. student at UT Austin, advised by <a href="https://amyzhang.github.io/">Prof. Amy Zhang</a>. My research is supported by <a href="https://www.amazon.science/news/amazon-launches-68-million-ai-phd-fellowship-program">Amazon AI PhD Fellowship</a> .
-              <!-- I am also a student researcher at Microsft AI Frontiers.  -->
-<!--              I used to be in <a href="https://air.tsinghua.edu.cn/en/">AIR, Tsinghua University</a>, <a href="https://corporate.jd.com/home/">JD.com</a>, <a href="https://www.usnews.com/education/best-global-universities/xidian-university-506871">Xidian University</a> and <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-asia/">MSRA</a>, working with <a href="http://zhanxianyuan.xyz/">Xianyuan Zhan</a> and <a href="http://urban-computing.com/yuzheng">Zheng Yu</a>.-->
-<!--&lt;!&ndash;              I also work closely with <a href="https://www.princeton.edu/~zy6/">Zhuoran Yang</a> and <a href="https://zhaoranwang.github.io/">Zhaoran Wang</a>.&ndash;&gt;-->
-          </p>
-
-<!--          <p>-->
-<!--          <strong>I am actively looking for internship and full research positions. Weclome to drop me an email if interested.</strong> -->
-<!--          </p>-->
-
-          <p>
-<!--              My ultimate research dream is to maximally leveraging prior information to facilitate the development of machine autonomy. Towards this goal, my current work primarily focused on-->
-              <!-- My research aims towards super-human AGI using reinforcement learning, with a focus on developing <strong style="color:rgba(74, 77, 163, 0.797)">general, scalable and principled off-policy RL algorithms </strong> using Generative AI for applications like robotics and large language models.  -->
-              <!-- My work focuses on scaling reinforcement learning methods and integrating generative AI to push toward superhuman AGI, particularly for applications in robotics and large language models. I spent summer at Microsoft Research NYC as a research intern. -->
-              My work focuses on scaling foundation models to learn from experience through reinforcement learning. I spent summer at Microsoft Research NYC and Amazon as a research intern.
-              <!-- My research focuses on reasoning and scaling off-policy reinforcement learning, currently I am interested in: -->
-<!--              My research aims towards super-human AGI using reinforcement learning, currently I am interested in:-->
-<!--            <ul>-->
-<!--               <li><strong style="color:rgba(74, 77, 163, 0.797)">(Dual-RL)</strong> The dual formulation of RL provides a unification of IL and regularized RL: is that all we need for scalable RL?  </li>-->
-<!--               <li><strong style="color:rgba(74, 77, 163, 0.797)">(GenAI+RL)</strong> How to leverage the strong power of generative models to decision making?  </li>-->
-<!--               <li><strong style="color:rgba(74, 77, 163, 0.797)">(LLM+RL)</strong> How to enable better training, finetuning and reasoning of LLMs using RL?  </li>-->
-<!--&lt;!&ndash;               <li><strong style="color:rgba(74, 77, 163, 0.797)">(LLM+RL)</strong> How to maximally leveraging prior information to facilitate the development of machine autonomy? (e.g., RL with offline data, alignment with human preference, learning foundation representation from multi-task data)  </li>&ndash;&gt;-->
-<!--            </ul>-->
-          </p>
-
-          <p>
-              I am open to collaboration, feel free to reach me out!
-          </p>
-
-          <p>
-            Some links:
-            <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ"><span>Google Scholar</span></a> /
-            <a href="https://twitter.com/ryanxhr">Twitter</a> /
-            <a href="https://github.com/ryanxhr">Github</i></span></a> /
-            <a href="mailto:haoran.xu@utexas.edu">haoran.xu@utexas.edu</a>
-          </p>
-
-          <!-- <strong>I am actively looking for postdoc and full research positions. Weclome to drop me an email if interested.</strong> -->
-
+    <ol class="pubs" id="selected">
+      <li class="pub">
+        <div class="venue">Preprint 2026</div>
+        <div class="body">
+          <div class="title">Horizon-Scalable Q-Learning</div>
+          <div class="authors"><b>Haoran Xu</b>, Pragya Srivastava, Xinjie Liu, Siddhant Agarwal, Amy Zhang</div>
         </div>
-      </article>
-    </div>
-
-
-    <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-          <h1 class="post-title" id="Publications">Publications <span style="font-size:small;letter-spacing:0.00px;">(* marks equal contribution)</a></span> </h1>
-          <!-- <span class="footnote">* marks equal contribution</span> -->
-        </header> 
-      </article>
-    <!-- Tab links -->
-    <div class="tab">
-      <button class="tablinks" onclick="openCity(event, 'Selected')" id="defaultOpen">🌟 Selected</button>
-      <button class="tablinks" onclick="openCity(event, 'All')">🌐 All</button>
-<!--      <button class="tablinks" onclick="openCity(event, 'Dual-RL')">🎂 Dual RL</button>-->
-<!--      <button class="tablinks" onclick="openCity(event, 'RL using GenAI')">🔨 RL using GenAI</button>-->
-<!--      <button class="tablinks" onclick="openCity(event, 'RL with X')">📚 RL with X</button>-->
-    </div>
-
-    <!-- Tab content -->
-    <div id="Selected" class="tabcontent">
-      <!-- <h3>Selected</h3> -->
-      <ul class="publications">
-
-          <li class="article">
-          <span class="title">
-            Reinforcement Learning via Value Gradient Flow
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Kaiwen Hu*, Somayeh Sojoudi, Amy Zhang </span>
-              <span class="journal-info">ICLR 2026</span>
-              <span class="year">2026</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2604.14265">Paper</a> |
-            <a href="https://github.com/ryanxhr/vgf">Code</a> |
-            <a href="https://x.com/ryanxhr/status/2046270901696496117?s=20">Thread</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Liyuan Mao*, Hui Jin*, Weinan Zhang, Xianyuan Zhan, Amy Zhang </span>
-              <span class="journal-info">NeurIPS 2025</span>
-              <span class="year">2025</span>
-              <span class="links">
-            <a href="https://openreview.net/forum?id=mjZi8cV18P">Paper</a> |
-            <a href="https://github.com/huijinrl/uni-rl">Code</a>
-          </span>
-          </li>  
-
-          <li class="article">
-          <span class="title">
-            ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update
-          </span>
-              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2024</span>
-              <span class="oral">(Spotlight, Top 5%)</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2402.00348">Paper</a> |
-            <a href="https://github.com/maoliyuan/ODICE-Pytorch">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1786486793606496766">Thread</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="oral">(Oral, Top 5%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2303.15810">Paper</a> |
-            <a href="https://github.com/ryanxhr/IVR">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            A Policy-Guided Imitation Approach for Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Li Jiang*, Jianxiong Li, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2022</span>
-              <span class="oral">(Oral, Top 2%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2210.08323">Paper</a> |
-            <a href="https://github.com/ryanxhr/POR">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1584855088480538626?s=20">Thread</a>
-          </span>
-          </li>
-        
-        <li class="article">
-          <span class="title">
-          Constraints Penalized Q-Learning for Safe Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Xiangyu Zhu</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2107.09003">Paper</a> |
-            <a href="https://github.com/liuzuxin/OSRL">Code</a>
-          </span>
-        </li>
-
-
-    </div>
-
-
-<!--    <div id="Dual-RL" class="tabcontent">-->
-<!--      &lt;!&ndash; <h3>Selected</h3> &ndash;&gt;-->
-<!--      <ul class="publications">-->
-<!--          <li class="article">-->
-<!--          <span class="title">-->
-<!--            An Optimal Discriminator Weighted Imitation Perspective for Reinforcement Learning-->
-<!--          </span>-->
-<!--              <span class="authors"><strong>Haoran Xu</strong>, Shuozhe Li, Harshit Sikchi, Scott Niekum, Amy Zhang </span>-->
-<!--              <span class="journal-info">ICLR 2025</span>-->
-<!--              <span class="year">2025</span>-->
-<!--              <span class="links">-->
-<!--            <a href="https://ryanxhr.github.io/">Paper</a> |-->
-<!--          </span>-->
-<!--          </li>-->
-
-<!--          <li class="article">-->
-<!--          <span class="title">-->
-<!--            Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning-->
-<!--          </span>-->
-<!--              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan, Amy Zhang </span>-->
-<!--              <span class="journal-info">NeurIPS 2024</span>-->
-<!--              <span class="year">2024</span>-->
-<!--              <span class="links">-->
-<!--            <a href="https://arxiv.org/abs/2407.20109">Paper</a> |-->
-<!--            <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch">Code</a> |-->
-<!--            <a href="https://ryanxhr.github.io/Diffusion-DICE/">Website</a> |-->
-<!--&lt;!&ndash;            <a href="https://x.com/ryanxhr/status/1786486793606496766">Thread</a>&ndash;&gt;-->
-<!--          </span>-->
-<!--          </li>-->
-
-<!--          <li class="article">-->
-<!--          <span class="title">-->
-<!--            ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update-->
-<!--          </span>-->
-<!--              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan </span>-->
-<!--              <span class="journal-info">ICLR 2024</span>-->
-<!--              <span class="oral">(Spotlight, Top 5%)</span>-->
-<!--              <span class="year">2024</span>-->
-<!--              <span class="links">-->
-<!--            <a href="https://arxiv.org/abs/2402.00348">Paper</a> |-->
-<!--            <a href="https://github.com/maoliyuan/ODICE-Pytorch">Code</a> |-->
-<!--            <a href="https://x.com/ryanxhr/status/1786486793606496766">Thread</a>-->
-<!--          </span>-->
-<!--          </li>-->
-
-<!--          <li class="article">-->
-<!--          <span class="title">-->
-<!--            Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization-->
-<!--          </span>-->
-<!--              <span class="authors"><strong>Haoran Xu</strong>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan </span>-->
-<!--              <span class="journal-info">ICLR 2023</span>-->
-<!--              <span class="oral">(Oral, Top 5%)</span>-->
-<!--              <span class="year">2023</span>-->
-<!--              <span class="links">-->
-<!--            <a href="https://arxiv.org/abs/2303.15810">Paper</a> |-->
-<!--            <a href="https://github.com/ryanxhr/IVR">Code</a> |-->
-<!--            <a href="https://docs.google.com/presentation/d/1Apo0L0sNMi9gNjRx3nizRzwbJ5sD9oEW7XOeZP_k_d0/edit?usp=sharing">Slide</a>-->
-<!--          </span>-->
-<!--          </li>-->
-
-<!--          <li class="article">-->
-<!--          <span class="title">-->
-<!--            A Policy-Guided Imitation Approach for Offline Reinforcement Learning-->
-<!--          </span>-->
-<!--              <span class="authors"><strong>Haoran Xu*</strong>, Li Jiang*, Jianxiong Li, Xianyuan Zhan </span>-->
-<!--              <span class="journal-info">NeurIPS 2022</span>-->
-<!--              <span class="oral">(Oral, Top 2%)</span>-->
-<!--              <span class="year">2023</span>-->
-<!--              <span class="links">-->
-<!--            <a href="https://arxiv.org/abs/2210.08323">Paper</a> |-->
-<!--            <a href="https://github.com/ryanxhr/POR">Code</a> |-->
-<!--            <a href="https://x.com/ryanxhr/status/1584855088480538626?s=20">Thread</a> |-->
-<!--            <a href="https://mp.weixin.qq.com/s/a6u2Wwfus6PtBziKfMB1zg">Media </a>-->
-<!--          </span>-->
-<!--          </li>-->
-
-<!--      </ul>-->
-<!--    </div>-->
-
-
-    <div id="All" class="tabcontent">
-      <ul class="publications">
-          <li class="article">
-          <span class="title">
-            Reinforcement Learning via Value Gradient Flow
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Kaiwen Hu*, Somayeh Sojoudi, Amy Zhang </span>
-              <span class="journal-info">ICLR 2026</span>
-              <span class="year">2026</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2604.14265">Paper</a> |
-            <a href="https://github.com/ryanxhr/vgf">Code</a> |
-            <a href="https://x.com/ryanxhr/status/2046270901696496117?s=20">Thread</a>
-          </span>
-          </li>  
-        
-          <li class="article">
-          <span class="title">
-            Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Liyuan Mao*, Hui Jin*, Weinan Zhang, Xianyuan Zhan, Amy Zhang </span>
-              <span class="journal-info">NeurIPS 2025</span>
-              <span class="year">2025</span>
-              <span class="links">
-            <a href="https://openreview.net/forum?id=mjZi8cV18P">Paper</a> |
-            <a href="https://github.com/huijinrl/uni-rl">Code</a>
-          </span>
-          </li>  
-        
-          <li class="article">
-          <span class="title">
-            Information-Theoretic Reward Decomposition for Generalizable RLHF
-          </span>
-              <span class="authors">Liyuan Mao, <strong>Haoran Xu</strong>, Amy Zhang, Weinan Zhang, Chenjia Bai </span>
-              <span class="journal-info">NeurIPS 2025</span>
-              <span class="year">2025</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2504.06020?">Paper</a> |
-            <a href="https://ryanxhr.github.io/">Code</a>
-          </span>
-          </li>  
-
-          <li class="article">
-          <span class="title">
-            An Optimal Discriminator Weighted Imitation Perspective for Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Shuozhe Li, Harshit Sikchi, Scott Niekum, Amy Zhang </span>
-              <span class="journal-info">ICLR 2025</span>
-              <span class="year">2025</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2504.13368">Paper</a> |
-            <a href="https://ryanxhr.github.io/">Code</a> 
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Learning to Achieve Goals with Belief State Transformers
-          </span>
-              <span class="authors">Edward S. Hu, Kwangjun Ahn, Qinghua Liu, <strong>Haoran Xu</strong>, Manan Tomar, Ada Langford, Dinesh Jayaraman, Alex Lamb, John Langford </span>
-              <span class="journal-info">ICLR 2025</span>
-              <span class="year">2025</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2410.23506">Paper</a> |
-            <a href="https://github.com/microsoft/bst">Code</a> 
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning
-          </span>
-              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan, Amy Zhang </span>
-              <span class="journal-info">NeurIPS 2024</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2407.20109">Paper</a> |
-            <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch">Code</a> |
-            <a href="https://ryanxhr.github.io/Diffusion-DICE/">Website</a> |
-            <a href="https://x.com/ryanxhr/status/1866223722111095073">Thread</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            PROTO: Iterative Policy Regularized Offline-to-Online Reinforcement Learning
-          </span>
-              <span class="authors">Jianxiong Li, Xiao Hu, <strong>Haoran Xu</strong>, Jingjing Liu, Xianyuan Zhan, Ya-Qin Zhang </span>
-              <span class="journal-info">Preprint</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2305.15669">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/PROTO">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update
-          </span>
-              <span class="authors">Liyuan Mao*, <strong>Haoran Xu*</strong>, Weinan Zhang, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2024</span>
-              <span class="oral">(Spotlight, Top 5%)</span>
-              <span class="year">2024</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2402.00348">Paper</a> |
-            <a href="https://github.com/maoliyuan/ODICE-Pytorch">Code</a> |
-            <a href="https://x.com/ryanxhr/status/1786486793606496766">Thread</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline Multi-Agent Reinforcement Learning with Implicit Global-to-Local Value Regularization
-          </span>
-              <span class="authors">Xiangsen Wang, <strong>Haoran Xu</strong>, Yinan Zheng, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2307.11620">Paper</a> |
-            <a href="https://github.com/ZhengYinan-AIR/OMIGA">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            SaFormer: A Conditional Sequence Modeling Approach to Offline Safe Reinforcement Learning
-          </span>
-          <span class="authors">Qin Zhang*, Linrui Zhang*, <strong>Haoran Xu</strong>, Li Shen, Bowen Wang, Xueqian Wang, Bo Yuan, Yongzhe Chang, Dacheng Tao </span>
-          <span class="journal-info">ICLR 2023 SR4AD Workshop</span>
-          <span class="year">2023</span>
-          <span class="links">
-            <a href="https://arxiv.org/abs/2301.12203">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="oral">(Notable Top 5%)</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2303.15810">Paper</a> |
-            <a href="https://github.com/ryanxhr/IVR">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            Mind the Gap: Offline Policy Optimizaiton for Imperfect Rewards
-          </span>
-              <span class="authors">Jianxiong Li, Xiao Hu, <strong>Haoran Xu</strong>, Jingjing Liu, Xianyuan Zhan, Qing-Shan Jia, Ya-Qin Zhang </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2302.01667">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/RGM">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            When data geometry meets deep function: Generalizing offline reinforcement learning
-          </span>
-              <span class="authors">Jianxiong Li, Xianyuan Zhan, <strong>Haoran Xu</strong>, Xiangyu Zhu, Jingjing Liu, Ya-Qin Zhang </span>
-              <span class="journal-info">ICLR 2023</span>
-              <span class="year">2023</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2205.11027">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/DOGE">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-            A Policy-Guided Imitation Approach for Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu*</strong>, Li Jiang*, Jianxiong Li, Xianyuan Zhan </span>
-              <span class="journal-info">NeurIPS 2022</span>
-              <span class="oral">(Oral, Top 2%)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2210.08323">Paper</a> |
-            <a href="https://github.com/ryanxhr/POR">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1swZTLDSvZLGCrXs46tzSHLWZC6VfO9qYChegjjadCpc/edit?usp=sharing">Slides</a> |
-            <a href="https://mp.weixin.qq.com/s/a6u2Wwfus6PtBziKfMB1zg">Media </a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Discriminator-Weighted Offline Imitation Learning from Suboptimal Demonstrations
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Honglei Yin, Huiling Qin</span>
-              <span class="journal-info">ICML 2022  </span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2207.10050">Paper</a> |
-            <a href="https://github.com/ryanxhr/DWBC">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1WS8farSLxi1MDrG5C5FUfF9iarMgwZ1MAbfAuOeUyQw/edit?usp=sharing">Slides</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Constraints Penalized Q-Learning for Safe Offline Reinforcement Learning
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Xiangyu Zhu</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2107.09003">Paper</a> |
-            <a href="https://github.com/ryanxhr/CPQ">Code</a> |
-            <a href="https://docs.google.com/presentation/d/1i9mgy_YZabzwk7zHzJ9FL72HBW2cZkSiGdGBIO5roAU/edit?usp=sharing">Slides</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          DeepThermal: Combustion Optimization for Thermal Power Generating Units Using Offline Reinforcement Learning
-          </span>
-              <span class="authors">Xianyuan Zhan*, <strong>Haoran Xu*</strong>, Yue Zhang, Yusen Huo, Xiangyu Zhu, Honglei Yin, Yu Zheng</span>
-              <span class="journal-info">AAAI 2022</span>
-              <span class="oral">(Spotlight @ ICML 2021 RL4RealLife workshop)</span>
-              <span class="year">2022</span>
-              <span class="links">
-          <a href="https://arxiv.org/abs/2102.11492">Paper</a> |
-          <a href="https://github.com/ryanxhr/DeepThermal">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Discriminator-Guided Model-Based Offline Imitation Learning
-          </span>
-              <span class="authors">Wenjia Zhang, <strong>Haoran Xu</strong>, Haoyi Niu, Peng Cheng, Ming Li, Heming Zhang, Guyue Zhou, Xianyuan Zhan</span>
-              <span class="journal-info">CoRL 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2207.00244">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Model-Based Offline Planning with Trajectory Pruning
-          </span>
-              <span class="authors">Xianyuan Zhan, Xiangyu Zhu, <strong>Haoran Xu</strong></span>
-              <span class="journal-info">IJCAI 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2105.07351">Paper</a> |
-            <a href="https://github.com/zhanzxy5/MOPP">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          ECoalVis: Visual Analysis of Control Strategies in Coal-fired Power Plants
-          </span>
-              <span class="authors">Shuhan Liu, Di Weng, Yuan Tian, Zikun Deng, <strong>Haoran Xu</strong>, Xiangyu Zhu, Honglei Yin, Xianyuan Zhan, Yingcai Wu</span>
-              <span class="journal-info">IEEE VIS 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://ieeexplore.ieee.org/abstract/document/9908527">Paper</a> |
-            <a href="https://github.com/ECoalVis/ECoalVis">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Multi-Memory enhanced Separation Network for Indoor Temperature Prediction
-          </span>
-              <span class="authors">Zhewen Duan, Xiuwen Yi, Peng Li, Dekang Qi, Yexin Li, <strong>Haoran Xu</strong>, Yanyong Huang, Junbo Zhang, Yu Zheng</span>
-              <span class="journal-info">DASFAA 2022</span>
-              <span class="year">2022</span>
-              <span class="links">
-            <a href="https://link.springer.com/chapter/10.1007/978-3-031-00126-0_49?noAccess=true">Paper</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Offline Reinforcement Learning with Soft Behavioral Regularization
-          </span>
-              <span class="authors"><strong>Haoran Xu</strong>, Xianyuan Zhan, Jianxiong Li, Honglei Yin</span>
-              <span class="journal-info">NeurIPS 2021 Offline RL Workshop</span>
-              <span class="year">2021</span>
-              <span class="links">
-            <a href="https://arxiv.org/abs/2110.07395">Paper</a> |
-            <a href="https://github.com/Facebear-ljx/SBAC">Code</a>
-          </span>
-          </li>
-
-          <li class="article">
-          <span class="title">
-          Robust Spatio-Temporal Purchase Prediction via Deep Meta Learning
-          </span>
-              <span class="authors">Huiling Qin, Songyu Ke, Xiaodu Yang, <strong>Haoran Xu</strong>, Xianyuan Zhan, Yu Zheng</span>
-              <span class="journal-info">AAAI 2021</span>
-              <span class="year">2021</span>
-              <span class="links">
-            <a href="https://ojs.aaai.org/index.php/AAAI/article/view/16556">Paper</a>
-          </span>
-          </li>
-
-      </ul>
-    </div>
-
-  </div>
-
-    <div class="wrapper">
-      <!-- <article class="post"> -->
-        <header class="post-header">
-          <h1 class="post-title">News </h1>
-        </header>
-        <article class="post">
-          <ul>
-            <li>Two papers are accepted to <strong>NeurIPS 2025</strong>. </li>
-            <li>I am honored to be selected as an Amazon AI Ph.D. Fellow with 2 years of funding. </li>
-            <li>🇨🇦 I am attending RLC 2025 in-person at Edmonton. </li>
-            <li><a href="https://arxiv.org/abs/2407.20109">Iterative Dual-RL</a> is accepted to <strong>ICLR 2025</strong>. </li>
-            <li><a href="https://arxiv.org/abs/2407.20109">Diffusion-DICE</a> is accepted to <strong>NeurIPS 2024</strong>. </li>
-            <li>I will start my summer internship at <a href="https://www.microsoft.com/en-us/research/lab/microsoft-research-new-york/">MSR (New York)</a>, working with Alex Lamb and John Langford. </li>
-            <li>🇦🇹 I am attending ICLR 2024 in-person at Vienna. </li>
-            <li><a href="https://arxiv.org/abs/2402.00348">ODICE</a> is accepted to <strong>ICLR 2024 as spotlight</strong>. </li>
-            <li>🇺🇸 I am attending NeurIPS 2023 in-person at New Orleans. </li>
-            <li>🎓 Starting my PhD at UT Austin. </li>
-<!--            <li>One paper (<a href="https://arxiv.org/abs/2307.11620">OMIGA</a>) on offline multi-agent RL is accepted to <strong>NeurIPS 2023</strong>. </li>-->
-<!--            <li>🇷🇼 I am attending ICLR 2023 in-person at Kigali. </li>-->
-<!--            <li>🌟 One paper (<a href="https://arxiv.org/abs/2303.15810">IVR</a>) on offline RL is accepted to <strong>ICLR 2023 as oral</strong>. </li>-->
-<!--            <li>Honored to be selected as <a href="https://neurips.cc/Conferences/2022/ProgramCommittee">Top Reviewers in NeurIPS 2022</a>. </li>-->
-<!--            <li>One paper (<a href="https://arxiv.org/abs/2210.08323">POR</a>) on offline RL is accepted to <strong>NeurIPS 2022 as oral</strong>. </li>-->
-<!--            <li>One paper (<a href="https://arxiv.org/abs/2207.10050">DWBC</a>) on offline IL is accepted to <strong>ICML 2022</strong>. </li>-->
-          </ul>
-        </article>
-    </div>
-
-    <div class="wrapper">
-      <article class="post">
-        <header class="post-header">
-        <h1 class="post-title">Professional Services</h1>
-        </header>
-        <div class="post-content">
-        Reviewer for ICLR, ICML, NeurIPS
+      </li>
+      <li class="pub">
+        <div class="venue">ICLR 2026</div>
+        <div class="body">
+          <div class="title">Reinforcement Learning via Value Gradient Flow</div>
+          <div class="authors"><b>Haoran Xu*</b>, Kaiwen Hu*, Somayeh Sojoudi, Amy Zhang</div>
+          <div class="meta"><a href="https://arxiv.org/abs/2604.14265">paper</a><a href="https://github.com/ryanxhr/vgf">code</a><a href="vgf/">website</a><a href="https://x.com/ryanxhr/status/2046270901696496117?s=20">thread</a></div>
         </div>
-      </article>
-    </div>
-
-
-<div class="wrapper">
-    <article class="post">
-        <header class="post-header">
-            <h1 class="post-title">Mentorships</h1>
-        </header>
-        <div class="post-content">
-            <p>Students that I am currently mentoring or have worked with:</p>
-            <ul>
-                <li> Liyuan Mao (Ph.D. at Shanghai Jiao Tong University, projects: <a href="https://arxiv.org/abs/2402.00348">O-DICE</a>, <a href="https://arxiv.org/abs/2407.20109">Diffusion-DICE</a>, <a href="https://openreview.net/forum?id=mjZi8cV18P">UNIVR</a>). </li>
-                <li> Hui Jin (M.S. at University of Alberta, projects: <a href="https://openreview.net/forum?id=mjZi8cV18P">UNIVR</a>). </li>
-                <li> Kaiwen Hu (B.S. at Peking University, projects: <a href="https://arxiv.org/abs/2604.14265">VGF</a>). </li>
-                <li> Debajit Chakraborty (M.S. at UT Austin, projects: LLM+RL). </li>
-<!--                <li> Masoud Hadi (M.S. at University of Alberta, works on GenAI+RL). </li>-->
-            </ul>
+      </li>
+      <li class="pub">
+        <div class="venue">NeurIPS 2025</div>
+        <div class="body">
+          <div class="title">Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization</div>
+          <div class="authors"><b>Haoran Xu*</b>, Liyuan Mao*, Hui Jin*, Weinan Zhang, Xianyuan Zhan, Amy Zhang</div>
+          <div class="meta"><a href="https://openreview.net/forum?id=mjZi8cV18P">paper</a><a href="https://github.com/huijinrl/uni-rl">code</a><a href="Uni-RL/">website</a></div>
         </div>
-    </article>
-</div>
+      </li>
+      <li class="pub">
+        <div class="venue">NeurIPS 2024</div>
+        <div class="body">
+          <div class="title">Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning</div>
+          <div class="authors">Liyuan Mao*, <b>Haoran Xu*</b>, Weinan Zhang, Xianyuan Zhan, Amy Zhang</div>
+          <div class="meta"><a href="https://arxiv.org/abs/2407.20109">paper</a><a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch">code</a><a href="Diffusion-DICE/">website</a><a href="https://x.com/ryanxhr/status/1866223722111095073">thread</a></div>
+        </div>
+      </li>
+      <li class="pub">
+        <div class="venue">ICLR 2024<span class="award">Spotlight, top 5%</span></div>
+        <div class="body">
+          <div class="title">ODICE: Revealing the Mystery of Distribution Correction Estimation via Orthogonal-gradient Update</div>
+          <div class="authors">Liyuan Mao*, <b>Haoran Xu*</b>, Weinan Zhang, Xianyuan Zhan</div>
+          <div class="meta"><a href="https://arxiv.org/abs/2402.00348">paper</a><a href="https://github.com/maoliyuan/ODICE-Pytorch">code</a><a href="https://x.com/ryanxhr/status/1786486793606496766">thread</a></div>
+        </div>
+      </li>
+      <li class="pub">
+        <div class="venue">ICLR 2023<span class="award">Oral, top 5%</span></div>
+        <div class="body">
+          <div class="title">Offline RL with No OOD Actions: In-Sample Learning via Implicit Value Regularization</div>
+          <div class="authors"><b>Haoran Xu</b>, Li Jiang, Jianxiong Li, Zhuoran Yang, Zhaoran Wang, Victor Wai Kin Chan, Xianyuan Zhan</div>
+          <div class="meta"><a href="https://arxiv.org/abs/2303.15810">paper</a><a href="https://github.com/ryanxhr/IVR">code</a></div>
+        </div>
+      </li>
+      <li class="pub">
+        <div class="venue">NeurIPS 2022<span class="award">Oral, top 2%</span></div>
+        <div class="body">
+          <div class="title">A Policy-Guided Imitation Approach for Offline Reinforcement Learning</div>
+          <div class="authors"><b>Haoran Xu*</b>, Li Jiang*, Jianxiong Li, Xianyuan Zhan</div>
+          <div class="meta"><a href="https://arxiv.org/abs/2210.08323">paper</a><a href="https://github.com/ryanxhr/POR">code</a><a href="https://x.com/ryanxhr/status/1584855088480538626?s=20">thread</a></div>
+        </div>
+      </li>
+      <li class="pub">
+        <div class="venue">AAAI 2022</div>
+        <div class="body">
+          <div class="title">Constraints Penalized Q-Learning for Safe Offline Reinforcement Learning</div>
+          <div class="authors"><b>Haoran Xu</b>, Xianyuan Zhan, Xiangyu Zhu</div>
+          <div class="meta"><span class="extra">Spotlight, ICML 2021 RL4RealLife Workshop</span><a href="https://arxiv.org/abs/2107.09003">paper</a><a href="https://github.com/liuzuxin/OSRL">code</a></div>
+        </div>
+      </li>
+    </ol>
 
+  </section>
 
-<!--  <div class="wrapper">-->
-<!--    <article class="post">-->
-<!--      <header class="post-header">-->
-<!--      <h1 class="post-title">Teaching</h1>-->
-<!--      </header>-->
-<!--      <div class="post-content">-->
-<!--      2022 Spring, TA in <strong>Advances in Machine Learning</strong>, instructed by Prof. Yisen Wang. <br>-->
-<!--      2021 Spring, TA in <strong>Trustworthy Machine Learning</strong>, instructed by Prof. Yisen Wang. <br>-->
-<!--      2018 Spring, TA in <strong>Optimization in Machine Learning</strong>, instructed by Prof. Zhouchen Lin. <br>-->
-<!--      2017 Fall, TA in <strong>Machine Learning</strong>, instructed by Prof. Tong Lin. <br>-->
-<!--      </div>-->
-<!--    </article>-->
-<!--  </div>-->
+  <!-- ======================================================== teaching -->
+  <section id="teaching">
+    <div class="section-head"><h2>Teaching</h2></div>
+    <ul class="entries">
+      <li class="entry">
+        <div class="label">Spring 2024</div>
+        <div class="body">
+          <div class="title">Reinforcement Learning: Theory and Practice</div>
+          <div class="detail">Teaching Assistant, UT Austin</div>
+        </div>
+      </li>
+    </ul>
+  </section>
 
-<!--    <div class="wrapper">-->
-<!--      <article class="post">-->
-<!--        <header class="post-header">-->
-<!--        <h1 class="post-title">Students Advised</h1>-->
-<!--        </header>-->
-<!--        <div class="post-content">-->
-<!--            I have been lucky to co-advise a number of talented undergraduate and master’s students at Stanford, who have written some very insightful papers:-->
+  <!-- ========================================================= service -->
+  <section id="service">
+    <div class="section-head"><h2>Service</h2></div>
+    <ul class="entries">
+      <li class="entry">
+        <div class="label">Reviewer</div>
+        <div class="body">ICLR, ICML, NeurIPS</div>
+      </li>
+    </ul>
+  </section>
 
-<!--            I have also mentored (and often proposed research directions) for a number of fantastic PhD students who have taught me a lot:-->
-
-<!--        </div>-->
-<!--      </article>-->
-<!--    </div>-->
-
-<!--      <div class="wrapper">-->
-<!--          <article class="post">-->
-<!--              <header class="post-header">-->
-<!--                  <h1 class="post-title">Collaborators and Advisors</h1>-->
-<!--              </header>-->
-<!--              <div class="post-content">-->
-<!--                  I spent a wonderful summer working with Suriya Gunasekar and Sebastien Bubeck in the Microsoft Research Foundations Group. During my PhD I’ve also been lucky to collaborate with Aditi Raghunathan, Sang Michael Xie, Chelsea Finn, and Zico Kolter, and learn a lot from John Duchi. Before my PhD, I spent a fun year working at DeepMind, and before that did undergraduate research work with Avrim Blum, Guy Blelloch, and Bob Harper.-->
-<!--              </div>-->
-<!--          </article>-->
-<!--      </div>-->
-
-
-
-
-
-      <!--<script-->
-<!--        type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=ffffff&w=300&t=tt&d=LISh56gffeAxOYBOk45sr6LRD7c60rWH1uPJOca6hLs&co=2d78ad&ct=ffffff&cmo=3acc3a&cmn=ff5353'>-->
-<!--</script>-->
-
+  <footer>Last updated November 2026</footer>
+</main>
 
 <script>
-  // Check if API exists
-  if (document && document.fonts) {    
-    // Do not block page loading
-    setTimeout(function () {           
-      document.fonts.load('16px "Mukta"').then(() => {
-        // Make font using elements visible
-        document.documentElement.classList.add('font-loaded') 
-      })
-    }, 0)
-  } else {
-    // Fallback if API does not exist 
-    document.documentElement.classList.add('font-loaded') 
-  }
-</script>
-
-<script>
-  function openCity(evt, cityName) {
-    var i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tabcontent");
-    for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tablinks");
-    for (i = 0; i < tablinks.length; i++) {
-      tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(cityName).style.display = "block";
-    evt.currentTarget.className += " active";
-  }
-// Get the element with id="defaultOpen" and click on it
-document.getElementById("defaultOpen").click();
-</script>
-
-<script>
-  const list = document.getElementById('news-list');
-  const items = list.getElementsByTagName('li');
-  const button = document.getElementById('show-more-btn');
-
-  // 初始化时只显示前 5 条
-  for (let i = 0; i < items.length; i++) {
-    if (i < 5) {
-      items[i].classList.add('visible');
-    }
-  }
-
-  button.addEventListener('click', () => {
-    for (let i = 5; i < items.length; i++) {
-      items[i].classList.add('visible');
-    }
-    button.style.display = 'none'; // 点击后隐藏按钮
+  // news: show earlier items on request
+  document.querySelector('.more-btn').addEventListener('click', function (e) {
+    document.getElementById('news').classList.add('open');
+    e.currentTarget.remove();
   });
 </script>
-
-
-
-  </footer>
+</body>
+</html>
