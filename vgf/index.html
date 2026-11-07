@@ -7,10 +7,10 @@
 <meta name="description" content="VGF casts behavior-regularized RL as optimal transport: particles from the reference policy follow value gradients, and the transport budget is the regularization.">
 <meta property="og:title" content="Reinforcement Learning via Value Gradient Flow">
 <meta property="og:description" content="Behavior-regularized RL as optimal transport, with the transport budget as the regularization.">
-<meta property="og:image" content="https://ryanxhr.github.io/vgf/static/teaser.png">
+<meta property="og:image" content="https://ryanxhr.github.io/vgf/static/anim/teaser_poster.png">
 <meta property="og:url" content="https://ryanxhr.github.io/vgf/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ryanxhr.github.io/vgf/static/teaser.png">
+<meta name="twitter:image" content="https://ryanxhr.github.io/vgf/static/anim/teaser_poster.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
 <link rel="preload" href="../assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="../assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
@@ -141,6 +141,19 @@
   footer a { color: var(--muted); }
   footer a:hover { color: var(--accent); }
 
+  figure video { display: block; width: 100%; height: auto; }
+
+  /* Summary / All switch, as the homepage's Selected / All and HQL's task tabs */
+  .switch { margin-top: 4px; }
+  .switch .tabs { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 2px; margin-bottom: 14px;
+                  border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+  .switch .tabs button { font: inherit; font-size: 14px; line-height: 1; padding: 8px 14px; border: none;
+                         border-radius: 6px; background: none; color: var(--dim); cursor: pointer; white-space: nowrap; }
+  .switch .tabs button:hover { color: var(--ink); }
+  .switch .tabs button[aria-selected="true"] { background: #F3EEF8; color: var(--accent); font-weight: 600; }
+  .switch .panel[hidden] { display: none; }
+  td .cnt { margin-left: 6px; font-size: 13px; font-weight: 400; color: var(--muted); }
+
   @media (max-width: 680px) {
     body { font-size: 17px; }
     .page { padding: 0 20px; }
@@ -177,8 +190,10 @@
     no explicit penalty, and no policy network to backpropagate through.</p>
 </header>
 
-<figure class="wide">
-  <img src="static/teaser.png" alt="Schematic in a 2-D action space with two high-value regions above a reference distribution of gray samples. Left, best-of-N: the best of a dozen reference samples is still inside the reference support. Right, VGF: particles start from reference samples and follow value-gradient paths into the high-value regions.">
+<figure class="wide video">
+  <video autoplay muted loop playsinline preload="auto" poster="static/anim/teaser_poster.png" aria-label="Animation. Schematic in a 2-D action space with two high-value regions above a reference distribution of gray samples. Left, best-of-N: the best of a dozen reference samples is still inside the reference support. Right, VGF: particles start from reference samples and follow value-gradient paths into the high-value regions.">
+    <source src="static/anim/teaser.mp4" type="video/mp4">
+  </video>
 </figure>
 
 <!-- ================================================================ problem -->
@@ -243,6 +258,16 @@
 <section>
   <div class="section-head"><h2>D4RL</h2></div>
   <p class="note">Normalized scores at the end of training, 5 seeds. Standard deviations are in the paper.</p>
+<p>VGF has the best mean score, <b>89</b> against 81 for Diffusion-QL. It is strongest on AntMaze, which requires stitching sub-optimal trajectories: on <code>antmaze-m-p</code> and <code>antmaze-m-d</code> it scores 89.4 and 86.7, while no baseline exceeds 82.</p>
+<div class="switch"><div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">Summary</button><button type="button" role="tab" aria-selected="false">All datasets</button></div>
+<div class="panel">
+<div class="tablewrap"><table>
+<tr><th></th><th>TD3+BC</th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>SfBC</th><th>FQL</th><th>VGF</th></tr>
+<tr><td>MuJoCo <span class='cnt'>9 datasets</span></td><td>75.3</td><td>77.8</td><td>83.3</td><td>87.9</td><td>75.6</td><td>66.8</td><td><span class="best">88.7</span></td></tr>
+<tr><td>AntMaze <span class='cnt'>6 datasets</span></td><td>27.3</td><td>63.8</td><td>71.8</td><td>69.6</td><td>74.2</td><td>83.5</td><td><span class="best">89.1</span></td></tr>
+<tr class="mean"><td>All <span class='cnt'>15 datasets</span></td><td>56.1</td><td>72.2</td><td>78.7</td><td>80.6</td><td>75.0</td><td>73.5</td><td><span class="best">88.9</span></td></tr>
+</table></div>
+</div><div class="panel" hidden>
 <div class="tablewrap"><table>
 <tr><th></th><th>TD3+BC</th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>SfBC</th><th>FQL</th><th>VGF</th></tr>
 <tr><td>halfcheetah-m</td><td>48.3</td><td>47.4</td><td>48.3</td><td>51.1</td><td>45.9</td><td>55.6</td><td><span class="best">57.1</span></td></tr>
@@ -262,12 +287,19 @@
 <tr><td>antmaze-l-d</td><td>0.0</td><td>47.5</td><td>52.3</td><td>56.6</td><td>45.5</td><td>83.0</td><td><span class="best">83.8</span></td></tr>
 <tr class="mean"><td>mean</td><td>56</td><td>72</td><td>79</td><td>81</td><td>75</td><td>73</td><td><span class="best">89</span></td></tr>
 </table></div>
-  <p>VGF has the best mean score, <b>89</b> against 81 for Diffusion-QL. It is strongest on AntMaze, which requires stitching sub-optimal trajectories: on <code>antmaze-m-p</code> and <code>antmaze-m-d</code> it scores 89.4 and 86.7, while no baseline exceeds 82.</p>
+</div>
+</div>
 </section>
 
 <section>
   <div class="section-head"><h2>OGBench</h2></div>
   <p class="note">Four locomotion and five manipulation environments, success rate (%) averaged over 5 tasks each, 5 seeds.</p>
+  <figure class="wide">
+    <img src="static/ogbench_bars.png" alt="Grouped bars of success rate for FQL and VGF on nine OGBench environments. VGF is higher on seven, tied on cube-single, and lower on antmaze-giant (3 vs 9); the largest gains are cube-double 29 to 70, puzzle-3x3 30 to 75 and puzzle-4x4 17 to 45.">
+  </figure>
+  <p>VGF reaches a mean success rate of <b>55%</b> against 40% for FQL, the strongest baseline. The gains concentrate on the hard tasks where FQL stays below 50%: <code>cube-double</code> (29 → <b>70</b>), <code>puzzle-3x3</code> (30 → <b>75</b>) and <code>puzzle-4x4</code> (17 → <b>45</b>).</p>
+
+  <h3>Against prior methods</h3>
 <div class="tablewrap"><table>
 <tr><th></th><th>BC</th><th>IQL</th><th>ReBRAC</th><th>FBRAC</th><th>IDQL</th><th>FQL</th><th>VGF</th></tr>
 <tr><td>antmaze-giant</td><td>0<span class="pm"> ±0</span></td><td>4<span class="pm"> ±1</span></td><td><span class="best">26</span><span class="pm"> ±8</span></td><td>4<span class="pm"> ±4</span></td><td>0<span class="pm"> ±0</span></td><td>9<span class="pm"> ±6</span></td><td>3<span class="pm"> ±1</span></td></tr>
@@ -281,7 +313,8 @@
 <tr><td>puzzle-4x4</td><td>0<span class="pm"> ±0</span></td><td>7<span class="pm"> ±1</span></td><td>14<span class="pm"> ±1</span></td><td>13<span class="pm"> ±1</span></td><td>29<span class="pm"> ±3</span></td><td>17<span class="pm"> ±2</span></td><td><span class="best">45</span><span class="pm"> ±4</span></td></tr>
 <tr class="mean"><td>mean</td><td>2</td><td>20</td><td>25</td><td>25</td><td>23</td><td>40</td><td><span class="best">55</span></td></tr>
 </table></div>
-  <p>VGF reaches a mean success rate of <b>55%</b> against 40% for FQL, the strongest baseline. The gains concentrate on the hard tasks where FQL stays below 50%: <code>cube-double</code> (29 → <b>70</b>), <code>puzzle-3x3</code> (30 → <b>75</b>) and <code>puzzle-4x4</code> (17 → <b>45</b>).</p>
+  <p class="tablenote">Success rate (%), mean ± std over 5 seeds.</p>
+  
 
   <h3>Offline-to-online</h3>
   <figure class="wide">
@@ -344,5 +377,14 @@
 
 <footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
 </div>
+<script>
+document.querySelectorAll('.switch').forEach((sw) => {
+  const bs = [...sw.querySelectorAll('.tabs button')], ps = [...sw.querySelectorAll(':scope > .panel')];
+  bs.forEach((b, i) => b.addEventListener('click', () => {
+    bs.forEach((x, j) => x.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+    ps.forEach((p, j) => { p.hidden = j !== i; });
+  }));
+});
+</script>
 </body>
 </html>

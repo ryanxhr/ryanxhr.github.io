@@ -141,6 +141,19 @@
   footer a { color: var(--muted); }
   footer a:hover { color: var(--accent); }
 
+  figure video { display: block; width: 100%; height: auto; }
+
+  /* Summary / All switch, as the homepage's Selected / All and HQL's task tabs */
+  .switch { margin-top: 4px; }
+  .switch .tabs { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 2px; margin-bottom: 14px;
+                  border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+  .switch .tabs button { font: inherit; font-size: 14px; line-height: 1; padding: 8px 14px; border: none;
+                         border-radius: 6px; background: none; color: var(--dim); cursor: pointer; white-space: nowrap; }
+  .switch .tabs button:hover { color: var(--ink); }
+  .switch .tabs button[aria-selected="true"] { background: #F3EEF8; color: var(--accent); font-weight: 600; }
+  .switch .panel[hidden] { display: none; }
+  td .cnt { margin-left: 6px; font-size: 13px; font-weight: 400; color: var(--muted); }
+
   @media (max-width: 680px) {
     body { font-size: 17px; }
     .page { padding: 0 20px; }
@@ -205,6 +218,13 @@
   <h3>Why plain IVR fails online</h3>
   <p>Online, the replay buffer contains many early, sub-optimal transitions. Regularizing toward the buffer's behavior anchors the value to that data, much like offline RL on a poor dataset. Uni-RL instead regularizes toward a target policy that keeps improving:</p>
   $$\min_V\ \mathbb{E}_{s\sim\mathcal D,\ {\color{#5B2C8A}a\sim\bar\pi}}\Big[V(s) + \alpha\, f_{\mathrm{IVR}}\big((Q(s,a)-V(s))/\alpha\big)\Big],\qquad \bar\pi \leftarrow \lambda\pi + (1-\lambda)\bar\pi .$$
+<figure class="wide video">
+  <video autoplay muted loop playsinline preload="auto" poster="static/anim/trust_region_poster.png" aria-label="Animation in a 1-D action space with a value curve peaking at the best action. Top, online IVR: the policy is regularized toward the replay buffer, which stays dominated by early data, so the policy creeps slowly. Bottom, Uni-RL: the policy is regularized toward a target policy that trails it, so it moves steadily to the best action.">
+    <source src="static/anim/trust_region.mp4" type="video/mp4">
+  </video>
+</figure>
+  <p class="tablenote">A 1-D illustration: each iteration solves the regularized problem in closed form against the current reference.</p>
+  <p>The real runs show the same effect, for both weighted BC and MaxQ policy extraction:</p>
   <figure class="small">
     <img src="static/online_ivr.png" alt="Four learning curves over 0.5M gradient steps for two policy extraction methods, weighted BC and MaxQ. With the reference policy set to the target policy, both the score and the Q value grow much higher than with the reference set to the replay-buffer behavior.">
     <figcaption>Online IVR with \(\mu=\pi_{\mathcal D}\) (orange) vs. \(\mu=\bar\pi\) (purple): score (top) and Q value (bottom).</figcaption>
@@ -261,6 +281,22 @@
 <section>
   <div class="section-head"><h2>Offline RL: D4RL</h2></div>
   <p class="note">Normalized scores at the end of training, 5 seeds. Standard deviations and more baselines are in the paper.</p>
+  <figure class="wide">
+    <img src="static/d4rl_bars.png" alt="Grouped bars of mean normalized score over six D4RL dataset groups. Left: IVR vs. Uni-RL with a Gaussian policy; Uni-RL is higher or tied on every group, most on medium (69 to 79) and antmaze-large (53 to 60). Right: IDQL vs. Uni-RL with a diffusion policy; Uni-RL is higher on every group.">
+    <figcaption>Mean score per dataset group; MuJoCo groups average halfcheetah, hopper and walker2d.</figcaption>
+  </figure>
+  <p>Offline, Uni-RL's value objective reduces to IVR's, so the gain from IVR's 79 to <b>83</b> with the same Gaussian policy class reflects better policy extraction. A diffusion policy raises the mean to <b>87</b>, above Diffusion-QL and IDQL (both 81).</p>
+
+  <h3>Against prior methods</h3>
+<div class="switch"><div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">Summary</button><button type="button" role="tab" aria-selected="false">All datasets</button></div>
+<div class="panel">
+<div class="tablewrap"><table>
+<tr><th></th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>IDQL</th><th>Uni-RL <span class='sub'>Gaussian</span></th><th>Uni-RL <span class='sub'>Diffusion</span></th></tr>
+<tr><td>MuJoCo <span class='cnt'>9 datasets</span></td><td>77.8</td><td>83.3</td><td>87.9</td><td>82.1</td><td>87.5</td><td><span class="best">90.5</span></td></tr>
+<tr><td>AntMaze <span class='cnt'>6 datasets</span></td><td>63.8</td><td>71.8</td><td>69.6</td><td>79.1</td><td>77.2</td><td><span class="best">82.6</span></td></tr>
+<tr class="mean"><td>All <span class='cnt'>15 datasets</span></td><td>72.2</td><td>78.7</td><td>80.6</td><td>80.9</td><td>83.4</td><td><span class="best">87.4</span></td></tr>
+</table></div>
+</div><div class="panel" hidden>
 <div class="tablewrap"><table>
 <tr><th></th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>IDQL</th><th>Uni-RL <span class='sub'>Gaussian</span></th><th>Uni-RL <span class='sub'>Diffusion</span></th></tr>
 <tr><td>halfcheetah-m</td><td>47.4</td><td>48.3</td><td>51.1</td><td>51.0</td><td>49.4</td><td><span class="best">58.0</span></td></tr>
@@ -280,7 +316,8 @@
 <tr><td>antmaze-l-d</td><td>47.5</td><td>52.3</td><td>56.6</td><td>67.9</td><td>60.2</td><td><span class="best">69.0</span></td></tr>
 <tr class="mean"><td>mean</td><td>72</td><td>79</td><td>81</td><td>81</td><td>83</td><td><span class="best">87</span></td></tr>
 </table></div>
-  <p>Offline, Uni-RL's value objective reduces to IVR's, so the gain from IVR's 79 to <b>83</b> with the same Gaussian policy class reflects better policy extraction. A diffusion policy raises the mean to <b>87</b>, above Diffusion-QL and IDQL (both 81).</p>
+</div>
+</div>
 </section>
 
 <section>
@@ -320,5 +357,14 @@
 
 <footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
 </div>
+<script>
+document.querySelectorAll('.switch').forEach((sw) => {
+  const bs = [...sw.querySelectorAll('.tabs button')], ps = [...sw.querySelectorAll(':scope > .panel')];
+  bs.forEach((b, i) => b.addEventListener('click', () => {
+    bs.forEach((x, j) => x.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+    ps.forEach((p, j) => { p.hidden = j !== i; });
+  }));
+});
+</script>
 </body>
 </html>

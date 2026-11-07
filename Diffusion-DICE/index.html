@@ -7,10 +7,10 @@
 <meta name="description" content="Diffusion-DICE turns the DICE distribution ratio into in-sample diffusion guidance, then selects among a few candidates, minimizing critic error exploitation in offline RL.">
 <meta property="og:title" content="Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning">
 <meta property="og:description" content="Guide-then-select: in-sample diffusion guidance from DICE for offline RL.">
-<meta property="og:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/teaser.png">
+<meta property="og:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/anim/guide_select_poster.png">
 <meta property="og:url" content="https://ryanxhr.github.io/Diffusion-DICE/">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/teaser.png">
+<meta name="twitter:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/anim/guide_select_poster.png">
 <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
 <link rel="preload" href="../assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
 <link rel="preload" href="../assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
@@ -151,6 +151,19 @@
   .gifgrid .rowhead { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
                       color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); justify-self: center; }
 
+  figure video { display: block; width: 100%; height: auto; }
+
+  /* Summary / All switch, as the homepage's Selected / All and HQL's task tabs */
+  .switch { margin-top: 4px; }
+  .switch .tabs { display: inline-grid; grid-auto-flow: column; gap: 2px; padding: 2px; margin-bottom: 14px;
+                  border: 1px solid var(--rule); border-radius: 8px; background: #fff; }
+  .switch .tabs button { font: inherit; font-size: 14px; line-height: 1; padding: 8px 14px; border: none;
+                         border-radius: 6px; background: none; color: var(--dim); cursor: pointer; white-space: nowrap; }
+  .switch .tabs button:hover { color: var(--ink); }
+  .switch .tabs button[aria-selected="true"] { background: #F3EEF8; color: var(--accent); font-weight: 600; }
+  .switch .panel[hidden] { display: none; }
+  td .cnt { margin-left: 6px; font-size: 13px; font-weight: 400; color: var(--muted); }
+
   @media (max-width: 680px) {
     body { font-size: 17px; }
     .page { padding: 0 20px; }
@@ -187,8 +200,10 @@
   <p class="tldr">DICE learns the ratio between the optimal and the dataset distributions. Diffusion-DICE reads this ratio as a <b>transformation of the behavior policy</b>: the optimal policy's score is the behavior score plus a guidance term that we learn <b>in-sample</b>. It guides a diffusion behavior model toward high-value in-support actions, then <b>selects</b> the best of a few candidates.</p>
 </header>
 
-<figure class="wide">
-  <img src="static/paradigm.png" alt="Two schematic panels over a 1-D action axis with a data gap in the middle where the learned Q has a spurious peak. Top, guide-only or select-only: samples from the diffusion behavior model leak into the gap, and the action with the highest learned Q is an out-of-distribution action with an overestimated value. Bottom, Diffusion-DICE: the guided distribution puts mass only on in-support high-value modes, and selecting among a few candidates returns the best in-support action.">
+<figure class="wide video">
+  <video autoplay muted loop playsinline preload="auto" poster="static/anim/guide_select_poster.png" aria-label="Animation of reverse diffusion in a 1-D action space with a data gap where the learned Q has a spurious peak. Left: samples from the behavior diffusion model, some landing in the gap; selecting by learned Q picks an overestimated out-of-distribution action. Right: guided samples land only on in-support high-value modes, and selection returns the best in-support action.">
+    <source src="static/anim/guide_select.mp4" type="video/mp4">
+  </video>
 </figure>
 
 <!-- ================================================================ problem -->
@@ -275,6 +290,23 @@
 <section>
   <div class="section-head"><h2>D4RL</h2></div>
   <p class="note">Normalized scores at the end of training, 5 seeds. CQL, IQL and standard deviations are in the paper; D-DICE is Diffusion-DICE.</p>
+  <figure class="wide">
+    <img src="static/d4rl_bars.png" alt="Grouped bars of mean normalized score over six D4RL dataset groups. Left: QGPO, a guide-only method, vs. Diffusion-DICE. Right: IDQL, a select-only method, vs. Diffusion-DICE. Diffusion-DICE is higher on every group in both panels.">
+    <figcaption>Mean score per dataset group against the strongest guide-only (QGPO) and select-only (IDQL) baselines; MuJoCo groups average halfcheetah, hopper and walker2d.</figcaption>
+  </figure>
+  <p>Diffusion-DICE reaches a mean of <b>88</b> on MuJoCo and AntMaze against 83 for QGPO, the strongest diffusion baseline, and is best on all four Kitchen and Adroit tasks, e.g. <code>pen-cloned</code> (57.3 → <b>83.8</b>). The gap to O-DICE (81), a strong DICE method that extracts a Gaussian policy, reflects how multi-modal DICE's optimal policy is.</p>
+
+  <h3>Against prior methods</h3>
+<div class="switch"><div class="tabs" role="tablist"><button type="button" role="tab" aria-selected="true">Summary</button><button type="button" role="tab" aria-selected="false">All datasets</button></div>
+<div class="panel">
+<div class="tablewrap"><table>
+<tr><th></th><th>SQL</th><th>O-DICE</th><th>Diffusion-QL</th><th>SfBC</th><th>QGPO</th><th>IDQL</th><th>D-DICE</th></tr>
+<tr><td>MuJoCo <span class='cnt'>9 datasets</span></td><td>83.3</td><td>84.5</td><td>87.9</td><td>75.6</td><td>86.6</td><td>82.1</td><td><span class="best">90.6</span></td></tr>
+<tr><td>AntMaze <span class='cnt'>6 datasets</span></td><td>71.8</td><td>75.4</td><td>69.6</td><td>74.2</td><td>78.3</td><td>79.1</td><td><span class="best">82.9</span></td></tr>
+<tr class="mean"><td>MuJoCo + AntMaze <span class='cnt'>15 datasets</span></td><td>78.7</td><td>80.9</td><td>80.6</td><td>75.0</td><td>83.3</td><td>80.9</td><td><span class="best">87.5</span></td></tr>
+<tr><td>Kitchen + Adroit <span class='cnt'>4 datasets</span></td><td class="na">–</td><td class="na">–</td><td>63.3</td><td class="na">–</td><td class="na">–</td><td class="na">–</td><td><span class="best">78.6</span></td></tr>
+</table></div>
+</div><div class="panel" hidden>
 <div class="tablewrap"><table>
 <tr><th></th><th>SQL</th><th>O-DICE</th><th>Diffusion-QL</th><th>SfBC</th><th>QGPO</th><th>IDQL</th><th>D-DICE</th></tr>
 <tr><td>halfcheetah-m</td><td>48.3</td><td>47.4</td><td>51.1</td><td>45.9</td><td>54.1</td><td>51.0</td><td><span class="best">60.0</span></td></tr>
@@ -298,7 +330,10 @@
 <tr><td>pen-cloned</td><td class="na">–</td><td class="na">–</td><td>57.3</td><td class="na">–</td><td>54.2</td><td class="na">–</td><td><span class="best">83.8</span></td></tr>
 <tr class="mean"><td>mean (first 15)</td><td>79</td><td>81</td><td>81</td><td>75</td><td>83</td><td>81</td><td><span class=best>88</span></td></tr>
 </table></div>
-  <p>Diffusion-DICE reaches a mean of <b>88</b> on MuJoCo and AntMaze against 83 for QGPO, the strongest diffusion baseline, and is best on all four Kitchen and Adroit tasks, e.g. <code>pen-cloned</code> (57.3 → <b>83.8</b>). The gap to O-DICE (81), a strong DICE method that extracts a Gaussian policy, reflects how multi-modal DICE's optimal policy is.</p>
+</div>
+</div>
+
+  <h3>Less overestimation</h3>
   <p>Guiding also lowers overestimation in practice. With the same critic and behavior model, guide-then-select reaches higher returns than selecting from behavior samples, while its selected actions have <b>lower</b> predicted Q-values.</p>
 </section>
 
@@ -331,5 +366,14 @@
 
 <footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
 </div>
+<script>
+document.querySelectorAll('.switch').forEach((sw) => {
+  const bs = [...sw.querySelectorAll('.tabs button')], ps = [...sw.querySelectorAll(':scope > .panel')];
+  bs.forEach((b, i) => b.addEventListener('click', () => {
+    bs.forEach((x, j) => x.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+    ps.forEach((p, j) => { p.hidden = j !== i; });
+  }));
+});
+</script>
 </body>
 </html>
