@@ -1,341 +1,335 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="In-Sample Diffusion Guidance for Offline Reinforcement Learning">
-  <meta name="keywords" content="diffusion, offline RL">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Diffusion-DICE:  In-Sample Diffusion Guidance for Offline Reinforcement Learning</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning</title>
+<meta name="description" content="Diffusion-DICE turns the DICE distribution ratio into in-sample diffusion guidance, then selects among a few candidates, minimizing critic error exploitation in offline RL.">
+<meta property="og:title" content="Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning">
+<meta property="og:description" content="Guide-then-select: in-sample diffusion guidance from DICE for offline RL.">
+<meta property="og:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/teaser.png">
+<meta property="og:url" content="https://ryanxhr.github.io/Diffusion-DICE/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ryanxhr.github.io/Diffusion-DICE/static/teaser.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
+<link rel="preload" href="../assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="../assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+<style>
+  /* Same typography, palette and layout as ryanxhr.github.io/hql: warm off-white page, Source Sans 3,
+     left-aligned sections with a thin rule, and one purple accent used for text only. */
+  @font-face { font-family: "Source Sans 3"; font-weight: 300; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Light.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Regular.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: italic; font-display: swap;
+               src: url("../assets/font/SourceSans3-It.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 600; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Semibold.woff") format("woff"); }
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+  :root {
+    --bg: #FBFAF7;
+    --ink: #2F2F2F;
+    --black: #141414;
+    --dim: #686868;
+    --muted: #8E8E8E;
+    --rule: #E6E2DC;
+    --hair: #EEEAE5;
+    --dot: #CCC6C0;
+    --accent: #5B2C8A;
+    --accent-soft: #8C6BB8;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400; font-size: 17.5px; line-height: 1.6; font-kerning: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, p, ul, ol { margin: 0; padding: 0; }
+  b, strong { font-weight: 600; color: var(--black); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+  .ours { color: var(--accent); font-weight: 600; }
+  code { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.84em; color: var(--dim); }
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+  .page { max-width: 800px; margin: 0 auto; padding: 0 28px; }
 
-    gtag('js', new Date());
+  /* ---------------------------------------------------------------- hero */
+  .hero { padding-top: 72px; }
+  .crumb { font-size: 15px; color: var(--muted); margin-bottom: 30px; }
+  .crumb a { color: var(--muted); }
+  .crumb a:hover { color: var(--accent); }
+  .hero h1 { font-weight: 300; font-size: 42px; line-height: 1.1; letter-spacing: -0.4px; color: var(--black); }
+  .hero .authors { margin-top: 16px; font-size: 17px; color: var(--ink); }
+  .hero .authors a { color: var(--ink); }
+  .hero .authors a:hover { color: var(--accent); }
+  .hero .authors sup, .hero .affil sup { font-size: 0.68em; color: var(--muted); margin-left: 1px; }
+  .hero .affil { margin-top: 4px; font-size: 16px; color: var(--dim); }
+  .hero .affil .sep { color: var(--dot); margin: 0 8px; }
+  .hero .affil .venue { color: var(--ink); }
+  .hero .affil .eq { font-style: italic; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 16.5px; }
+  .links a { font-weight: 600; }
+  .tldr { margin-top: 28px; font-size: 18.5px; line-height: 1.55; }
 
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+  /* ------------------------------------------------------------ sections */
+  section { margin-top: 76px; }
+  .section-head { padding-bottom: 10px; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  h2 { font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: -0.1px; color: var(--black); }
+  h3 { font-weight: 600; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase;
+       color: var(--muted); margin: 38px 0 10px; }
+  .note { margin: -10px 0 18px; font-size: 15px; font-style: italic; color: var(--muted); }
+  section p + p { margin-top: 14px; }
+  .key { margin-top: 18px; padding-left: 16px; border-left: 2px solid var(--accent-soft); }
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
+  figure { margin: 28px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; }
+  figure.wide img { width: 100%; }
+  figure.mid img { width: 80%; }
+  figure.small img { width: 56%; }
+  figcaption { margin-top: 8px; font-size: 15px; font-style: italic; color: var(--muted); text-align: left; }
+  .katex-display { margin: 16px 0; overflow-x: auto; overflow-y: hidden; }
+  .katex { font-size: 1.08em; }
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="../assets/favicon_package/favicon.ico">
-<!--  <link rel="stylesheet" href="main.css">-->
+  /* dotted lists, as in the homepage's news */
+  .dots { list-style: none; margin-top: 18px; }
+  .dots li { position: relative; padding-left: 20px; margin-top: 10px; }
+  .dots li::before { content: ""; position: absolute; left: 3px; top: 0.72em; width: 6px; height: 6px;
+                     border-radius: 50%; background: var(--dot); }
+  .dots li .sub { display: block; font-size: 15.5px; color: var(--dim); }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  .card { margin: 28px 0 0; padding: 16px 22px 18px; background: #fff; border: 1px solid var(--rule);
+          border-radius: 10px; font-size: 16.5px; }
+  .card .head { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+                color: var(--muted); margin-bottom: 6px; }
+  .card ol { padding-left: 1.3em; }
+  .card li { margin-top: 4px; }
+
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; font-variant-numeric: lining-nums tabular-nums; }
+  .tablewrap.narrow table { width: auto; min-width: 62%; }
+  th { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+       text-align: center; padding: 0 8px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap;
+       vertical-align: bottom; }
+  th .sub { display: block; font-size: 11.5px; font-weight: 400; letter-spacing: 0.4px; text-transform: none; }
+  td { padding: 7px 8px; text-align: center; white-space: nowrap; border-top: 1px solid var(--hair); }
+  tr:nth-child(2) td { border-top: none; }
+  tr.sep td { border-top: 1px solid var(--rule); }
+  th:first-child, td:first-child { text-align: left; padding-left: 0; }
+  tr.mean td { border-top: 1px solid var(--rule); font-weight: 600; color: var(--black); }
+  td .best { color: var(--accent); font-weight: 600; }
+  td .pm { color: var(--muted); font-size: 13px; }
+  td.na { color: var(--dot); }
+  .tablenote { margin-top: 10px; font-size: 15px; font-style: italic; color: var(--muted); }
+
+  ol.take { padding-left: 1.3em; }
+  ol.take li { margin-top: 8px; }
+  ol.take li::marker { color: var(--muted); }
+
+  pre { margin: 0; padding: 16px 20px; background: #fff; border: 1px solid var(--rule); border-radius: 10px;
+        font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+        color: var(--ink); overflow-x: auto; }
+  .refs { margin-top: 18px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+  footer { margin: 96px 0 44px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+  /* toy-case grid: method columns, guide / select rows */
+  .gifgrid { display: grid; grid-template-columns: 52px repeat(3, 1fr); gap: 4px 10px; align-items: center;
+             margin: 26px 0 0; }
+  .gifgrid img { width: 100%; height: auto; display: block; }
+  .gifgrid .colhead { text-align: center; font-size: 15.5px; font-weight: 600; color: var(--ink); line-height: 1.25; }
+  .gifgrid .colhead .sub { display: block; font-size: 13.5px; font-weight: 400; font-style: italic; color: var(--muted); }
+  .gifgrid .ours-col { color: var(--accent); }
+  .gifgrid .rowhead { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+                      color: var(--muted); writing-mode: vertical-rl; transform: rotate(180deg); justify-self: center; }
+
+  @media (max-width: 680px) {
+    body { font-size: 17px; }
+    .page { padding: 0 20px; }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 34px; }
+    section { margin-top: 60px; }
+    figure.mid img, figure.small img { width: 100%; }
+    table { font-size: 14px; }
+    td, th { padding-left: 5px; padding-right: 5px; }
+  }
+</style>
 </head>
-
-
 <body>
+<div class="page">
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://ryanxhr.github.io/">
-          <span class="icon">
-            <i class="fas fa-home"></i>
-          </span>
-          &ensp; More Research
-      </a>
+<header class="hero">
+  <p class="crumb"><a href="https://ryanxhr.github.io/">← Haoran Xu</a></p>
+  <h1>Diffusion-DICE: In-Sample Diffusion Guidance for Offline Reinforcement Learning</h1>
+  <p class="authors">
+    <a href="https://scholar.google.com/citations?user=Xa2pDisAAAAJ&hl=en">Liyuan Mao</a><sup>*1</sup>,
+    <a href="https://ryanxhr.github.io/">Haoran Xu</a><sup>*2</sup>,
+    <a href="https://scholar.google.com/citations?user=pDMnGloAAAAJ&hl=en">Xianyuan Zhan</a><sup>3</sup>,
+    <a href="https://scholar.google.com/citations?user=Qzss0GEAAAAJ&hl=en">Weinan Zhang</a><sup>1</sup>,
+    <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>2</sup>
+  </p>
+  <p class="affil"><sup>1</sup>Shanghai Jiao Tong University&ensp;<sup>2</sup>UT Austin&ensp;<sup>3</sup>Tsinghua University</p>
+  <p class="affil"><span class="venue">NeurIPS 2024</span><span class="sep">/</span><span class="eq">* equal contribution</span></p>
+  <p class="links">
+    <a href="https://arxiv.org/abs/2407.20109">Paper</a>
+    <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch">Code</a>
+    <a href="https://x.com/ryanxhr/status/1866223722111095073">Thread</a>
+    <a href="#bibtex">BibTeX</a>
+  </p>
+  <p class="tldr">DICE learns the ratio between the optimal and the dataset distributions. Diffusion-DICE reads this ratio as a <b>transformation of the behavior policy</b>: the optimal policy's score is the behavior score plus a guidance term that we learn <b>in-sample</b>. It guides a diffusion behavior model toward high-value in-support actions, then <b>selects</b> the best of a few candidates.</p>
+</header>
 
-<!--    <div style="padding-bottom: 32px; text-align: center;">-->
-<!--		<a href="https://nicklashansen.github.io"><i class="fa fa-home"></i>&ensp;More research</a>-->
-<!--	</div>-->
+<figure class="wide">
+  <img src="static/paradigm.png" alt="Two schematic panels over a 1-D action axis with a data gap in the middle where the learned Q has a spurious peak. Top, guide-only or select-only: samples from the diffusion behavior model leak into the gap, and the action with the highest learned Q is an out-of-distribution action with an overestimated value. Bottom, Diffusion-DICE: the guided distribution puts mass only on in-support high-value modes, and selecting among a few candidates returns the best in-support action.">
+</figure>
 
-<!--      <div class="navbar-item has-dropdown is-hoverable">-->
-<!--        <a class="navbar-link">-->
-<!--          More Research-->
-<!--        </a>-->
-<!--        <div class="navbar-dropdown">-->
-<!--          <a class="navbar-item" href="https://ace-rl.github.io/">-->
-<!--            ACE (ICML 2024 Oral)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://drm-rl.github.io/">-->
-<!--            DrM (ICLR 2024 Spotlight)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://premiertaco.github.io/">-->
-<!--            Premier-TACO (ICML 2024)-->
-<!--          </a>-->
-<!--        </div>-->
-    </div>
-  </div>
-</nav>
+<!-- ================================================================ problem -->
+<section>
+  <div class="section-head"><h2>Diffusion policies exploit critic errors</h2></div>
+  <p>Diffusion models fit multi-modal behavior well, which makes them attractive for offline RL. Existing methods turn them into policies in one of two ways:</p>
+  <ul class="dots">
+    <li><b>Guide-based</b> (QGPO) learns a guidance term from critic values on actions generated by the diffusion behavior model.</li>
+    <li><b>Select-based</b> (IDQL, SfBC) draws many candidates from the diffusion behavior model and resamples them by critic value.</li>
+  </ul>
+  <p>Both query the critic on <b>generated</b> actions. A diffusion model can still produce out-of-distribution actions, especially with frequent sampling, and the critic tends to overestimate exactly those, so the guidance or the selection is drawn toward them.</p>
+  <p class="key">The fix is to use the critic <b>only on dataset actions</b> during guidance, and only on a few well-guided candidates during selection.</p>
+</section>
 
+<!-- ================================================================= method -->
+<section>
+  <div class="section-head"><h2>DICE as a policy transformation</h2></div>
+  <p>DICE methods solve an \(f\)-divergence-regularized LP form of RL through its dual, which uses only \((s,a,s')\) samples from the dataset:</p>
+  $$\min_V\ \mathbb{E}_{(s,a)\sim d^{\mathcal D}}\Big[(1-\gamma)V(s) + \alpha f^*\big([Q(s,a)-V(s)]/\alpha\big)\Big],$$
+  $$\min_Q\ \mathbb{E}_{(s,a,s')\sim d^{\mathcal D}}\Big[\big(r(s,a)+\gamma V(s')-Q(s,a)\big)^2\Big].$$
+  <p>The solution gives the optimal stationary distribution ratio, \(w^*(s,a) = d^*(s,a)/d^{\mathcal D}(s,a) = \max\big\{0,(f')^{-1}\big(Q^*(s,a)-V^*(s)\big)\big\}\). Since a policy is its stationary distribution normalized over actions, the same ratio transforms the behavior policy into the optimal one:</p>
+  $$\pi^*(a|s) \;\propto\; w^*(s,a)\;\pi^{\mathcal D}(a|s).$$
+  <p>For a diffusion model, all we need is the score of \(\pi^*\) along the reverse process, and it splits into two terms:</p>
+  $$\nabla_{a_t}\log\pi^*_t(a_t|s) \;=\; \underbrace{\nabla_{a_t}\log\pi^{\mathcal D}_t(a_t|s)}_{\text{diffusion behavior model}} \;+\; \underbrace{{\color{#5B2C8A}\nabla_{a_t}\log\mathbb{E}_{a_0\sim\pi^{\mathcal D}(a_0|a_t,s)}\big[w^*(s,a_0)\big]}}_{\text{guidance}} .$$
+  <p>Previous DICE methods extract a unimodal Gaussian policy from \(w^*\); here the diffusion model keeps every mode of \(\pi^*\).</p>
+</section>
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-<!--          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>-->
-          <h1 class="title is-3 publication-title"><b style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE:</b> In-Sample Diffusion Guidance for Offline Reinforcement Learning</h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=Xa2pDisAAAAJ&hl=en">Liyuan Mao</a>&ast;<sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ&hl=en">Haoran Xu</a>&ast;<sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=Qzss0GEAAAAJ&hl=en">Weinan Zhang</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=pDMnGloAAAAJ&hl=en">Xianyuan Zhan</a><sup>3</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1</sup>
-            </span>
-          </div>
+<section>
+  <div class="section-head"><h2>Guide: in-sample guidance learning</h2></div>
+  <p>The guidance term is a log of a conditional expectation, which is intractable directly. For any non-negative \(f\), however, \(\min_y \mathbb{E}_x\big[f(x)e^{-y} + y\big]\) is convex and minimized by \(y^*=\log\mathbb{E}_x[f(x)]\). Applying this along the forward diffusion process gives the In-sample Guidance Learning (IGL) objective for a guidance network \(g_\theta\):</p>
+  $$\min_\theta\ \mathbb{E}_{t\sim\mathcal U(0,T)}\,\mathbb{E}_{{\color{#5B2C8A}a\sim\pi^{\mathcal D}(a|s)}}\,\mathbb{E}_{a_t\sim p(a_t|a_0)}\Big[w^*(s,a)\,e^{-g_\theta(s,a_t,t)} + g_\theta(s,a_t,t)\Big],$$
+  <p>whose optimum satisfies \(\nabla_{a_t} g_{\theta^*}(s,a_t,t) = \nabla_{a_t}\log\mathbb{E}_{\pi^{\mathcal D}(a_0|a_t,s)}\big[w^*(s,a_0)\big]\).</p>
+  <ul class="dots">
+    <li><b>In-sample.</b> \(w^*\) is evaluated only on dataset actions, so the guidance never relies on value predictions for generated actions.</li>
+    <li><b>Unbiased and convex.</b> One dataset action per state suffices for an unbiased estimate, and the loss is convex in \(g_\theta\) because \(w^*\ge 0\).</li>
+  </ul>
+  <h3>A piecewise f-divergence</h3>
+  <p>The log in the guidance is undefined where \(w^*=0\), so \((f')^{-1}\) must stay positive, while \(f^*\) should stay numerically tame. Reverse KL satisfies the first condition and Pearson \(\chi^2\) the second; we join them:</p>
+  $$f(x) = \begin{cases}(x-1)^2 & x\ge 1\\ x\log x - x + 1 & 0\le x<1\end{cases}\quad\Longrightarrow\quad (f')^{-1}(x) = \begin{cases}x/2+1 & x\ge 0\\ e^{x} & x<0\end{cases},\qquad f^*(x) = \begin{cases}x^2/4+x & x\ge 0\\ e^{x}-1 & x<0\end{cases}.$$
+  <p>The ratio is now strictly positive everywhere, and \(f^*\) is at most quadratic.</p>
+</section>
 
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>UT Austin</span>
-            <span class="author-block"><sup>2</sup>Shanghai Jiao Tong University</span>
-            <span class="author-block"><sup>3</sup>Tsinghua University</span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block" style="font-size: 0.85em;">
-                &ast; Equal contribution
-            </span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/abs/2407.20109"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/maoliyuan/diffusion-DICE-Pytorch"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-<!--              <span class="link-block">-->
-<!--                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"-->
-<!--                   class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <img src="static/images/hf_icon.svg" />-->
-<!--                  </span>-->
-<!--                  <span>Models & Dataset</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-<!--              <span class="link-block">-->
-<!--                <a href="https://x.com/cheryyun_l/status/1813226234979184687"-->
-<!--                    class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <i class="fab fa-twitter"></i>-->
-<!--                  </span>-->
-<!--                  <span>Twitter</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
+<section>
+  <div class="section-head"><h2>Then select</h2></div>
+  <p>The behavior constraint makes \(\pi^*\) multi-modal, so following its score can still land in a local mode. We sample a few candidates from the guided model and keep the one with the highest DICE critic value:</p>
+  $$\pi(s) = \arg\max_{a\,\in\,\{a^1_0,\dots,a^K_0\}\,\sim\,\pi^*(\cdot|s)}\ Q^*(s,a).$$
+  <p>Because the candidates already come from in-support, high-value regions, a small \(K\) is enough, and few critic queries leave little room to exploit its errors. On AntMaze, Diffusion-DICE uses 1 to 8 candidates where IDQL uses 32.</p>
+  <div class="card">
+    <div class="head">Diffusion-DICE</div>
+    <ol>
+      <li>Pretrain a diffusion behavior model \(\epsilon_\psi\) on the dataset.</li>
+      <li>Train \(Q\) and \(V\) with the DICE losses and the piecewise \(f\)-divergence.</li>
+      <li>Train the guidance network \(g_\theta\) with IGL on dataset actions.</li>
+      <li>At test time, sample \(K\) actions with score \(-\epsilon_\psi(a_t,s,t)/\sigma_t + \nabla_{a_t} g_\theta(s,a_t,t)\) and execute the one with the highest \(Q\).</li>
+    </ol>
   </div>
 </section>
 
-<!--<style>-->
-<!--    .center {-->
-<!--      display: block;-->
-<!--      margin-left: auto;-->
-<!--      margin-right: auto;-->
-<!--      width: 75%;-->
-<!--    }-->
-<!--</style>-->
-
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <h2 class="subtitle has-text-centered">
-        Diffusion-DICE <strong>rethinks</strong> diffusion-based offline RL algorithm by using a <b style="color:#C73659">guide-then-select</b> paradigm to bring minimal out-of-distribution value errors and achieves state-of-the-art empirical results. <br>
-      </h2>
-<!--      <video id="teaser" autoplay muted loop playsinline height="85%">-->
-<!--        <source src="./static/videos/teaser.mp4"-->
-<!--                type="video/mp4">-->
-<!--      </video>-->
-    </div>
+<!-- ================================================================ results -->
+<section>
+  <div class="section-head"><h2>Sanity check: a 2-D bandit</h2></div>
+  <p>Dataset actions follow a standard normal distribution restricted to an annulus; the true reward peaks on the outer ring. The diffusion behavior model and the learned reward both fit the data well but make errors where there is no data, and the learned reward is too high in the empty center.</p>
+  <figure class="small">
+    <img src="static/toy/toycase.png" alt="Four heatmaps over a 2-D action space: the dataset action distribution on an annulus with an empty center; the diffusion behavior policy, which leaks some mass into the center; the true reward with a bright outer ring; and the learned reward, which is erroneously high in the center.">
+  </figure>
+  <div class="gifgrid">
+    <div></div>
+    <div class="colhead">IDQL<span class="sub">select-only</span></div>
+    <div class="colhead">QGPO<span class="sub">guide-only</span></div>
+    <div class="colhead ours-col">Diffusion-DICE<span class="sub">guide-then-select</span></div>
+    <div class="rowhead">guide</div>
+    <img src="static/toy/idql_candidate.gif" alt="IDQL candidates: samples from the behavior model spread over the whole annulus.">
+    <img src="static/toy/qgpo_candidate.gif" alt="QGPO guided samples drift toward the overestimated center.">
+    <img src="static/toy/ddice_candidate.gif" alt="Diffusion-DICE guided samples concentrate on the high-reward outer ring.">
+    <div class="rowhead">select</div>
+    <img src="static/toy/idql_sample.gif" alt="IDQL selected actions include out-of-distribution actions near the center.">
+    <img src="static/toy/qgpo_sample.gif" alt="QGPO output: no select step.">
+    <img src="static/toy/ddice_sample.gif" alt="Diffusion-DICE selected actions lie on the outer ring.">
   </div>
-
-<!--  <div class="container is-max-desktop">-->
-<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
-<!--    <div class="columns is-centered has-text-centered">-->
-<!--      <div class="column is-four-fifths">-->
-<!--        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>-->
-<!--        <div class="content has-text-justified">-->
-<!--          <p>-->
-<!--          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.-->
-<!--          </p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
-
+  <p class="tablenote">Generated actions colored by true reward. QGPO has no select step.</p>
+  <p>QGPO's guidance is learned from the critic on generated actions, so it drifts toward the overestimated center; selecting afterwards cannot fix a wrong guide step. IDQL needs many candidates to cover the optimum and picks from out-of-distribution ones as well. Only <span class="ours">Diffusion-DICE</span> places its actions on the outer ring.</p>
 </section>
 
-<section class="section">
-  <div class="container is-max-desktop">
-      <hr style="margin-top: 1em;">
-<!--      <div class="columns is-centered">-->
-<!--      <div class="column is-full-width">-->
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/diffusion.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-          <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
-          <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>
-          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>, to effectively fit in the optimal mode in the dataset.  </li>
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>
-<!--      <div class="content has-text-justified">-->
-<!--        <img src="static/images/guide-then-select.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">-->
-<!--      </div>-->
-      <div class="content-video-container">
-        <img src="static/images/diffusion_dice.gif" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-          <li> Our framework is fundamentally different from previous methods that rely on <strong> actions generated from the diffusion behavior policy </strong>, which may induce out-of-distribution errors. </li>
-      </div>
-
-      <div class="content has-text-justified">
-          <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/dice.png" style="width: 65%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/guide.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/IGL.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>
-      </div>
-      <div class="content has-text-justified">
-        <img src="static/images/select.png" style="width: 55%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
-      <div class="content-picture-">
-        <img src="static/images/toycase.png" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-      <li>Toycase of a 2-D bandit problem. The action in the offline dataset follows a bivariate standard normal distribution constrained within an annular region. The ground truth reward has two peaks extending from the center outward.   </li>
-      <li>We use a diffusion model to fit the behavior policy and a reward model to fit the ground truth reward R. Both models fit in-distribution data well while making error in out-of-distribution regions.  </li>
-      </div>
-
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_candidate_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_candidate_distribution_s_4.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_candidate_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_sample_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_sample_distribution_s_1.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_sample_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content has-text-justified">
-      <li>From left to right: <a href="https://arxiv.org/abs/2304.10573">IDQL</a> (<strong>select-only</strong>), <a href="https://arxiv.org/abs/2304.12824">QGPO</a> (<strong>guide-only</strong>) and Diffusion-DICE (<strong>guide-then-select</strong>). From top to down: guide and select step (if one has). Comparing to other guide-only or select-only methods, only Diffusion-DICE could generate correct optimal actions in the outer circle. Other methods tend to expolit error information from the reward model and only generate overestimated, sub-optimal actions. </li>
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/experiments.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
-      </div>
-<!--      </div>-->
-<!--      </div>-->
-  </div>
+<section>
+  <div class="section-head"><h2>D4RL</h2></div>
+  <p class="note">Normalized scores at the end of training, 5 seeds. CQL, IQL and standard deviations are in the paper; D-DICE is Diffusion-DICE.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>SQL</th><th>O-DICE</th><th>Diffusion-QL</th><th>SfBC</th><th>QGPO</th><th>IDQL</th><th>D-DICE</th></tr>
+<tr><td>halfcheetah-m</td><td>48.3</td><td>47.4</td><td>51.1</td><td>45.9</td><td>54.1</td><td>51.0</td><td><span class="best">60.0</span></td></tr>
+<tr><td>hopper-m</td><td>75.5</td><td>86.1</td><td>90.5</td><td>57.1</td><td>98.0</td><td>65.4</td><td><span class="best">100.2</span></td></tr>
+<tr><td>walker2d-m</td><td>84.2</td><td>84.9</td><td>87.0</td><td>77.9</td><td>86.0</td><td>82.5</td><td><span class="best">89.3</span></td></tr>
+<tr><td>halfcheetah-m-r</td><td>44.8</td><td>44.0</td><td>47.8</td><td>37.1</td><td>47.6</td><td>45.9</td><td><span class="best">49.2</span></td></tr>
+<tr><td>hopper-m-r</td><td>99.7</td><td>99.9</td><td>101.3</td><td>86.2</td><td>96.9</td><td>92.1</td><td><span class="best">102.3</span></td></tr>
+<tr><td>walker2d-m-r</td><td>81.2</td><td>83.6</td><td><span class="best">95.5</span></td><td>65.1</td><td>84.4</td><td>85.1</td><td>90.8</td></tr>
+<tr><td>halfcheetah-m-e</td><td>94.0</td><td>93.2</td><td><span class="best">96.8</span></td><td>92.6</td><td>93.5</td><td>95.9</td><td><span class="best">97.3</span></td></tr>
+<tr><td>hopper-m-e</td><td><span class="best">111.8</span></td><td>110.8</td><td>111.1</td><td>108.6</td><td>108.0</td><td>108.6</td><td><span class="best">112.2</span></td></tr>
+<tr><td>walker2d-m-e</td><td>110.0</td><td>110.8</td><td>110.1</td><td>109.8</td><td>110.7</td><td>112.7</td><td><span class="best">114.1</span></td></tr>
+<tr class="sep"><td>antmaze-u</td><td>92.2</td><td>94.1</td><td>93.4</td><td>92.0</td><td>96.4</td><td>94.0</td><td><span class="best">98.1</span></td></tr>
+<tr><td>antmaze-u-d</td><td>74.0</td><td>79.5</td><td>66.2</td><td><span class="best">85.3</span></td><td>74.4</td><td>80.2</td><td>82.0</td></tr>
+<tr><td>antmaze-m-p</td><td>80.2</td><td>86.0</td><td>76.6</td><td>81.3</td><td>83.6</td><td>84.5</td><td><span class="best">91.3</span></td></tr>
+<tr><td>antmaze-m-d</td><td>79.1</td><td>82.7</td><td>78.6</td><td>82.0</td><td>83.8</td><td>84.8</td><td><span class="best">85.7</span></td></tr>
+<tr><td>antmaze-l-p</td><td>53.2</td><td>55.9</td><td>46.4</td><td>59.3</td><td>66.6</td><td>63.5</td><td><span class="best">68.6</span></td></tr>
+<tr><td>antmaze-l-d</td><td>52.3</td><td>54.0</td><td>56.6</td><td>45.5</td><td>64.8</td><td>67.9</td><td><span class="best">72.0</span></td></tr>
+<tr class="sep"><td>kitchen-p</td><td class="na">–</td><td class="na">–</td><td>60.5</td><td class="na">–</td><td class="na">–</td><td class="na">–</td><td><span class="best">78.3</span></td></tr>
+<tr><td>kitchen-m</td><td class="na">–</td><td class="na">–</td><td>62.6</td><td class="na">–</td><td class="na">–</td><td class="na">–</td><td><span class="best">67.8</span></td></tr>
+<tr><td>pen-human</td><td class="na">–</td><td class="na">–</td><td>72.8</td><td class="na">–</td><td>73.9</td><td class="na">–</td><td><span class="best">84.4</span></td></tr>
+<tr><td>pen-cloned</td><td class="na">–</td><td class="na">–</td><td>57.3</td><td class="na">–</td><td>54.2</td><td class="na">–</td><td><span class="best">83.8</span></td></tr>
+<tr class="mean"><td>mean (first 15)</td><td>79</td><td>81</td><td>81</td><td>75</td><td>83</td><td>81</td><td><span class=best>88</span></td></tr>
+</table></div>
+  <p>Diffusion-DICE reaches a mean of <b>88</b> on MuJoCo and AntMaze against 83 for QGPO, the strongest diffusion baseline, and is best on all four Kitchen and Adroit tasks, e.g. <code>pen-cloned</code> (57.3 → <b>83.8</b>). The gap to O-DICE (81), a strong DICE method that extracts a Gaussian policy, reflects how multi-modal DICE's optimal policy is.</p>
+  <p>Guiding also lowers overestimation in practice. With the same critic and behavior model, guide-then-select reaches higher returns than selecting from behavior samples, while its selected actions have <b>lower</b> predicted Q-values.</p>
 </section>
-  
-<!--<section class="section" id="BibTeX">-->
-<!--  <div class="container is-max-desktop content">-->
-<!--    <h2 class="title">BibTeX</h2>-->
-<!--    <pre><code>@article{liang2024make,-->
-<!--      title={Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion},-->
-<!--      author={Liang, Yongyuan and Xu, Tingqiang and Hu, Kaizhe and Jiang, Guangqi and Huang, Furong and Xu, Huazhe},-->
-<!--      journal={arXiv preprint arXiv:2407.10973},-->
-<!--      year={2024}-->
-<!--      }</code></pre>-->
-<!--  </div>-->
-<!--</section>-->
 
-<footer class="footer">
-  <div class="container">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-15">
-        <div class="content">
-<!--          <a style="color:hsla(247, 58%, 62%, 0.862)" href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>-->
-          <p>
-            Website is modified from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
+<!-- ================================================================ wrap-up -->
+<section>
+  <div class="section-head"><h2>Takeaways</h2></div>
+  <ol class="take">
+    <li>The DICE ratio \(w^*\) transforms the behavior policy into the optimal one, and the optimal score is the <b>behavior score plus a guidance term</b>.</li>
+    <li>The guidance term can be learned <b>in-sample</b> with a convex objective, using critic values on dataset actions only.</li>
+    <li><b>Guide, then select</b>: guiding first means a few candidates suffice, which keeps the critic away from the actions it overestimates.</li>
+  </ol>
+</section>
 
+<section id="bibtex">
+  <div class="section-head"><h2>BibTeX</h2></div>
+  <pre>@inproceedings{mao2024diffusiondice,
+  title     = {Diffusion-DICE: In-Sample Diffusion Guidance for Offline
+               Reinforcement Learning},
+  author    = {Mao, Liyuan and Xu, Haoran and Zhan, Xianyuan and Zhang, Weinan and
+               Zhang, Amy},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2024}
+}</pre>
+  <p class="refs">
+    D4RL: Fu et al., 2020 · O-DICE: Mao et al., ICLR 2024 · SQL: Xu et al., ICLR 2023 · QGPO: Lu et al., ICML 2023 ·
+    IDQL: Hansen-Estruch et al., 2023 · SfBC: Chen et al., ICLR 2023 · Diffusion-QL: Wang et al., ICLR 2023 ·
+    DICE: Nachum &amp; Dai, 2020
+  </p>
+</section>
+
+<footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
+</div>
 </body>
 </html>

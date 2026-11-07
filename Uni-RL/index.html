@@ -1,339 +1,324 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="Unifying Online and Offline RL via Implicit Value Regularization">
-  <meta name="keywords" content="offline rl, online rl">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Unifying Online and Offline RL via Implicit Value Regularization</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization</title>
+<meta name="description" content="Uni-RL is one off-policy algorithm for online, offline and offline-to-online RL, built on implicit value regularization toward a reference policy and in-sample policy gradient.">
+<meta property="og:title" content="Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization">
+<meta property="og:description" content="One off-policy algorithm for online, offline and offline-to-online RL.">
+<meta property="og:image" content="https://ryanxhr.github.io/Uni-RL/static/teaser.png">
+<meta property="og:url" content="https://ryanxhr.github.io/Uni-RL/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ryanxhr.github.io/Uni-RL/static/teaser.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
+<link rel="preload" href="../assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="../assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+<style>
+  /* Same typography, palette and layout as ryanxhr.github.io/hql: warm off-white page, Source Sans 3,
+     left-aligned sections with a thin rule, and one purple accent used for text only. */
+  @font-face { font-family: "Source Sans 3"; font-weight: 300; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Light.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Regular.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: italic; font-display: swap;
+               src: url("../assets/font/SourceSans3-It.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 600; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Semibold.woff") format("woff"); }
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+  :root {
+    --bg: #FBFAF7;
+    --ink: #2F2F2F;
+    --black: #141414;
+    --dim: #686868;
+    --muted: #8E8E8E;
+    --rule: #E6E2DC;
+    --hair: #EEEAE5;
+    --dot: #CCC6C0;
+    --accent: #5B2C8A;
+    --accent-soft: #8C6BB8;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400; font-size: 17.5px; line-height: 1.6; font-kerning: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, p, ul, ol { margin: 0; padding: 0; }
+  b, strong { font-weight: 600; color: var(--black); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+  .ours { color: var(--accent); font-weight: 600; }
+  code { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.84em; color: var(--dim); }
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+  .page { max-width: 800px; margin: 0 auto; padding: 0 28px; }
 
-    gtag('js', new Date());
+  /* ---------------------------------------------------------------- hero */
+  .hero { padding-top: 72px; }
+  .crumb { font-size: 15px; color: var(--muted); margin-bottom: 30px; }
+  .crumb a { color: var(--muted); }
+  .crumb a:hover { color: var(--accent); }
+  .hero h1 { font-weight: 300; font-size: 42px; line-height: 1.1; letter-spacing: -0.4px; color: var(--black); }
+  .hero .authors { margin-top: 16px; font-size: 17px; color: var(--ink); }
+  .hero .authors a { color: var(--ink); }
+  .hero .authors a:hover { color: var(--accent); }
+  .hero .authors sup, .hero .affil sup { font-size: 0.68em; color: var(--muted); margin-left: 1px; }
+  .hero .affil { margin-top: 4px; font-size: 16px; color: var(--dim); }
+  .hero .affil .sep { color: var(--dot); margin: 0 8px; }
+  .hero .affil .venue { color: var(--ink); }
+  .hero .affil .eq { font-style: italic; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 16.5px; }
+  .links a { font-weight: 600; }
+  .tldr { margin-top: 28px; font-size: 18.5px; line-height: 1.55; }
 
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+  /* ------------------------------------------------------------ sections */
+  section { margin-top: 76px; }
+  .section-head { padding-bottom: 10px; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  h2 { font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: -0.1px; color: var(--black); }
+  h3 { font-weight: 600; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase;
+       color: var(--muted); margin: 38px 0 10px; }
+  .note { margin: -10px 0 18px; font-size: 15px; font-style: italic; color: var(--muted); }
+  section p + p { margin-top: 14px; }
+  .key { margin-top: 18px; padding-left: 16px; border-left: 2px solid var(--accent-soft); }
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
+  figure { margin: 28px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; }
+  figure.wide img { width: 100%; }
+  figure.mid img { width: 80%; }
+  figure.small img { width: 56%; }
+  figcaption { margin-top: 8px; font-size: 15px; font-style: italic; color: var(--muted); text-align: left; }
+  .katex-display { margin: 16px 0; overflow-x: auto; overflow-y: hidden; }
+  .katex { font-size: 1.08em; }
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="../assets/favicon_package/favicon.ico">
-<!--  <link rel="stylesheet" href="main.css">-->
+  /* dotted lists, as in the homepage's news */
+  .dots { list-style: none; margin-top: 18px; }
+  .dots li { position: relative; padding-left: 20px; margin-top: 10px; }
+  .dots li::before { content: ""; position: absolute; left: 3px; top: 0.72em; width: 6px; height: 6px;
+                     border-radius: 50%; background: var(--dot); }
+  .dots li .sub { display: block; font-size: 15.5px; color: var(--dim); }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  .card { margin: 28px 0 0; padding: 16px 22px 18px; background: #fff; border: 1px solid var(--rule);
+          border-radius: 10px; font-size: 16.5px; }
+  .card .head { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+                color: var(--muted); margin-bottom: 6px; }
+  .card ol { padding-left: 1.3em; }
+  .card li { margin-top: 4px; }
+
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; font-variant-numeric: lining-nums tabular-nums; }
+  .tablewrap.narrow table { width: auto; min-width: 62%; }
+  th { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+       text-align: center; padding: 0 8px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap;
+       vertical-align: bottom; }
+  th .sub { display: block; font-size: 11.5px; font-weight: 400; letter-spacing: 0.4px; text-transform: none; }
+  td { padding: 7px 8px; text-align: center; white-space: nowrap; border-top: 1px solid var(--hair); }
+  tr:nth-child(2) td { border-top: none; }
+  tr.sep td { border-top: 1px solid var(--rule); }
+  th:first-child, td:first-child { text-align: left; padding-left: 0; }
+  tr.mean td { border-top: 1px solid var(--rule); font-weight: 600; color: var(--black); }
+  td .best { color: var(--accent); font-weight: 600; }
+  td .pm { color: var(--muted); font-size: 13px; }
+  td.na { color: var(--dot); }
+  .tablenote { margin-top: 10px; font-size: 15px; font-style: italic; color: var(--muted); }
+
+  ol.take { padding-left: 1.3em; }
+  ol.take li { margin-top: 8px; }
+  ol.take li::marker { color: var(--muted); }
+
+  pre { margin: 0; padding: 16px 20px; background: #fff; border: 1px solid var(--rule); border-radius: 10px;
+        font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+        color: var(--ink); overflow-x: auto; }
+  .refs { margin-top: 18px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+  footer { margin: 96px 0 44px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 680px) {
+    body { font-size: 17px; }
+    .page { padding: 0 20px; }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 34px; }
+    section { margin-top: 60px; }
+    figure.mid img, figure.small img { width: 100%; }
+    table { font-size: 14px; }
+    td, th { padding-left: 5px; padding-right: 5px; }
+  }
+</style>
 </head>
-
-
 <body>
+<div class="page">
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://ryanxhr.github.io/">
-          <span class="icon">
-            <i class="fas fa-home"></i>
-          </span>
-          &ensp; More Research
-      </a>
+<header class="hero">
+  <p class="crumb"><a href="https://ryanxhr.github.io/">← Haoran Xu</a></p>
+  <h1>Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization</h1>
+  <p class="authors">
+    <a href="https://ryanxhr.github.io/">Haoran Xu</a><sup>*1</sup>,
+    <a href="https://scholar.google.com/citations?user=Xa2pDisAAAAJ&hl=en">Liyuan Mao</a><sup>*2</sup>,
+    <a href="https://openreview.net/profile?id=~Hui_Jin4">Hui Jin</a><sup>*3</sup>,
+    <a href="https://scholar.google.com/citations?user=Qzss0GEAAAAJ&hl=en">Weinan Zhang</a><sup>2</sup>,
+    <a href="https://scholar.google.com/citations?user=pDMnGloAAAAJ&hl=en">Xianyuan Zhan</a><sup>4</sup>,
+    <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1</sup>
+  </p>
+  <p class="affil"><sup>1</sup>UT Austin&ensp;<sup>2</sup>Shanghai Jiao Tong University&ensp;<sup>3</sup>Nanyang Technological University&ensp;<sup>4</sup>Tsinghua University</p>
+  <p class="affil"><span class="venue">NeurIPS 2025</span><span class="sep">/</span><span class="eq">* equal contribution</span></p>
+  <p class="links">
+    <a href="https://openreview.net/forum?id=mjZi8cV18P">Paper</a>
+    <a href="https://github.com/huijinrl/uni-rl">Code</a>
+    <a href="#bibtex">BibTeX</a>
+  </p>
+  <p class="tldr">Uni-RL is <b>one off-policy algorithm</b> for online, offline and offline-to-online RL. It regularizes the value function toward a reference policy: the dataset behavior offline, and a slowly updated target policy online, which turns the regularizer into an <b>implicit trust region that stays off-policy</b>. Policies are extracted with an in-sample policy gradient that only uses actions from the reference policy.</p>
+</header>
 
-<!--    <div style="padding-bottom: 32px; text-align: center;">-->
-<!--		<a href="https://nicklashansen.github.io"><i class="fa fa-home"></i>&ensp;More research</a>-->
-<!--	</div>-->
+<figure class="wide">
+  <img src="static/teaser.png" alt="Three rows over training time. Offline: the reference policy is the dataset behavior, fixed. Online: the reference policy is a target policy that is soft-updated toward the current policy, shown as a chain of increasingly dark purple snapshots. Offline-to-online: the dataset behavior until online training starts, then the moving target policy.">
+</figure>
 
-<!--      <div class="navbar-item has-dropdown is-hoverable">-->
-<!--        <a class="navbar-link">-->
-<!--          More Research-->
-<!--        </a>-->
-<!--        <div class="navbar-dropdown">-->
-<!--          <a class="navbar-item" href="https://ace-rl.github.io/">-->
-<!--            ACE (ICML 2024 Oral)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://drm-rl.github.io/">-->
-<!--            DrM (ICLR 2024 Spotlight)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://premiertaco.github.io/">-->
-<!--            Premier-TACO (ICML 2024)-->
-<!--          </a>-->
-<!--        </div>-->
-    </div>
-  </div>
-</nav>
+<!-- ================================================================ objective -->
+<section>
+  <div class="section-head"><h2>One objective, three settings</h2></div>
+  <p>Online methods such as PPO and SAC struggle with offline data, offline methods such as CQL and IVR are over-conservative once online access is available, and offline-to-online methods need setting-specific designs. Uni-RL starts from a single constrained problem with a reference policy \(\mu\):</p>
+  $$\pi^* = \arg\max_\pi\ \mathbb{E}_{(s,a)\sim d^\pi}\big[r(s,a)\big] \quad\text{s.t.}\quad \mathbb{E}_{s\sim d^\pi}\Big[D_f\big(\pi(\cdot|s)\,\|\,\mu(\cdot|s)\big)\Big]\le\epsilon .$$
+  <p>Its Lagrangian is a behavior-regularized MDP in which the penalty \(\alpha\, g\big(\pi/\mu\big)\) enters the reward, so the regularization acts on the <b>value</b> rather than on the policy. The setting only decides what \(\mu\) is:</p>
+  <ul class="dots">
+    <li><b>Offline:</b> \(\mu = \pi_{\mathcal D}\), the behavior policy of the dataset.</li>
+    <li><b>Online:</b> \(\mu = \bar\pi\), a target policy updated toward the current policy.</li>
+    <li><b>Offline-to-online:</b> \(\pi_{\mathcal D}\) during pretraining, then \(\bar\pi\) once online interaction starts.</li>
+  </ul>
+</section>
 
+<!-- ================================================================ value -->
+<section>
+  <div class="section-head"><h2>In-sample value learning</h2></div>
+  <p>By duality, as in IVR, the regularized optimal values solve two regression problems that only need samples from \(\mu\):</p>
+  $$\min_V\ \mathbb{E}_{s\sim\mathcal D,\ {\color{#5B2C8A}a\sim\mu}}\Big[V(s) + \alpha\, f_{\mathrm{IVR}}\big((Q(s,a)-V(s))/\alpha\big)\Big],$$
+  $$\min_Q\ \mathbb{E}_{(s,a,s')\sim\mathcal D}\Big[\big(r(s,a)+\gamma V(s')-Q(s,a)\big)^2\Big],$$
+  <p>with \(f_{\mathrm{IVR}}(x)=\exp(x)\) for the KL divergence and \(\mathbb{I}(x>-2)(x^2/4+x+1)\) for \(\chi^2\). Neither \(\pi(a|s)\) nor \(\mu(a|s)\) is ever evaluated, so the policy can be a diffusion or flow model, and offline the dataset actions are the samples from \(\pi_{\mathcal D}\).</p>
 
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-<!--          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>-->
-          <h1 class="title is-3 publication-title"> <b style="color:rgba(74, 77, 163, 0.797)">Uni-RL</b>: Unifying Online and Offline RL via Implicit Value Regularization </h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ&hl=en">Haoran Xu</a>&ast;<sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=Xa2pDisAAAAJ&hl=en">Liyuan Mao</a>&ast;<sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://openreview.net/profile?id=~Hui_Jin4">Hui Jin</a>&ast;<sup>3</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=Qzss0GEAAAAJ&hl=en">Weinan Zhang</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=pDMnGloAAAAJ&hl=en">Xianyuan Zhan</a><sup>4</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1</sup>
-            </span>
-          </div>
+  <h3>Why plain IVR fails online</h3>
+  <p>Online, the replay buffer contains many early, sub-optimal transitions. Regularizing toward the buffer's behavior anchors the value to that data, much like offline RL on a poor dataset. Uni-RL instead regularizes toward a target policy that keeps improving:</p>
+  $$\min_V\ \mathbb{E}_{s\sim\mathcal D,\ {\color{#5B2C8A}a\sim\bar\pi}}\Big[V(s) + \alpha\, f_{\mathrm{IVR}}\big((Q(s,a)-V(s))/\alpha\big)\Big],\qquad \bar\pi \leftarrow \lambda\pi + (1-\lambda)\bar\pi .$$
+  <figure class="small">
+    <img src="static/online_ivr.png" alt="Four learning curves over 0.5M gradient steps for two policy extraction methods, weighted BC and MaxQ. With the reference policy set to the target policy, both the score and the Q value grow much higher than with the reference set to the replay-buffer behavior.">
+    <figcaption>Online IVR with \(\mu=\pi_{\mathcal D}\) (orange) vs. \(\mu=\bar\pi\) (purple): score (top) and Q value (bottom).</figcaption>
+  </figure>
+  <p>This is a trust-region update, but one imposed <b>through the value function</b>: the policy update itself never needs on-policy samples. Uni-RL is therefore off-policy, unlike TRPO and PPO, and in offline-to-online RL it relaxes the dataset constraint gradually instead of dropping it at once.</p>
+  <p class="key">Using \(\bar\pi\) as the reference gives an <b>off-policy trust region</b> and removes IVR's online over-conservatism.</p>
+</section>
 
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>UT Austin</span>
-            <span class="author-block"><sup>2</sup>Shanghai Jiao Tong University</span>
-            <span class="author-block"><sup>2</sup>Nanyang Technological University</span>
-            <span class="author-block"><sup>2</sup>Tsinghua University</span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block" style="font-size: 0.85em;">
-                &ast; Equal contribution
-            </span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://openreview.net/forum?id=mjZi8cV18P"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/huijinrl/uni-rl"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-<!--              <span class="link-block">-->
-<!--                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"-->
-<!--                   class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <img src="static/images/hf_icon.svg" />-->
-<!--                  </span>-->
-<!--                  <span>Models & Dataset</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-<!--              <span class="link-block">-->
-<!--                <a href="https://x.com/cheryyun_l/status/1813226234979184687"-->
-<!--                    class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <i class="fab fa-twitter"></i>-->
-<!--                  </span>-->
-<!--                  <span>Twitter</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ================================================================ policy -->
+<section>
+  <div class="section-head"><h2>In-sample policy gradient</h2></div>
+  <p>The regularized optimum has a closed-form ratio to the reference policy, \(w^*_{\mathrm{IVR}}(s,a) = \pi^*/\mu = \max\big\{0,(f')^{-1}\big((Q^*-V^*)/\alpha\big)\big\}\). The two usual ways to extract it each give something up:</p>
+  <ul class="dots">
+    <li><b>Forward KL → weighted BC</b>, \(\max_\pi \mathbb{E}_{a\sim\mu}\big[w^*_{\mathrm{IVR}}\log\pi(a|s)\big]\).<span class="sub">In-sample and stable for any policy class, but mode-covering: it does not fully use the value function.</span></li>
+    <li><b>Reverse KL → MaxQ + BC.</b><span class="sub">Mode-seeking, but it queries \(Q\) on actions from \(\pi\), which may be out of distribution, and it needs \(\mu(a|s)\) and the entropy of \(\pi\).</span></li>
+  </ul>
+  <p>InPG keeps the weighted-BC form and treats the weights as free variables. It picks the non-negative weights whose BC gradient is <b>closest to the policy gradient</b>:</p>
+  $$w^*_{\mathrm{InPG}} = \arg\min_{w\ge 0}\ \mathbb{E}_{s\sim\mathcal D}\Big[\big\|G_{\mathrm{PG}} - G_{\mathrm{BC}}(w)\big\|^2\Big],$$
+  $$G_{\mathrm{PG}} = \nabla_\theta\mathbb{E}_{a\sim\pi_\theta}\big[Q(s,a)\big],\quad G_{\mathrm{BC}}(w) = \mathbb{E}_{a\sim\mu}\big[w(s,a)\,\nabla_\theta\log\pi_\theta(a|s)\big].$$
+  <figure class="mid">
+    <img src="static/inpg.png" alt="Vector diagram. Per-sample behavior-cloning gradients span a shaded cone of directions reachable with non-negative weights. The policy gradient points outside the cone. Weighted BC with IVR weights points into the middle of the cone. The InPG gradient is the projection of the policy gradient onto the cone.">
+  </figure>
+  <p>We parameterize \(w\) with a network, train it on this L2 loss, clip it at zero, and extract the policy with \(\max_\pi \mathbb{E}_{a\sim\mu}\big[{\color{#5B2C8A}w^*_{\mathrm{InPG}}}\log\pi(a|s)\big]\). Every BC action comes from \(\mu\), so the update stays inside the reference support, while the weights now follow the value gradient.</p>
+  <ul class="dots">
+    <li><b>A constraint, not a penalty.</b> With \(Z=\mathbb{E}_\mu[w]\), \(f(w_{\min}/Z)\le D_f(\pi^*_{\mathrm{InPG}}\|\mu)\le f(w_{\max}/Z)\).<span class="sub">InPG maximizes \(Q\) within a fixed divergence budget, which matches the constrained problem above.</span></li>
+    <li><b>Improvement over IVR.</b> There is a range of \(w_{\min}, w_{\max}\) for which \(J(\pi^*_{\mathrm{InPG}})\ge J(\pi^*_{\mathrm{IVR}})\).<span class="sub">By contrast, the unprojected \(\pi^*_{\mathrm{PG}}=\arg\max_\pi\mathbb{E}_{a\sim\pi}[Q]\) has no guarantee to beat \(\mu\).</span></li>
+    <li><b>Any generative policy.</b> The weighted log-likelihood becomes a weighted flow-matching or denoising loss.<span class="sub">The two weight thresholds are the only knobs, and we use the same values across all experiments.</span></li>
+  </ul>
+  <figure class="small">
+    <img src="static/maze2d.png" alt="Two scatter plots of 2-D velocity actions on maze2d-umaze, with dataset actions in gray. Weighted BC actions (orange) spread over the whole square; InPG actions (purple) concentrate on the boundary of the action space.">
+    <figcaption>maze2d-umaze actions: weighted BC with \(w^*_{\mathrm{IVR}}\) (left) vs. InPG (right); dataset actions in gray.</figcaption>
+  </figure>
+  <p>On <code>maze2d-umaze</code>, weighted BC stays centered on the dataset distribution, while InPG picks out the better actions near the boundary of the action space.</p>
+  <div class="card">
+    <div class="head">Uni-RL</div>
+    <ol>
+      <li>Update \(V\) with \(a\sim\mu\), and \(Q\) by TD regression on \(V(s')\).</li>
+      <li>Fit the InPG weights \(w\) with \(a\sim\mu\), then update \(\pi\) by \(w\)-weighted BC (or flow / diffusion matching).</li>
+      <li>Offline: \(\mu=\pi_{\mathcal D}\). Online: explore with \(\pi\), store the data, and use \(\mu=\bar\pi\) with \(\bar\pi\leftarrow\lambda\pi+(1-\lambda)\bar\pi\).</li>
+    </ol>
   </div>
 </section>
 
-<!--<style>-->
-<!--    .center {-->
-<!--      display: block;-->
-<!--      margin-left: auto;-->
-<!--      margin-right: auto;-->
-<!--      width: 75%;-->
-<!--    }-->
-<!--</style>-->
+<!-- ================================================================ results -->
+<section>
+  <div class="section-head"><h2>Online RL</h2></div>
+  <p class="note">Eight environments from Gym, PyBullet and DMControl; Gaussian policies for every method; 0.5M steps, 5 seeds. Uni-IVR in the legends is Uni-RL.</p>
+  <figure class="wide">
+    <img src="static/online_curves.png" alt="Eight learning curves comparing Uni-RL with MPO, PPO, SAC and TD3 on AntBulletEnv, BipedalWalker, finger-turn_hard, HalfCheetah, Hopper, Humanoid, quadruped-walk and Walker2d. Uni-RL is highest or tied for highest on all of them, with large margins on finger-turn_hard and quadruped-walk.">
+  </figure>
+  <p>Uni-RL is more sample-efficient than both off-policy methods without a trust region (SAC, TD3, MPO) and the on-policy trust-region method PPO. The margin is largest on the hard DMControl tasks <code>finger-turn_hard</code> and <code>quadruped-walk</code>.</p>
+</section>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <h2 class="subtitle has-text-centered">
-        <b style="color:#C73659">TLDR</b>: Can we design a scalable RL framework that unifies online, offline, and offline-online settings? <br>
-      </h2>
-      <div class="content has-text-justified">
-        <img src="static/images/poster.png" style="width: 120%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-    </div>
-  </div>
+<section>
+  <div class="section-head"><h2>Offline RL: D4RL</h2></div>
+  <p class="note">Normalized scores at the end of training, 5 seeds. Standard deviations and more baselines are in the paper.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>IDQL</th><th>Uni-RL <span class='sub'>Gaussian</span></th><th>Uni-RL <span class='sub'>Diffusion</span></th></tr>
+<tr><td>halfcheetah-m</td><td>47.4</td><td>48.3</td><td>51.1</td><td>51.0</td><td>49.4</td><td><span class="best">58.0</span></td></tr>
+<tr><td>hopper-m</td><td>66.3</td><td>75.5</td><td>90.5</td><td>65.4</td><td>99.5</td><td><span class="best">101.3</span></td></tr>
+<tr><td>walker2d-m</td><td>72.5</td><td>84.2</td><td>87.0</td><td>82.5</td><td>89.3</td><td><span class="best">92.3</span></td></tr>
+<tr><td>halfcheetah-m-r</td><td>44.2</td><td>44.8</td><td><span class="best">47.8</span></td><td>45.9</td><td>45.3</td><td><span class="best">48.4</span></td></tr>
+<tr><td>hopper-m-r</td><td>95.2</td><td>99.7</td><td><span class="best">101.3</span></td><td>92.1</td><td><span class="best">101.1</span></td><td><span class="best">101.3</span></td></tr>
+<tr><td>walker2d-m-r</td><td>76.1</td><td>81.2</td><td><span class="best">95.5</span></td><td>85.1</td><td>86.6</td><td>90.8</td></tr>
+<tr><td>halfcheetah-m-e</td><td>86.7</td><td>94.0</td><td><span class="best">96.8</span></td><td>95.9</td><td>94.2</td><td><span class="best">97.3</span></td></tr>
+<tr><td>hopper-m-e</td><td>101.5</td><td><span class="best">111.8</span></td><td>111.1</td><td>108.6</td><td>111.0</td><td>111.2</td></tr>
+<tr><td>walker2d-m-e</td><td>110.6</td><td>110.0</td><td>110.1</td><td>112.7</td><td>110.8</td><td><span class="best">114.1</span></td></tr>
+<tr class="sep"><td>antmaze-u</td><td>85.5</td><td>92.2</td><td>93.4</td><td>94.0</td><td>94.1</td><td><span class="best">98.1</span></td></tr>
+<tr><td>antmaze-u-d</td><td>66.7</td><td>74.0</td><td>66.2</td><td>80.2</td><td>80.4</td><td><span class="best">82.0</span></td></tr>
+<tr><td>antmaze-m-p</td><td>72.2</td><td>80.2</td><td>76.6</td><td>84.5</td><td>86.0</td><td><span class="best">88.5</span></td></tr>
+<tr><td>antmaze-m-d</td><td>71.0</td><td>79.1</td><td>78.6</td><td>84.8</td><td>82.7</td><td><span class="best">89.7</span></td></tr>
+<tr><td>antmaze-l-p</td><td>39.6</td><td>53.2</td><td>46.4</td><td>63.5</td><td>59.9</td><td><span class="best">68.6</span></td></tr>
+<tr><td>antmaze-l-d</td><td>47.5</td><td>52.3</td><td>56.6</td><td>67.9</td><td>60.2</td><td><span class="best">69.0</span></td></tr>
+<tr class="mean"><td>mean</td><td>72</td><td>79</td><td>81</td><td>81</td><td>83</td><td><span class="best">87</span></td></tr>
+</table></div>
+  <p>Offline, Uni-RL's value objective reduces to IVR's, so the gain from IVR's 79 to <b>83</b> with the same Gaussian policy class reflects better policy extraction. A diffusion policy raises the mean to <b>87</b>, above Diffusion-QL and IDQL (both 81).</p>
+</section>
 
-<!--  <div class="container is-max-desktop">-->
-<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
-<!--    <div class="columns is-centered has-text-centered">-->
-<!--      <div class="column is-four-fifths">-->
-<!--        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>-->
-<!--        <div class="content has-text-justified">-->
-<!--          <p>-->
-<!--          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.-->
-<!--          </p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+<section>
+  <div class="section-head"><h2>Offline-to-online RL</h2></div>
+  <p class="note">Online fine-tuning after 250k offline steps on Adroit and AntMaze, 5 seeds.</p>
+  <figure class="wide">
+    <img src="static/o2o_curves.png" alt="Eight fine-tuning curves comparing Uni-RL with Cal-QL, AWAC, RLPD and IQL on four Adroit cloned tasks and four AntMaze tasks. Uni-RL ends highest on seven of the eight tasks and starts from a strong offline policy without an initial drop.">
+  </figure>
+  <p>Methods constrained to the dataset (IQL, AWAC) barely improve on the pretrained policy, Cal-QL inherits CQL's difficulty on Adroit and large AntMaze, and RLPD, which skips pretraining, learns slowly where the offline data is good. Uni-RL fine-tunes without an early drop and ends highest on every task except <code>pen-cloned</code>.</p>
+</section>
 
-<!-- </section> -->
+<!-- ================================================================ wrap-up -->
+<section>
+  <div class="section-head"><h2>Takeaways</h2></div>
+  <ol class="take">
+    <li>Regularize the <b>value</b> toward a reference policy, and let the setting choose the reference: the dataset offline, a target policy online.</li>
+    <li>A moving target policy turns the regularizer into an <b>implicit, off-policy trust region</b>.</li>
+    <li><b>In-sample policy gradient</b> projects the policy gradient onto weighted BC: mode-seeking, in-support, and usable with any generative policy.</li>
+  </ol>
+</section>
 
-<!-- <section class="section"> -->
-  <!-- <div class="container is-max-desktop">
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/diffusion.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div> -->
+<section id="bibtex">
+  <div class="section-head"><h2>BibTeX</h2></div>
+  <pre>@inproceedings{xu2025unirl,
+  title     = {Uni-RL: Unifying Online and Offline RL via Implicit Value Regularization},
+  author    = {Xu, Haoran and Mao, Liyuan and Jin, Hui and Zhang, Weinan and
+               Zhan, Xianyuan and Zhang, Amy},
+  booktitle = {Advances in Neural Information Processing Systems},
+  year      = {2025}
+}</pre>
+  <p class="refs">
+    IVR: Xu et al., ICLR 2023 · IQL: Kostrikov et al., ICLR 2022 · Diffusion-QL: Wang et al., ICLR 2023 ·
+    IDQL: Hansen-Estruch et al., 2023 · Cal-QL: Nakamoto et al., NeurIPS 2023 · RLPD: Ball et al., ICML 2023 ·
+    AWAC: Nair et al., 2020 · MPO: Abdolmaleki et al., ICLR 2018 · PPO: Schulman et al., 2017 · D4RL: Fu et al., 2020
+  </p>
+</section>
 
-      <!-- <div class="content has-text-justified">
-          <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
-          <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>
-          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>, to effectively fit in the optimal mode in the dataset.  </li>
-      </div> -->
-
-      <!-- <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>
-      <div class="content-video-container">
-        <img src="../../midi-lab.github.io/paper_images/guide-then-select.gif" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-          <li> Our framework is fundamentally different from previous methods that rely on <strong> actions generated from the diffusion behavior policy </strong>, which may induce out-of-distribution errors. </li>
-      </div>
-
-      <div class="content has-text-justified">
-          <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/dice.png" style="width: 65%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/guide.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/IGL.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>
-      </div>
-      <div class="content has-text-justified">
-        <img src="static/images/select.png" style="width: 55%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
-      <div class="content-picture-">
-        <img src="static/images/toycase.png" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-      <li>Toycase of a 2-D bandit problem. The action in the offline dataset follows a bivariate standard normal distribution constrained within an annular region. The ground truth reward has two peaks extending from the center outward.   </li>
-      <li>We use a diffusion model to fit the behavior policy and a reward model to fit the ground truth reward R. Both models fit in-distribution data well while making error in out-of-distribution regions.  </li>
-      </div>
-
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_candidate_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_candidate_distribution_s_4.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_candidate_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_sample_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_sample_distribution_s_1.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_sample_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content has-text-justified">
-      <li>From left to right: <a href="https://arxiv.org/abs/2304.10573">IDQL</a> (<strong>select-only</strong>), <a href="https://arxiv.org/abs/2304.12824">QGPO</a> (<strong>guide-only</strong>) and Diffusion-DICE (<strong>guide-then-select</strong>). From top to down: guide and select step (if one has). Comparing to other guide-only or select-only methods, only Diffusion-DICE could generate correct optimal actions in the outer circle. Other methods tend to expolit error information from the reward model and only generate overestimated, sub-optimal actions. </li>
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/experiments.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
-      </div>
-  </div>
-
-</section> -->
-  
-
-<!--<section class="section" id="BibTeX">-->
-<!--  <div class="container is-max-desktop content">-->
-<!--    <h2 class="title">BibTeX</h2>-->
-<!--    <pre><code>@article{liang2024make,-->
-<!--      title={Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion},-->
-<!--      author={Liang, Yongyuan and Xu, Tingqiang and Hu, Kaizhe and Jiang, Guangqi and Huang, Furong and Xu, Huazhe},-->
-<!--      journal={arXiv preprint arXiv:2407.10973},-->
-<!--      year={2024}-->
-<!--      }</code></pre>-->
-<!--  </div>-->
-<!--</section>-->
-
-<footer class="footer">
-  <div class="container">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-15">
-        <div class="content">
-<!--          <a style="color:hsla(247, 58%, 62%, 0.862)" href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>-->
-          <p>
-            Website is modified from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
+<footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
+</div>
 </body>
 </html>

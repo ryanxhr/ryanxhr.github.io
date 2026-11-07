@@ -1,331 +1,348 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="description"
-        content="Reinforcement Learning via Value Gradient Flow">
-  <meta name="keywords" content="rl with generative models, offline rl, llm rl, flow matching, optimal transport">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Reinforcement Learning via Value Gradient Flow</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reinforcement Learning via Value Gradient Flow</title>
+<meta name="description" content="VGF casts behavior-regularized RL as optimal transport: particles from the reference policy follow value gradients, and the transport budget is the regularization.">
+<meta property="og:title" content="Reinforcement Learning via Value Gradient Flow">
+<meta property="og:description" content="Behavior-regularized RL as optimal transport, with the transport budget as the regularization.">
+<meta property="og:image" content="https://ryanxhr.github.io/vgf/static/teaser.png">
+<meta property="og:url" content="https://ryanxhr.github.io/vgf/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://ryanxhr.github.io/vgf/static/teaser.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon_package/favicon-32x32.png">
+<link rel="preload" href="../assets/font/SourceSans3-Regular.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="../assets/font/SourceSans3-Semibold.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
+<style>
+  /* Same typography, palette and layout as ryanxhr.github.io/hql: warm off-white page, Source Sans 3,
+     left-aligned sections with a thin rule, and one purple accent used for text only. */
+  @font-face { font-family: "Source Sans 3"; font-weight: 300; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Light.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Regular.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 400; font-style: italic; font-display: swap;
+               src: url("../assets/font/SourceSans3-It.woff") format("woff"); }
+  @font-face { font-family: "Source Sans 3"; font-weight: 600; font-style: normal; font-display: swap;
+               src: url("../assets/font/SourceSans3-Semibold.woff") format("woff"); }
 
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
+  :root {
+    --bg: #FBFAF7;
+    --ink: #2F2F2F;
+    --black: #141414;
+    --dim: #686868;
+    --muted: #8E8E8E;
+    --rule: #E6E2DC;
+    --hair: #EEEAE5;
+    --dot: #CCC6C0;
+    --accent: #5B2C8A;
+    --accent-soft: #8C6BB8;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Source Sans 3", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 400; font-size: 17.5px; line-height: 1.6; font-kerning: normal;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  }
+  h1, h2, p, ul, ol { margin: 0; padding: 0; }
+  b, strong { font-weight: 600; color: var(--black); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  :focus-visible { outline: 2px solid var(--accent-soft); outline-offset: 2px; border-radius: 3px; }
+  .ours { color: var(--accent); font-weight: 600; }
+  code { font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 0.84em; color: var(--dim); }
 
-    function gtag() {
-      dataLayer.push(arguments);
-    }
+  .page { max-width: 800px; margin: 0 auto; padding: 0 28px; }
 
-    gtag('js', new Date());
+  /* ---------------------------------------------------------------- hero */
+  .hero { padding-top: 72px; }
+  .crumb { font-size: 15px; color: var(--muted); margin-bottom: 30px; }
+  .crumb a { color: var(--muted); }
+  .crumb a:hover { color: var(--accent); }
+  .hero h1 { font-weight: 300; font-size: 42px; line-height: 1.1; letter-spacing: -0.4px; color: var(--black); }
+  .hero .authors { margin-top: 16px; font-size: 17px; color: var(--ink); }
+  .hero .authors a { color: var(--ink); }
+  .hero .authors a:hover { color: var(--accent); }
+  .hero .authors sup, .hero .affil sup { font-size: 0.68em; color: var(--muted); margin-left: 1px; }
+  .hero .affil { margin-top: 4px; font-size: 16px; color: var(--dim); }
+  .hero .affil .sep { color: var(--dot); margin: 0 8px; }
+  .hero .affil .venue { color: var(--ink); }
+  .hero .affil .eq { font-style: italic; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 6px 22px; margin-top: 22px; font-size: 16.5px; }
+  .links a { font-weight: 600; }
+  .tldr { margin-top: 28px; font-size: 18.5px; line-height: 1.55; }
 
-    gtag('config', 'G-PYVRSFMDRL');
-  </script>
+  /* ------------------------------------------------------------ sections */
+  section { margin-top: 76px; }
+  .section-head { padding-bottom: 10px; border-bottom: 1px solid var(--rule); margin-bottom: 22px; }
+  h2 { font-weight: 600; font-size: 22px; line-height: 1.2; letter-spacing: -0.1px; color: var(--black); }
+  h3 { font-weight: 600; font-size: 13px; letter-spacing: 1.2px; text-transform: uppercase;
+       color: var(--muted); margin: 38px 0 10px; }
+  .note { margin: -10px 0 18px; font-size: 15px; font-style: italic; color: var(--muted); }
+  section p + p { margin-top: 14px; }
+  .key { margin-top: 18px; padding-left: 16px; border-left: 2px solid var(--accent-soft); }
 
-  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
-        rel="stylesheet">
+  figure { margin: 28px 0; text-align: center; }
+  figure img { max-width: 100%; height: auto; }
+  figure.wide img { width: 100%; }
+  figure.mid img { width: 80%; }
+  figure.small img { width: 56%; }
+  figcaption { margin-top: 8px; font-size: 15px; font-style: italic; color: var(--muted); text-align: left; }
+  .katex-display { margin: 16px 0; overflow-x: auto; overflow-y: hidden; }
+  .katex { font-size: 1.08em; }
 
-  <link rel="stylesheet" href="./static/css/bulma.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
-  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
-  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
-  <link rel="stylesheet"
-        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
-  <link rel="stylesheet" href="./static/css/index.css">
-  <link rel="icon" href="../assets/favicon_package/favicon.ico">
-<!--  <link rel="stylesheet" href="main.css">-->
+  /* dotted lists, as in the homepage's news */
+  .dots { list-style: none; margin-top: 18px; }
+  .dots li { position: relative; padding-left: 20px; margin-top: 10px; }
+  .dots li::before { content: ""; position: absolute; left: 3px; top: 0.72em; width: 6px; height: 6px;
+                     border-radius: 50%; background: var(--dot); }
+  .dots li .sub { display: block; font-size: 15.5px; color: var(--dim); }
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script defer src="./static/js/fontawesome.all.min.js"></script>
-  <script src="./static/js/bulma-carousel.min.js"></script>
-  <script src="./static/js/bulma-slider.min.js"></script>
-  <script src="./static/js/index.js"></script>
+  .card { margin: 28px 0 0; padding: 16px 22px 18px; background: #fff; border: 1px solid var(--rule);
+          border-radius: 10px; font-size: 16.5px; }
+  .card .head { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase;
+                color: var(--muted); margin-bottom: 6px; }
+  .card ol { padding-left: 1.3em; }
+  .card li { margin-top: 4px; }
+
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15.5px; font-variant-numeric: lining-nums tabular-nums; }
+  .tablewrap.narrow table { width: auto; min-width: 62%; }
+  th { font-size: 13px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--muted);
+       text-align: center; padding: 0 8px 8px; border-bottom: 1px solid var(--rule); white-space: nowrap;
+       vertical-align: bottom; }
+  th .sub { display: block; font-size: 11.5px; font-weight: 400; letter-spacing: 0.4px; text-transform: none; }
+  td { padding: 7px 8px; text-align: center; white-space: nowrap; border-top: 1px solid var(--hair); }
+  tr:nth-child(2) td { border-top: none; }
+  tr.sep td { border-top: 1px solid var(--rule); }
+  th:first-child, td:first-child { text-align: left; padding-left: 0; }
+  tr.mean td { border-top: 1px solid var(--rule); font-weight: 600; color: var(--black); }
+  td .best { color: var(--accent); font-weight: 600; }
+  td .pm { color: var(--muted); font-size: 13px; }
+  td.na { color: var(--dot); }
+  .tablenote { margin-top: 10px; font-size: 15px; font-style: italic; color: var(--muted); }
+
+  ol.take { padding-left: 1.3em; }
+  ol.take li { margin-top: 8px; }
+  ol.take li::marker { color: var(--muted); }
+
+  pre { margin: 0; padding: 16px 20px; background: #fff; border: 1px solid var(--rule); border-radius: 10px;
+        font-family: "SFMono-Regular", Menlo, Consolas, monospace; font-size: 13.5px; line-height: 1.55;
+        color: var(--ink); overflow-x: auto; }
+  .refs { margin-top: 18px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+  footer { margin: 96px 0 44px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 14px; color: var(--muted); }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+
+  @media (max-width: 680px) {
+    body { font-size: 17px; }
+    .page { padding: 0 20px; }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 34px; }
+    section { margin-top: 60px; }
+    figure.mid img, figure.small img { width: 100%; }
+    table { font-size: 14px; }
+    td, th { padding-left: 5px; padding-right: 5px; }
+  }
+</style>
 </head>
-
-
 <body>
+<div class="page">
 
-<nav class="navbar" role="navigation" aria-label="main navigation">
-  <div class="navbar-brand">
-    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </a>
-  </div>
-  <div class="navbar-menu">
-    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
-      <a class="navbar-item" href="https://ryanxhr.github.io/">
-          <span class="icon">
-            <i class="fas fa-home"></i>
-          </span>
-          &ensp; More Research
-      </a>
+<header class="hero">
+  <p class="crumb"><a href="https://ryanxhr.github.io/">← Haoran Xu</a></p>
+  <h1>Reinforcement Learning via Value Gradient Flow</h1>
+  <p class="authors">
+    <a href="https://ryanxhr.github.io/">Haoran Xu</a><sup>*1</sup>,
+    <a href="https://scholar.google.com/citations?user=-RndT8UAAAAJ&hl=en">Kaiwen Hu</a><sup>*2</sup>,
+    <a href="https://scholar.google.com/citations?user=kNH8zcgAAAAJ&hl=en">Somayeh Sojoudi</a><sup>2</sup>,
+    <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1</sup>
+  </p>
+  <p class="affil"><sup>1</sup>UT Austin&ensp;<sup>2</sup>UC Berkeley<span class="sep">/</span><span class="venue">ICLR 2026</span><span class="sep">/</span><span class="eq">* equal contribution</span></p>
+  <p class="links">
+    <a href="https://arxiv.org/abs/2604.14265">Paper</a>
+    <a href="https://github.com/ryanxhr/vgf">Code</a>
+    <a href="https://x.com/ryanxhr/status/2046270901696496117">Thread</a>
+    <a href="#bibtex">BibTeX</a>
+  </p>
+  <p class="tldr">VGF casts behavior-regularized RL as <b>optimal transport</b> from the reference distribution to the value-induced optimal policy.
+    Particles drawn from the reference policy follow value gradients for a few steps, and <b>the transport budget is the regularization</b>:
+    no explicit penalty, and no policy network to backpropagate through.</p>
+</header>
 
-<!--    <div style="padding-bottom: 32px; text-align: center;">-->
-<!--		<a href="https://nicklashansen.github.io"><i class="fa fa-home"></i>&ensp;More research</a>-->
-<!--	</div>-->
+<figure class="wide">
+  <img src="static/teaser.png" alt="Schematic in a 2-D action space with two high-value regions above a reference distribution of gray samples. Left, best-of-N: the best of a dozen reference samples is still inside the reference support. Right, VGF: particles start from reference samples and follow value-gradient paths into the high-value regions.">
+</figure>
 
-<!--      <div class="navbar-item has-dropdown is-hoverable">-->
-<!--        <a class="navbar-link">-->
-<!--          More Research-->
-<!--        </a>-->
-<!--        <div class="navbar-dropdown">-->
-<!--          <a class="navbar-item" href="https://ace-rl.github.io/">-->
-<!--            ACE (ICML 2024 Oral)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://drm-rl.github.io/">-->
-<!--            DrM (ICLR 2024 Spotlight)-->
-<!--          </a>-->
-<!--          <a class="navbar-item" href="https://premiertaco.github.io/">-->
-<!--            Premier-TACO (ICML 2024)-->
-<!--          </a>-->
-<!--        </div>-->
-    </div>
-  </div>
-</nav>
+<!-- ================================================================ problem -->
+<section>
+  <div class="section-head"><h2>Two ways to stay close to the reference</h2></div>
+  <p>Offline RL must stay near the dataset to avoid erroneous out-of-distribution extrapolation, and LLM RL finetuning must stay near the base model to avoid reward hacking. Both are instances of behavior-regularized RL with a reference distribution \(\mu\) and a differentiable value \(R\) (a Q-function or a reward model):</p>
+  $$\pi^* = \arg\max_\pi\ \mathbb{E}_{s\sim\mathcal{D},\,a\sim\pi(\cdot|s)}\big[R(s,a)\big] \quad \text{s.t.}\quad \mathbb{E}_{s\sim\mathcal{D}}\big[M\big(\pi(\cdot|s),\mu(\cdot|s)\big)\big]\le\epsilon .$$
+  <p>Existing methods solve this in one of two ways, and each has its own failure mode.</p>
+  <ul class="dots">
+    <li><b>Reparameterized policy gradient</b> maximizes \(R\) minus a penalty \(\beta\, M(\pi,\mu)\).<span class="sub">With diffusion or flow policies, the gradient has to pass through every sampling step, which is unstable and expensive; distilling into a one-step policy gives up expressivity.</span></li>
+    <li><b>Rejection sampling</b> with \(M=\mathrm{KL}\) gives weighted behavior cloning, or simply best-of-\(N\): \(\pi^* = \arg\max_{a_i\sim\mu,\,i\in[N]} R(s,a_i)\).<span class="sub">Simple and stable, but it can only re-rank actions that \(\mu\) already produces.</span></li>
+  </ul>
+  <p class="key">Penalties are <b>hard to scale</b> to generative policies, and rejection is <b>stuck inside \(\mu\)'s support</b>.</p>
+</section>
 
-
-<section class="hero">
-  <div class="hero-body">
-    <div class="container is-max-desktop">
-      <div class="columns is-centered">
-        <div class="column has-text-centered">
-<!--          <h1 class="title is-2 publication-title" style="color:rgba(74, 77, 163, 0.797)">Diffusion-DICE</h1>-->
-          <h1 class="title is-3 publication-title"> Reinforcement Learning via <b style="color:rgba(74, 77, 163, 0.797)">Value Gradient Flow</b> </h1>
-          <div class="is-size-5 publication-authors">
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=iX8AJI0AAAAJ&hl=en">Haoran Xu</a>&ast;<sup>1</sup>,</span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=-RndT8UAAAAJ&hl=en">Kaiwen Hu</a>&ast;<sup>2</sup>,</span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=kNH8zcgAAAAJ&hl=en">Somayeh Sojoudi</a><sup>2</sup>,
-            </span>
-            <span class="author-block">
-              <a href="https://scholar.google.com/citations?user=mXtH1UYAAAAJ&hl=en">Amy Zhang</a><sup>1</sup>
-            </span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block"><sup>1</sup>UT Austin</span>
-            <span class="author-block"><sup>2</sup>UC Berkeley</span>
-          </div>
-
-          <div class="is-size-5 publication-authors">
-            <span class="author-block" style="font-size: 0.85em;">
-                &ast; Equal contribution
-            </span>
-          </div>
-
-          <div class="column has-text-centered">
-            <div class="publication-links">
-              <!-- PDF Link. -->
-              <span class="link-block">
-                <a href="https://arxiv.org/abs/2604.14265"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fas fa-file-pdf"></i>
-                  </span>
-                  <span>Paper</span>
-                </a>
-              </span>
-              <!-- Code Link. -->
-              <span class="link-block">
-                <a href="https://github.com/ryanxhr/vgf"
-                   class="external-link button is-normal is-rounded is-dark">
-                  <span class="icon">
-                      <i class="fab fa-github"></i>
-                  </span>
-                  <span>Code</span>
-                  </a>
-              </span>
-              <!-- Dataset Link. -->
-<!--              <span class="link-block">-->
-<!--                <a href="https://huggingface.co/cheryyunl/Make-An-Agent"-->
-<!--                   class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <img src="static/images/hf_icon.svg" />-->
-<!--                  </span>-->
-<!--                  <span>Models & Dataset</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-<!--              <span class="link-block">-->
-<!--                <a href="https://x.com/cheryyun_l/status/1813226234979184687"-->
-<!--                    class="external-link button is-normal is-rounded is-dark">-->
-<!--                  <span class="icon">-->
-<!--                      <i class="fab fa-twitter"></i>-->
-<!--                  </span>-->
-<!--                  <span>Twitter</span>-->
-<!--                  </a>-->
-<!--                </span>-->
-            </div>
-
-          </div>
-        </div>
-      </div>
-    </div>
+<!-- ================================================================= method -->
+<section>
+  <div class="section-head"><h2>VGF: transport the reference toward the value</h2></div>
+  <p>Adding an entropy term to the objective turns the greedy max into a softmax, so the target becomes the Boltzmann distribution of the value, \(\pi^*_R(a|s) \propto \exp\big(R(s,a)/\alpha\big)\). We view behavior-regularized RL as transporting probability mass from \(\mu\) to \(\pi^*_R\), and follow the Wasserstein gradient flow of \(\mathrm{KL}(q\,\|\,\pi^*_R)\) in its discrete (JKO) form:</p>
+  $$q_{k+1} = \arg\min_q\ \mathrm{KL}\big(q\,\|\,\pi^*_R\big) + \frac{1}{2h}\,W_2^2\big(q, q_k\big).$$
+  <p>We represent \(q_k\) by \(N\) particles in action space, initialized from \(\mu\), and restrict the velocity field to an RKHS. This gives a particle update in which value gradients do the work:</p>
+  $$a_i^{(l+1)} = a_i^{(l)} + \epsilon\,\phi\big(a_i^{(l)}\big),\qquad \phi(x) = \frac1N\sum_{j=1}^N \Big[k(a_j,x)\,\nabla_{a_j}\log\pi^*_R(a_j|s) + \nabla_{a_j}k(a_j,x)\Big]$$
+  $$\xrightarrow{\ \text{w/o MaxEnt}\ }\ \ {\color{#5B2C8A}\frac1N\sum_{j=1}^N k(a_j,x)\,\nabla_{a_j}R(s,a_j)} .$$
+  <p>The first term pushes particles toward high value; the second keeps them apart and preserves multiple modes. Dropping the entropy term (\(\alpha\to 0\), with \(\alpha\) absorbed into \(\epsilon\)) leaves a kernel-smoothed value-gradient step, which is what we use in practice.</p>
+  <ul class="dots">
+    <li><b>No explicit penalty.</b> How far the particles move, set by the number of steps \(L\) and the step size \(\epsilon\), is the only regularization.<span class="sub">The optimization itself has no divergence term and no coefficient to tune against the value.</span></li>
+    <li><b>No policy to backpropagate through.</b> The particles after \(L\) steps are the policy.<span class="sub">Any generative model can supply \(\mu\): a flow or diffusion BC policy in offline RL, the SFT model in LLM RL.</span></li>
+    <li><b>Adaptive at test time.</b> The budget used at inference can differ from the one used in training.<span class="sub">\(L_{\text{test}}=0\) recovers best-of-\(N\); a larger \(L_{\text{test}}\) moves further when the value function generalizes.</span></li>
+  </ul>
+  <div class="card">
+    <div class="head">VGF in offline RL</div>
+    <ol>
+      <li>Fit a generative behavior-cloning policy \(\hat\mu\) on the dataset.</li>
+      <li>Sample \(N=5\) particles from \(\hat\mu(\cdot|s')\) and run \(L_{\text{train}}\) VGF steps with the current \(Q\).</li>
+      <li>Train \(Q\) by TD learning, averaging the target over the transported particles.</li>
+      <li>At test time, run \(L_{\text{test}}\) steps and execute the particle with the highest \(Q\).</li>
+    </ol>
   </div>
 </section>
 
-<!--<style>-->
-<!--    .center {-->
-<!--      display: block;-->
-<!--      margin-left: auto;-->
-<!--      margin-right: auto;-->
-<!--      width: 75%;-->
-<!--    }-->
-<!--</style>-->
+<!-- ================================================================ budget -->
+<section>
+  <div class="section-head"><h2>The transport budget is the regularization</h2></div>
+  <figure class="wide">
+    <img src="static/budget.png" alt="Four panels of the same 2-D landscape. With L equals 0 the particles are reference samples. With L equals 1, 3 and 6 they move progressively out of the reference distribution and into the high-value regions.">
+  </figure>
+  <p>The budget controls how far the implicit policy \(\pi^L_N\) can move. If \(R\) is \(c\)-Lipschitz in the action, the distance from the reference grows at most linearly in the budget \(\epsilon L\):</p>
+  $$\mathrm{MMD}^2\big(\mu,\pi^L_N\big) = \mathrm{MMD}^2\big(\pi^0_N,\pi^L_N\big) \;\le\; \frac{2\epsilon L}{\sigma\sqrt e}\Big(\frac{c}{\alpha}+\frac{1}{\sigma\sqrt e}\Big).$$
+  <p>Unlike rejection sampling, this constraint bounds <i>how far</i> the policy moves rather than <i>where</i> it may put mass. As a result, the implicit policy is not confined to the reference support:</p>
+  $$\mathrm{supp}_\epsilon\big(\pi^L_N(\cdot|s)\big)\ \not\subseteq\ \mathrm{supp}_\epsilon\big(\mu(\cdot|s)\big).$$
+  <p class="key">VGF finds the best policy <b>within a fixed transport budget</b>, instead of trading value against a penalty.</p>
 
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <h2 class="subtitle has-text-centered">
-        <b style="color:#C73659">TLDR</b>: <strong>scalable and sample-efficient</strong> RL finetuning with generative models using Value Gradient Flow. <br>
-      </h2>
-      <div class="content has-text-justified">
-        <img src="static/images/poster.png" style="width: 120%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-    </div>
-  </div>
+  <h3>A toy bandit</h3>
+  <p>A 2-D bandit with a bimodal reward, where the dataset covers the low-reward regions. All three methods share the same learned reward model and the same BC flow model.</p>
+  <figure class="wide">
+    <img src="static/toy.png" alt="Two heatmaps: ground-truth reward and learned reward over a 2-D action space, with dataset actions as gray dots. FlowQL's action and FlowBC best-of-N's action sit in the low-reward dataset region; VGF's particle paths move into the high-reward mode.">
+  </figure>
+  <p>FlowQL (penalized policy gradient) is misled by errors of the learned reward. Best-of-\(N\) improves on the best dataset action but stays within the sub-optimal behavior support. <span class="ours">VGF</span>'s particles move into the region with high ground-truth reward.</p>
+</section>
 
-<!--  <div class="container is-max-desktop">-->
-<!--    &lt;!&ndash; Abstract. &ndash;&gt;-->
-<!--    <div class="columns is-centered has-text-centered">-->
-<!--      <div class="column is-four-fifths">-->
-<!--        <h2 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Abstract</b></h2>-->
-<!--        <div class="content has-text-justified">-->
-<!--          <p>-->
-<!--          In this work, we show that DICE-based methods (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) can be viewed as a transformation from the behavior distribution to the optimal policy distribution. Based on this, we propose a novel approach, Diffusion-DICE, that directly performs this transformation using diffusion models.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          We find that the optimal policy's score function can be decomposed into two terms: the behavior policy's score function and the gradient of a guidance term which depends on the optimal distribution ratio. The first term can be obtained from a diffusion model trained on the dataset and we propose an <strong>in-sample</strong> learning objective to learn the second term. Due to the multi-modality contained in the optimal policy distribution, the transformation in Diffusion-DICE may guide towards those local-optimal modes. We thus generate a few candidate actions and carefully select from them to approach global-optimum.-->
-<!--          </p>-->
-<!--          <p>-->
-<!--          Different from all other diffusion-based offline RL methods, the <strong>guide-then-select</strong> paradigm in Diffusion-DICE only uses in-sample actions for training and brings minimal error exploitation in the value function.-->
-<!--          </p>-->
-<!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </div>-->
+<!-- ================================================================ results -->
+<section>
+  <div class="section-head"><h2>D4RL</h2></div>
+  <p class="note">Normalized scores at the end of training, 5 seeds. Standard deviations are in the paper.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>TD3+BC</th><th>IQL</th><th>IVR</th><th>Diffusion-QL</th><th>SfBC</th><th>FQL</th><th>VGF</th></tr>
+<tr><td>halfcheetah-m</td><td>48.3</td><td>47.4</td><td>48.3</td><td>51.1</td><td>45.9</td><td>55.6</td><td><span class="best">57.1</span></td></tr>
+<tr><td>hopper-m</td><td>59.3</td><td>66.3</td><td>75.5</td><td>90.5</td><td>57.1</td><td>60.6</td><td><span class="best">97.9</span></td></tr>
+<tr><td>walker2d-m</td><td>83.7</td><td>72.5</td><td>84.2</td><td>87.0</td><td>77.9</td><td>65.9</td><td><span class="best">89.4</span></td></tr>
+<tr><td>halfcheetah-m-r</td><td>44.6</td><td>44.2</td><td>44.8</td><td>47.8</td><td>37.1</td><td>48.3</td><td><span class="best">49.1</span></td></tr>
+<tr><td>hopper-m-r</td><td>60.9</td><td>95.2</td><td>99.7</td><td><span class="best">101.3</span></td><td>86.2</td><td>50.7</td><td>99.0</td></tr>
+<tr><td>walker2d-m-r</td><td>81.8</td><td>76.1</td><td>81.2</td><td>95.5</td><td>65.1</td><td>38.8</td><td><span class="best">97.8</span></td></tr>
+<tr><td>halfcheetah-m-e</td><td>90.7</td><td>86.7</td><td>94.0</td><td>96.8</td><td>92.6</td><td><span class="best">102.1</span></td><td>99.1</td></tr>
+<tr><td>hopper-m-e</td><td>98.0</td><td>101.5</td><td><span class="best">111.8</span></td><td>111.1</td><td>108.6</td><td>76.7</td><td>98.3</td></tr>
+<tr><td>walker2d-m-e</td><td>110.1</td><td><span class="best">110.6</span></td><td>110.0</td><td>110.1</td><td>109.8</td><td>102.6</td><td>110.5</td></tr>
+<tr class="sep"><td>antmaze-u</td><td>78.6</td><td>85.5</td><td>92.2</td><td>93.4</td><td>92.0</td><td>96.0</td><td><span class="best">98.0</span></td></tr>
+<tr><td>antmaze-u-d</td><td>71.4</td><td>66.7</td><td>74.0</td><td>66.2</td><td>85.3</td><td>89.0</td><td><span class="best">94.3</span></td></tr>
+<tr><td>antmaze-m-p</td><td>10.6</td><td>72.2</td><td>80.2</td><td>76.6</td><td>81.3</td><td>78.0</td><td><span class="best">89.4</span></td></tr>
+<tr><td>antmaze-m-d</td><td>3.0</td><td>71.0</td><td>79.1</td><td>78.6</td><td>82.0</td><td>71.0</td><td><span class="best">86.7</span></td></tr>
+<tr><td>antmaze-l-p</td><td>0.2</td><td>39.6</td><td>53.2</td><td>46.4</td><td>59.3</td><td><span class="best">84.0</span></td><td>82.5</td></tr>
+<tr><td>antmaze-l-d</td><td>0.0</td><td>47.5</td><td>52.3</td><td>56.6</td><td>45.5</td><td>83.0</td><td><span class="best">83.8</span></td></tr>
+<tr class="mean"><td>mean</td><td>56</td><td>72</td><td>79</td><td>81</td><td>75</td><td>73</td><td><span class="best">89</span></td></tr>
+</table></div>
+  <p>VGF has the best mean score, <b>89</b> against 81 for Diffusion-QL. It is strongest on AntMaze, which requires stitching sub-optimal trajectories: on <code>antmaze-m-p</code> and <code>antmaze-m-d</code> it scores 89.4 and 86.7, while no baseline exceeds 82.</p>
+</section>
 
-<!-- </section> -->
+<section>
+  <div class="section-head"><h2>OGBench</h2></div>
+  <p class="note">Four locomotion and five manipulation environments, success rate (%) averaged over 5 tasks each, 5 seeds.</p>
+<div class="tablewrap"><table>
+<tr><th></th><th>BC</th><th>IQL</th><th>ReBRAC</th><th>FBRAC</th><th>IDQL</th><th>FQL</th><th>VGF</th></tr>
+<tr><td>antmaze-giant</td><td>0<span class="pm"> ±0</span></td><td>4<span class="pm"> ±1</span></td><td><span class="best">26</span><span class="pm"> ±8</span></td><td>4<span class="pm"> ±4</span></td><td>0<span class="pm"> ±0</span></td><td>9<span class="pm"> ±6</span></td><td>3<span class="pm"> ±1</span></td></tr>
+<tr><td>humanoidmaze-medium</td><td>2<span class="pm"> ±1</span></td><td>33<span class="pm"> ±2</span></td><td>22<span class="pm"> ±8</span></td><td>38<span class="pm"> ±5</span></td><td>1<span class="pm"> ±0</span></td><td>58<span class="pm"> ±5</span></td><td><span class="best">72</span><span class="pm"> ±1</span></td></tr>
+<tr><td>humanoidmaze-large</td><td>1<span class="pm"> ±0</span></td><td>2<span class="pm"> ±1</span></td><td>2<span class="pm"> ±1</span></td><td>2<span class="pm"> ±0</span></td><td>1<span class="pm"> ±0</span></td><td>4<span class="pm"> ±2</span></td><td><span class="best">15</span><span class="pm"> ±2</span></td></tr>
+<tr><td>antsoccer-arena</td><td>1<span class="pm"> ±0</span></td><td>8<span class="pm"> ±2</span></td><td>0<span class="pm"> ±0</span></td><td>16<span class="pm"> ±1</span></td><td>12<span class="pm"> ±4</span></td><td>60<span class="pm"> ±2</span></td><td><span class="best">63</span><span class="pm"> ±4</span></td></tr>
+<tr><td>cube-single</td><td>5<span class="pm"> ±1</span></td><td>83<span class="pm"> ±3</span></td><td>91<span class="pm"> ±2</span></td><td>79<span class="pm"> ±7</span></td><td>95<span class="pm"> ±2</span></td><td><span class="best">96</span><span class="pm"> ±1</span></td><td><span class="best">96</span><span class="pm"> ±1</span></td></tr>
+<tr><td>cube-double</td><td>2<span class="pm"> ±1</span></td><td>7<span class="pm"> ±1</span></td><td>12<span class="pm"> ±1</span></td><td>15<span class="pm"> ±3</span></td><td>15<span class="pm"> ±6</span></td><td>29<span class="pm"> ±2</span></td><td><span class="best">70</span><span class="pm"> ±8</span></td></tr>
+<tr><td>scene</td><td>5<span class="pm"> ±1</span></td><td>28<span class="pm"> ±1</span></td><td>41<span class="pm"> ±3</span></td><td>45<span class="pm"> ±5</span></td><td>46<span class="pm"> ±3</span></td><td>56<span class="pm"> ±2</span></td><td><span class="best">60</span><span class="pm"> ±1</span></td></tr>
+<tr><td>puzzle-3x3</td><td>2<span class="pm"> ±0</span></td><td>9<span class="pm"> ±1</span></td><td>21<span class="pm"> ±1</span></td><td>14<span class="pm"> ±4</span></td><td>10<span class="pm"> ±2</span></td><td>30<span class="pm"> ±1</span></td><td><span class="best">75</span><span class="pm"> ±4</span></td></tr>
+<tr><td>puzzle-4x4</td><td>0<span class="pm"> ±0</span></td><td>7<span class="pm"> ±1</span></td><td>14<span class="pm"> ±1</span></td><td>13<span class="pm"> ±1</span></td><td>29<span class="pm"> ±3</span></td><td>17<span class="pm"> ±2</span></td><td><span class="best">45</span><span class="pm"> ±4</span></td></tr>
+<tr class="mean"><td>mean</td><td>2</td><td>20</td><td>25</td><td>25</td><td>23</td><td>40</td><td><span class="best">55</span></td></tr>
+</table></div>
+  <p>VGF reaches a mean success rate of <b>55%</b> against 40% for FQL, the strongest baseline. The gains concentrate on the hard tasks where FQL stays below 50%: <code>cube-double</code> (29 → <b>70</b>), <code>puzzle-3x3</code> (30 → <b>75</b>) and <code>puzzle-4x4</code> (17 → <b>45</b>).</p>
 
-<!-- <section class="section"> -->
-  <!-- <div class="container is-max-desktop">
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">How to correctly use diffusion model in RL?</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/diffusion.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div> -->
+  <h3>Offline-to-online</h3>
+  <figure class="wide">
+    <img src="static/o2o_curves.png" alt="Ten learning curves of success rate over 2M steps for VGF and FQL; the first 1M steps are offline (shaded gray). VGF starts higher after offline training and ends higher on most tasks, for example humanoidmaze-medium, puzzle-3x3 and puzzle-4x4.">
+    <figcaption>1M offline steps (shaded) followed by 1M online steps.</figcaption>
+  </figure>
+  <p>The same algorithm runs online without changes. VGF starts from a stronger offline initialization than FQL, adapts faster, and ends higher, e.g. on <code>humanoidmaze-medium</code> and both puzzle tasks.</p>
+</section>
 
-      <!-- <div class="content has-text-justified">
-          <li> Diffusion model is well-known to its strong expressivity of fitting multi-modal distributions, which makes it useful for the offline setting. </li>
-          <li> Ideally, given the same value function trained by offline RL algorithms, we expect diffusion model to fit in more optimal modes in the offline dataset than using vanilla MLPs. </li>
-          <li> However, how to correctly do that remains unsolved, we show previous methods' limitations and propose a new paradigm: <strong>guide-then-select</strong>, to effectively fit in the optimal mode in the dataset.  </li>
-      </div> -->
+<section>
+  <div class="section-head"><h2>Scaling the budget at test time</h2></div>
+  <figure class="wide">
+    <img src="static/test_time.png" alt="Four plots of score versus test-time flow steps from 0 to 3. Walker2d-m increases monotonically; halfcheetah-m-e, antmaze-m-d and puzzle-4x4 peak at one or two steps.">
+  </figure>
+  <p>Because the policy is defined by the transport, we can change \(L_{\text{test}}\) without retraining. On <code>walker2d-m</code> the score keeps increasing with more steps; on <code>puzzle-4x4</code> one step more than doubles the score of \(L_{\text{test}}=0\). When the value function extrapolates poorly, a small \(L_{\text{test}}\) is best, and \(L_{\text{test}}=0\) falls back to best-of-\(N\), which still improves on the reference policy because \(Q\) is trained by TD learning.</p>
+</section>
 
-      <!-- <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Methodology: the guide-then-select framework</b></h3>
-      <div class="content-video-container">
-        <img src="../../midi-lab.github.io/paper_images/guide-then-select.gif" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
+<section>
+  <div class="section-head"><h2>LLM RL finetuning</h2></div>
+  <p>Tokens are discrete, so VGF runs in a continuous surrogate: a differentiable representation \(u\) of the whole response (token embeddings, or the latent of a flow or diffusion language model) that is decoded only after the last step. The reward gradient reaches \(u\) by the chain rule,</p>
+  $$\nabla_{u_i}\log\pi^*_R\big(y_i|x\big) = \frac1\alpha\,J_i^\top\,\nabla_y R\big(x,y_i\big),\qquad J_i = \frac{\partial\,\mathrm{Dec}(u_i)}{\partial u_i}.$$
+  <p>This steers the SFT model at inference with first-order reward gradients, without PPO-style optimization.</p>
+<div class="tablewrap narrow"><table>
+<tr><th></th><th>TL;DR <span class='sub'>vs. reference</span></th><th>Anthropic-HH <span class='sub'>vs. chosen</span></th></tr>
+<tr><td>Pythia-SFT</td><td>48.5</td><td>46.2</td></tr>
+<tr><td>PPO</td><td>57.3</td><td>45.5</td></tr>
+<tr><td>DPO</td><td>61.2</td><td>51.5</td></tr>
+<tr><td>Best-of-N</td><td>58.3</td><td>49.0</td></tr>
+<tr><td><span class="ours">VGF</span></td><td><span class="best">68.1</span></td><td><span class="best">59.0</span></td></tr>
+</table></div>
+  <p class="tablenote">GPT-4 win rate (%). Pythia-2.8B for both the SFT policy and the reward model.</p>
+  <p>VGF wins <b>68.1%</b> of comparisons on TL;DR and <b>59.0%</b> on Anthropic-HH, against 61.2% and 51.5% for DPO. Best-of-\(N\) reaches 58.3% and 49.0%.</p>
+</section>
 
-      <div class="content has-text-justified">
-          <li> Our framework is fundamentally different from previous methods that rely on <strong> actions generated from the diffusion behavior policy </strong>, which may induce out-of-distribution errors. </li>
-      </div>
+<!-- ================================================================ wrap-up -->
+<section>
+  <div class="section-head"><h2>Takeaways</h2></div>
+  <ol class="take">
+    <li>Behavior-regularized RL is a <b>transport</b> problem from the reference distribution to the Boltzmann distribution of the value.</li>
+    <li>Value-gradient particles solve it with no explicit penalty and no policy to backpropagate through; the <b>transport budget</b> is the regularization.</li>
+    <li>The budget can be <b>rescaled at test time</b>, and the same recipe applies to offline RL, offline-to-online RL and LLM finetuning.</li>
+  </ol>
+</section>
 
-      <div class="content has-text-justified">
-          <li> We choose an in-sample learning algorithm, DICE (see <a href="https://arxiv.org/abs/2302.08560">this</a> and <a href="https://arxiv.org/abs/2402.00348">this</a> for an introduction of DICE methods) to learn the value functions. Instead of using weighted behavior cloning, we aim to use diffusion model to better extract the policy.  </li>
-      </div>
+<section id="bibtex">
+  <div class="section-head"><h2>BibTeX</h2></div>
+  <pre>@inproceedings{xu2026vgf,
+  title     = {Reinforcement Learning via Value Gradient Flow},
+  author    = {Xu, Haoran and Hu, Kaiwen and Sojoudi, Somayeh and Zhang, Amy},
+  booktitle = {International Conference on Learning Representations},
+  year      = {2026}
+}</pre>
+  <p class="refs">
+    D4RL: Fu et al., 2020 · OGBench: Park et al., ICLR 2025 · FQL: Park et al., ICML 2025 · IVR: Xu et al., ICLR 2023 ·
+    IQL: Kostrikov et al., ICLR 2022 · Diffusion-QL: Wang et al., ICLR 2023 · SfBC: Chen et al., ICLR 2023 ·
+    IDQL: Hansen-Estruch et al., 2023 · ReBRAC: Tarasov et al., NeurIPS 2023 · JKO scheme: Jordan et al., 1998 ·
+    SVGD: Liu &amp; Wang, NeurIPS 2016
+  </p>
+</section>
 
-      <div class="content has-text-justified">
-        <img src="static/images/dice.png" style="width: 65%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Guide step</strong>: we first show that DICE-based methods can be viewed as a transformation from the behavior distribution to the optimal policy distribution. More specifically, the score function of the optimal policy and the behavior policy satisfy the following relationship.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/guide.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li>The second term is intractable due to the conditional expectation, we propose an in-sample method to accurately estimate it, avoiding the evaluation of OOD actions.  </li>
-      </div>
-
-      <div class="content has-text-justified">
-        <img src="static/images/IGL.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li><strong>Select step</strong>: due to the multi-modality contained in the optimal policy distribution, the guide-step may guide towards those local-optimal modes. We thus generate a few candidate actions and use the Q function to select one with the highest value to achieve global-optimum.  </li>
-      </div>
-      <div class="content has-text-justified">
-        <img src="static/images/select.png" style="width: 55%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Sanity check</b></h3>
-      <div class="content-picture-">
-        <img src="static/images/toycase.png" style="width: 60%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-
-      <div class="content has-text-justified">
-      <li>Toycase of a 2-D bandit problem. The action in the offline dataset follows a bivariate standard normal distribution constrained within an annular region. The ground truth reward has two peaks extending from the center outward.   </li>
-      <li>We use a diffusion model to fit the behavior policy and a reward model to fit the ground truth reward R. Both models fit in-distribution data well while making error in out-of-distribution regions.  </li>
-      </div>
-
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_candidate_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_candidate_distribution_s_4.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_candidate_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content-video-container">
-        <img src="static/images/animated_idql_sample_distribution_s_0.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_cep_sample_distribution_s_1.0_frame_24.gif" width="32%">
-        <img src="static/images/animated_diffusion-DICE_sample_distribution_s_1.0_frame_24.gif" width="32%">
-      </div>
-      <div class="content has-text-justified">
-      <li>From left to right: <a href="https://arxiv.org/abs/2304.10573">IDQL</a> (<strong>select-only</strong>), <a href="https://arxiv.org/abs/2304.12824">QGPO</a> (<strong>guide-only</strong>) and Diffusion-DICE (<strong>guide-then-select</strong>). From top to down: guide and select step (if one has). Comparing to other guide-only or select-only methods, only Diffusion-DICE could generate correct optimal actions in the outer circle. Other methods tend to expolit error information from the reward model and only generate overestimated, sub-optimal actions. </li>
-      </div>
-
-      <hr style="margin-top: 1em;">
-      <h3 class="title is-3"><b style="color:rgba(74, 77, 163, 0.797)">Empirical results</b></h3>
-      <div class="content has-text-justified">
-        <img src="static/images/experiments.png" style="width: 75%; display: block; margin-left: auto; margin-right: auto;">
-      </div>
-      <div class="content has-text-justified">
-      <li> SOTA results on D4RL benchmarks (~60 on halfcheetah-m, ~100 on hopper-m, ~90 on walker2s-m, ~90 on antmaze-m-p, ~70 on antmaze-l-p and antmaze-l-d) </li>
-      </div>
-  </div>
-
-</section> -->
-  
-
-<!--<section class="section" id="BibTeX">-->
-<!--  <div class="container is-max-desktop content">-->
-<!--    <h2 class="title">BibTeX</h2>-->
-<!--    <pre><code>@article{liang2024make,-->
-<!--      title={Make-An-Agent: A Generalizable Policy Network Generator with Behavior-Prompted Diffusion},-->
-<!--      author={Liang, Yongyuan and Xu, Tingqiang and Hu, Kaizhe and Jiang, Guangqi and Huang, Furong and Xu, Huazhe},-->
-<!--      journal={arXiv preprint arXiv:2407.10973},-->
-<!--      year={2024}-->
-<!--      }</code></pre>-->
-<!--  </div>-->
-<!--</section>-->
-
-<footer class="footer">
-  <div class="container">
-    <div class="columns is-centered has-text-centered">
-      <div class="column is-15">
-        <div class="content">
-<!--          <a style="color:hsla(247, 58%, 62%, 0.862)" href="#top"><i class="fa fa-arrow-up"></i><br/>Return to top</a>-->
-          <p>
-            Website is modified from <a href="https://github.com/nerfies/nerfies.github.io">NeRFies</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-</footer>
-
+<footer><a href="https://ryanxhr.github.io/">Haoran Xu</a></footer>
+</div>
 </body>
 </html>
